@@ -1,0 +1,53 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+    <div class="text-center mb-12">
+      <app-heading title="Contact Us" subtitle="We are here to help. Reach out to us for any inquiries." size="xl" align="center"></app-heading>
+    </div>
+  
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-2xl shadow-xl p-8 border">
+        <!-- Contact Info -->
+        <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-gray-800 border-b pb-4">Our Information</h3>
+            <div class="flex items-center gap-4 text-gray-700">
+                <i class="fas fa-map-marker-alt text-2xl text-primary w-8"></i>
+                <div>
+                    <p class="font-bold">Location</p>
+                    <p>123 Health Avenue, Medical District, City 450001</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 text-gray-700">
+                <i class="fas fa-phone-alt text-2xl text-primary w-8"></i>
+                <div>
+                    <p class="font-bold">General Helpline</p>
+                    <p>+91-800-CITY-CARE</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 text-gray-700">
+                <i class="fas fa-envelope text-2xl text-primary w-8"></i>
+                <div>
+                    <p class="font-bold">Email Us</p>
+                    <p>support&#64;citycarehospital.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form Placeholder -->
+        <div>
+            <h3 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Send a Message</h3>
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Your Name</label>
+                    <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Your Email</label>
+                    <input type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Message</label>
+                    <textarea rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"></textarea>
+                </div>
+                <app-button label="Submit Message" customClass="w-full mt-2" type="button"></app-button>
+            </form>
+        </div>
+    </div>
+  </section>

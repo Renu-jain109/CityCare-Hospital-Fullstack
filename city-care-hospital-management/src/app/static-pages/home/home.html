@@ -1,0 +1,104 @@
+<!-- Hero section -->
+
+<section class="relative min-h-screen text-white flex flex-col justify-center items-center overflow-hidden">
+    <!-- Image Slideshow -->
+    <div class="absolute inset-0">
+        <app-image-slideshow></app-image-slideshow>
+    </div>
+
+    <!-- Hero content -->
+    <div class=" px-6 text-center max-w-5xl mx-auto relative z-10">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight relative ">
+            <span class="drop-shadow-2xl">Your Health,</span><br><span class="text-accent drop-shadow-2xl">Our
+                Responsibility</span>
+        </h1>
+        <p
+            class="text-lg sm:text-xl md:text-2xl mb-10 text-blue-100 font-light drop-shadow-lg max-w-5xl mx-auto leading-relaxed">
+            We provide world-class medical care with advanced facilities, experienced doctors and a patient-first
+            approach.</p>
+
+    </div>
+</section>
+
+
+<!-- Features Section -->
+<app-action-card></app-action-card>
+
+<!-- Technology Section -->
+<section class="py-16 lg:py-24 bg-white ">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Image -->
+            <div class="order-1 lg:order-2">
+                <img src="/assets/technology.avif" alt="Advanced Medical Technology"
+                    class="w-full rounded-2xl shadow-2xl object-cover h-96 lg:h-full" />
+            </div>
+
+            <!--Text content -->
+            <div class="order-1 lg:order-2 space-y-6">
+
+                <app-heading title="Latest Technology for Better Patient Care" size="md" sizeSm="lg" sizeLg="xl"
+                    sizeXl="xl"></app-heading>
+
+                <p class="text-gray-600 leading-relaxed ">
+                    We use advanced medical systems to deliver accurate, efficient and safe treatment.
+                    Our tools combine high-quality imaging, smart diagnostics and digital workflows that
+                    help doctors plan treatments with clarity and confidence.
+                </p>
+
+                <p class="text-gray-600 leading-relaxed">
+                    Every feature is designed to reduce delays, improve coordination and support
+                    better decisions—all while keeping patient comfort and safety at the center.
+                </p>
+
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex gap-3"><span>•</span> High-precision imaging for early detection</li>
+                    <li class="flex gap-3"><span>•</span> Digital tools for appointments & reports</li>
+                    <li class="flex gap-3"><span>•</span> Smart systems for complex treatment planning</li>
+                    <li class="flex gap-3"><span>•</span> Strong focus on data safety & patient experience</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- WHY CHOOSE US -->
+<app-choose-us-card></app-choose-us-card>
+
+<!-- DEPARTMENTS -->
+<section class="py-16 lg:py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+        <!-- Heading -->
+        <div class="text-center mb-12 lg:mb-16">
+            <app-heading title=" Our Specialities" subtitle="World-class treatment across"
+                highlight="20+ medical departments" highlightClass="font-bold text-primary" size="md" sizeSm="lg"
+                sizeLg="xl" sizeXl="xl" align="center"></app-heading>
+
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8">
+
+            @for( dept of departments.slice(0, displayCount) ; track dept.departmentId ){
+            <app-specialities-card [icon]="dept.icon" [title]="dept.departmentName" [short]="dept.short"
+                [id]="dept.departmentId" (click)="navigateToDepartment(dept.slug)"></app-specialities-card>
+            }
+
+
+        </div>
+        <!-- View All Button -->
+        <div class="mt-12 lg:mt-16 flex justify-center">
+            <app-button color="primary" label="View All Departments" icon="fas fa-arrow-right"
+                customClass="rounded-xl inline-flex" (click)="showMore()"></app-button>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-16 lg:py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <app-heading title="What Patients Say" subtitle="Trusted by thousands of patients" size="lg" align="center"></app-heading>
+        <app-testimonials-block></app-testimonials-block>
+    </div>
+</section>

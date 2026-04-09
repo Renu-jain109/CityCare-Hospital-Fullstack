@@ -1,0 +1,26 @@
+<!-- Show navbar and footer only when layoutService.showLayout is true -->
+@if(layoutService.showLayout()) {
+  <app-navbar
+  [isOpen]="navbarOpen"
+  (toggle)="navbarOpen = !navbarOpen"
+  (close)="closeNavbar()"
+  ></app-navbar>
+
+   <!-- Overlay (Click here to close) -->
+
+   @if(navbarOpen){
+    <div
+      class="fixed inset-0 bg-black/30 z-30 lg:hidden"
+      (click)="closeNavbar()"
+    ></div>
+   }
+}
+
+<main class="min-h-screen bg-gray-50">
+    <router-outlet></router-outlet>
+</main>
+
+<!-- Show footer only when layoutService.showLayout is true -->
+@if(layoutService.showLayout()) {
+  <app-footer></app-footer>
+}

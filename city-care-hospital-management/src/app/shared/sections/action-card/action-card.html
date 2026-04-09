@@ -1,0 +1,28 @@
+<section class="text-white py-16 relative bg-stone-100">
+
+    <!-- Action Grid -->
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 
+                 max-w-7xl mx-auto px-4 sm:px-12 lg:px-0 mb-8 ">
+
+        @for(card of actionCardData; track $index){
+
+        <app-card [cardData]="{
+    title: card.title,
+    description: card.description,
+    descriptionClass: card.description + ' ' + ' mb-6',
+    iconClass: card.iconClass,
+    bgColor: card.bgColor,
+    iconColor: 'text-white',
+}">
+
+            <a [routerLink]="card.isTelLink ? null : card.routerLink"
+                [attr.href]="card.isTelLink ? card.routerLink : null"
+                [class]="'bg-white ' + card.textColor + ' px-6 py-3 rounded-full font-semibold text-sm flex items-center gap-2'">
+                {{ card.buttonText }}
+            </a>
+        </app-card>
+        }
+    </div>
+
+</section>

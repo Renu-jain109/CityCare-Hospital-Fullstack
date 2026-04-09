@@ -1,0 +1,91 @@
+@if(department){
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- Banner -->
+    <div class="relative rounded-xl overflow-hidden shadow-lg">
+        <img [src]="department.bannerImage" [alt]="department.departmentName" class="w-full h-96 object-fit" />
+
+        <div class="absolute bottom-4 left-6 text-white">
+            <h1 class="text-4xl font-bold drop-shadow-lg">
+                {{ department.departmentName }}
+            </h1>
+            <p class="text-lg opacity-90">
+                {{ department.subtitle }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <section class="mt-10">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-3">
+            About {{ department.departmentName }}
+        </h2>
+        <p class="text-gray-600 leading-relaxed">
+            {{ department.description }}
+        </p>
+    </section>
+
+    <!-- Treatments -->
+    <section *ngIf="department.treatments?.length" class="mt-10">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-5">
+            Treatments We Offer
+        </h2>
+
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <li *ngFor="let t of department.treatments"
+                class="px-4 py-3 bg-gray-100 rounded-lg shadow-sm text-gray-700">
+                {{ t }}
+            </li>
+        </ul>
+    </section>
+
+    <!-- Doctors -->
+    <section *ngIf="department.doctorId?.length" class="mt-10">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-5">
+            Our Doctors
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div *ngFor="let doctor of department.doctorId" class="p-4 border rounded-lg shadow-sm bg-white">
+                <p class="font-medium text-gray-800">Doctor ID: {{ doctor }}</p>
+                <p class="text-gray-500 text-sm">Link them later with doctor service</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs -->
+    <section *ngIf="department.faqs?.length" class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-5">
+            FAQs
+        </h2>
+
+        <div class="space-y-4">
+            <div *ngFor="let f of department.faqs" class="p-5 bg-gray-100 rounded-lg shadow-sm">
+                <p class="font-semibold text-gray-800">{{ f.q }}</p>
+                <p class="text-gray-600 mt-1">{{ f.a }}</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div *ngIf="!department" class="text-center py-10">
+    <p class="text-gray-500 text-lg">Department not found.</p>
+</div>
+
+<!-- home page -->
+
+<div class="mt-6 text-center flex justify-evenly mb-12">
+    <!-- <a routerLink="/" class="px-5 py-3 bg-primary text-white rounded-lg">Go to Home</a> -->
+
+    <!-- Appointment Button -->
+    <!-- <div class="text-center mt-12"> -->
+            <app-button color="primary" label="Go to Home" icon="fas fa-arrow-right" color="primary"
+                customClass="rounded-xl inline-flex" (click)="goToHome()"></app-button>
+            <app-button routerLink="/" color="primary" label="Book Appointment" icon="fas fa-arrow-right" color="primary"
+                customClass="rounded-xl inline-flex" (click)="goToBookAppointment()"></app-button>
+    <!-- </div> -->
+
+</div>
+
+}

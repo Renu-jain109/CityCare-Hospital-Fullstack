@@ -1,0 +1,10 @@
+/* Remove Angular Material default scroll */
+.mat-mdc-dialog-content {
+  max-height: none !important;
+  overflow: hidden !important;
+  padding-right: 0 !important; /* remove extra scrollbar space */
+}
+
+::ng-deep .mat-dialog-container {
+  max-width: none !important;
+}

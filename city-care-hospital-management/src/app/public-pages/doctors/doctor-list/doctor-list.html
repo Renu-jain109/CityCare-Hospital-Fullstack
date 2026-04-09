@@ -1,0 +1,44 @@
+<section class="relative overflow-hidden max-w-4xl mx-auto py-12 px-4">
+
+  <div class=" text-center">
+    <app-heading title="Our Doctors" subtitle="Meet our experienced and dedicated medical specialists." size="md"
+      sizeSm="lg" sizeLg="xl" sizeXl="xl" align="center"></app-heading>
+
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    @for(doctor of allDoctor; track doctor.doctorId){
+
+    <div (click)="navigateToDoctorDetails(doctor.slug || '')">
+      <app-card [cardData]="{
+                title:doctor.doctorName,
+                titleClass: 'text-lg lg:text-xl font-bold text-gray-800 group-hover:text-white transition-all duration-500 mb-2',
+                showIconCircle: true,
+                bgColor: 'bg-gray-100',
+                iconBgColor: 'bg-white group-hover:bg-blue-500',
+                iconClass: doctor.icon,
+                iconColor: 'text-primary group-hover:text-white',
+                hoverClass: 'group hover:bg-primary',
+                department: doctor.departmentName,
+                deparmentClass: 'text-sm text-gray-600 group-hover:text-white',
+                experience: doctor.experience,
+                experienceClass: 'text-sm text-gray-600 group-hover:text-white',
+                qualification: doctor.qualification,
+                qualificationClass: 'text-sm text-gray-600 group-hover:text-white',
+                availability: doctor.availability,
+                availabilityClass: 'text-sm text-gray-600 group-hover:text-white'
+                
+            }"></app-card>
+    </div>
+    } @empty {
+      <div class="col-span-full py-12 text-center text-gray-500 rounded-2xl bg-white border border-dashed border-gray-300">
+        <i class="fas fa-user-md text-6xl mb-6 text-gray-300"></i>
+        <h3 class="text-2xl font-bold mb-2">No Doctors Available</h3>
+        <p class="text-lg">We couldn't find any registered doctors at this time. Please check back later.</p>
+      </div>
+    }
+
+  </div>
+
+</section>

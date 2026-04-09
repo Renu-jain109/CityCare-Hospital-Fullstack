@@ -1,0 +1,24 @@
+<div class="appointment-list-container">
+    <app-heading title="Appointment List" size="sm"></app-heading>
+
+    <div class="mb-4 flex justify-end w-80 border border-gray-300 rounded-lg p-2 bg-white">
+        <input 
+            type="text" 
+            class="w-full border border-none outline-none " 
+            placeholder="Search appointments..." 
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+        />
+    </div>
+
+    <app-table 
+    [columns]="appointmentColumns" 
+    [data]="filteredAppointmentData" 
+    [showActions]="true"
+    [actions]="appointmentActions" 
+    [showPagination]="true"
+    [pageSize]="8"
+    [currentPage]="currentPage"
+    (actionClick)="handleTableAction($event)"
+    (pageChange)="onPageChange($event)"></app-table>
+</div>

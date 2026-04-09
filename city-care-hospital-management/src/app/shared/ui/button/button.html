@@ -1,0 +1,46 @@
+ <!-- <div [ngClass]="{
+        'text-left': align === 'left',
+        'text-center': align === 'center',
+        'text-right': align === 'right'
+      }"> -->
+<button
+[type]="type"
+(click)="onClick()"
+[disabled]="disabled"
+[ngClass]="{
+  'btn' : true,
+  'btn-primary': color === 'primary',
+  'btn-secondary': color === 'secondary',
+  'btn-danger': color === 'danger',
+  'btn-outline': color === 'outline', 
+  'btn-light-blue': color === 'light-blue',
+} " [class]="customClass">
+@if(icon){
+  <i [class]="icon"></i>
+}
+  {{ label }}
+
+</button>
+<!-- </div> -->
+
+
+
+
+<!-- <button 
+  [ngClass]="[
+    'btn',
+    color === 'primary' ? 'btn-primary' : '',
+    color === 'secondary' ? 'btn-secondary' : '',
+    color === 'danger' ? 'btn-danger' : '',
+    color === 'outline' ? 'btn-outline' : '',
+    color === 'light-blue' ? 'btn-light-blue' : '',
+    customClass
+  ]">
+  <i [class]="icon"></i>
+  {{ label }}
+</button> -->
+
+
+
+
+

@@ -1,0 +1,314 @@
+<div class="bg-gray-50 min-h-screen py-8 lg:py-12 font-sans">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <app-heading 
+      title="Pharmacy Shop" 
+      subtitle="Order essential medicines and healthcare products from our trusted pharmacy."
+      size="lg" 
+      align="center">
+    </app-heading>
+
+    <!-- Progress Steps -->
+    <div class="max-w-xl mx-auto mb-4 mt-4 flex items-center justify-between relative px-4">
+      <!-- Step 1: Shop -->
+      <div class="flex flex-col items-center z-10 relative">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg transition-all cursor-pointer"
+             (click)="goToShop()"
+             [ngClass]="currentStep >= steps.SHOP ? 'bg-primary text-white scale-110' : 'bg-gray-200 text-gray-500'">1</div>
+        <span class="text-xs font-bold mt-2 uppercase tracking-tighter" [class.text-primary]="currentStep >= steps.SHOP" [class.text-gray-400]="currentStep < steps.SHOP">Shop</span>
+      </div>
+      
+      <div class="flex-1 h-1 mx-2 rounded-full overflow-hidden bg-gray-200">
+        <div class="h-full bg-primary transition-all duration-500" [style.width]="currentStep >= steps.CART ? '100%' : '0%'"></div>
+      </div>
+
+      <!-- Step 2: Cart -->
+      <div class="flex flex-col items-center z-10 relative" [class.cursor-pointer]="cart.length > 0" (click)="cart.length > 0 ? goToCart() : null">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg transition-all"
+             [ngClass]="currentStep >= steps.CART ? 'bg-primary text-white scale-110' : 'bg-gray-200 text-gray-500'">2</div>
+        <span class="text-xs font-bold mt-2 uppercase tracking-tighter" [class.text-primary]="currentStep >= steps.CART" [class.text-gray-400]="currentStep < steps.CART">Cart</span>
+      </div>
+
+      <div class="flex-1 h-1 mx-2 rounded-full overflow-hidden bg-gray-200">
+        <div class="h-full bg-primary transition-all duration-500" [style.width]="currentStep >= steps.CHECKOUT ? '100%' : '0%'"></div>
+      </div>
+
+      <!-- Step 3: Checkout -->
+      <div class="flex flex-col items-center z-10 relative">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg transition-all"
+             [ngClass]="currentStep >= steps.CHECKOUT ? 'bg-primary text-white scale-110' : 'bg-gray-200 text-gray-500'">3</div>
+        <span class="text-xs font-bold mt-2 uppercase tracking-tighter" [class.text-primary]="currentStep >= steps.CHECKOUT" [class.text-gray-400]="currentStep < steps.CHECKOUT">Order</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Browse Medicines -->
+    <div *ngIf="currentStep === steps.SHOP" class="animate-fade-in">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+        <div class="relative flex-1 max-w-lg group">
+          <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"></i>
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            (input)="filterMedicines()"
+            placeholder="Search medicine by name or category..." 
+            class="w-full pl-14 pr-6 py-4 bg-white border-2 border-gray-100 rounded-2xl shadow-sm focus:border-primary outline-none transition-all font-medium text-gray-700">
+        </div>
+        
+        <button 
+          (click)="goToCart()"
+          class="flex items-center gap-4 bg-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all border border-gray-100 relative group">
+          <div class="bg-primary/10 p-3 rounded-xl text-primary">
+            <i class="fas fa-shopping-basket text-xl"></i>
+          </div>
+          <div class="text-left">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Your Cart</p>
+            <p class="text-lg font-black text-gray-900">{{ cart.length }} Item(s)</p>
+          </div>
+          <div *ngIf="cart.length > 0" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white animate-bounce">
+            {{ cart.length }}
+          </div>
+        </button>
+      </div>
+
+      <!-- Medicine Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Medicine Card -->
+        <div *ngFor="let m of filteredMedicines" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group">
+          
+          <!-- Card Header with Icon -->
+          <div class="h-40 bg-gradient-to-br from-blue-50 to-gray-50 flex items-center justify-center relative overflow-hidden">
+            <div class="w-20 h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <i class="fas fa-pills text-3xl text-primary"></i>
+            </div>
+            <div class="absolute top-4 right-4">
+              <span class="px-3 py-1 bg-white text-primary text-xs font-bold rounded-full shadow-sm">{{ m.dosage }}</span>
+            </div>
+          </div>
+          
+          <!-- Card Content -->
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold text-gray-800">{{ m.name }}</h3>
+              <span class="text-xs text-gray-400 font-medium">{{ m.manufacturer }}</span>
+            </div>
+            
+            <p class="text-gray-500 text-sm mb-4 line-clamp-2">{{ m.desc }}</p>
+            
+            <!-- Price & Action -->
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div>
+                <span class="text-xs text-gray-400">Price</span>
+                <p class="text-xl font-bold text-gray-900">&#x20B9;{{ m.price }}</p>
+              </div>
+              <button 
+                (click)="addToCart(m)"
+                class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md flex items-center gap-2 font-medium text-sm">
+                <i class="fas fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- Step 2: Shopping Cart -->
+    <div *ngIf="currentStep === steps.CART" class="max-w-4xl mx-auto animate-fade-in">
+      <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-50">
+        <div class="p-8 lg:p-12 border-b border-gray-50 flex items-center justify-between">
+          <h2 class="text-3xl font-black text-gray-900 tracking-tighter">Your Shopping Basket</h2>
+          <button (click)="goToShop()" class="text-sm font-bold text-primary hover:underline">Continue Shopping</button>
+        </div>
+
+        <div class="p-8 lg:p-12">
+          <div *ngIf="cart.length === 0" class="flex flex-col items-center py-20">
+            <div class="w-32 h-32 bg-gray-50 rounded-full flex items-center justify-center text-5xl text-gray-200 mb-8">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <h3 class="text-2xl font-black text-gray-400 mb-8">Your cart is empty</h3>
+            <button (click)="goToShop()" class="px-8 py-4 bg-primary text-white rounded-2xl font-bold shadow-xl hover:scale-105 transition-all">Go back to shop</button>
+          </div>
+
+          <div *ngIf="cart.length > 0" class="space-y-6">
+            <div *ngFor="let item of cart" class="flex items-center justify-between p-6 bg-gray-50 rounded-3xl group hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-gray-100">
+              <div class="flex items-center gap-6">
+                <div class="w-16 h-16 rounded-2xl bg-white shadow-inner flex items-center justify-center text-primary/30 text-xl group-hover:scale-110 transition-transform">
+                   <i class="fas fa-capsules"></i>
+                </div>
+                <div>
+                  <h4 class="text-xl font-black text-gray-900">{{ item.medicine.name }}</h4>
+                  <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ item.medicine.dosage }}</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-8">
+                <div class="flex items-center bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+                  <button (click)="updateQuantity(item.medicine.id, -1)" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-minus"></i></button>
+                  <span class="w-10 text-center font-black text-gray-900">{{ item.quantity }}</span>
+                  <button (click)="updateQuantity(item.medicine.id, 1)" class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-primary transition-colors"><i class="fas fa-plus"></i></button>
+                </div>
+                <p class="text-xl font-black text-gray-900 w-24 text-right">&#x20B9;{{ item.medicine.price * item.quantity }}</p>
+              </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t-4 border-dashed border-gray-100 flex items-center justify-between">
+              <p class="text-2xl font-black text-gray-400">Grand Total</p>
+              <p class="text-4xl font-black text-primary">&#x20B9;{{ cartTotal }}</p>
+            </div>
+
+            <div class="mt-12">
+              <button (click)="goToCheckout()" class="w-full py-6 bg-primary text-white rounded-[2rem] text-xl font-black shadow-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-4 group">
+                Proceed to Checkout
+                <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Checkout -->
+    <div *ngIf="currentStep === steps.CHECKOUT" class="max-w-5xl mx-auto animate-fade-in grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div class="lg:col-span-2">
+        <app-card [cardData]="{ title: 'Delivery & Contact Details', customClass: 'p-10 border border-gray-100 rounded-[3rem] shadow-2xl bg-white' }">
+          <form [formGroup]="checkoutForm" (ngSubmit)="processOrder()" class="space-y-8 mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
+                <div class="relative">
+                  <i class="fas fa-user absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                  <input type="text" formControlName="fullName" placeholder="John Doe" class="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:border-primary rounded-2xl outline-none transition-all font-medium"
+                    [class.border-red-500]="checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid">
+                </div>
+                <p *ngIf="checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.invalid" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Name is required</p>
+              </div>
+
+              <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+                <div class="relative">
+                  <i class="fas fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                  <input type="email" formControlName="email" readonly class="w-full pl-14 pr-6 py-4 bg-gray-100 border-2 border-transparent rounded-2xl outline-none opacity-60 font-medium text-gray-500 cursor-not-allowed">
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Contact Number</label>
+              <div class="relative">
+                <i class="fas fa-phone absolute left-5 top-1/2 -translate-y-1/2 text-gray-300"></i>
+                <input type="text" formControlName="contact" placeholder="10-digit mobile number" class="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:border-primary rounded-2xl outline-none transition-all font-medium"
+                  [class.border-red-500]="checkoutForm.get('contact')?.touched && checkoutForm.get('contact')?.invalid">
+              </div>
+              <p *ngIf="checkoutForm.get('contact')?.touched && checkoutForm.get('contact')?.errors?.['required']" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Contact is required</p>
+              <p *ngIf="checkoutForm.get('contact')?.touched && checkoutForm.get('contact')?.errors?.['pattern']" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Invalid 10-digit number</p>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Delivery Address</label>
+              <div class="relative">
+                <i class="fas fa-map-marker-alt absolute left-5 top-5 text-gray-300"></i>
+                <textarea formControlName="address" rows="3" placeholder="Apartment, Street, Area..." class="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:border-primary rounded-2xl outline-none transition-all font-medium resize-none"
+                  [class.border-red-500]="checkoutForm.get('address')?.touched && checkoutForm.get('address')?.invalid"></textarea>
+              </div>
+              <p *ngIf="checkoutForm.get('address')?.touched && checkoutForm.get('address')?.invalid" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Address is required</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+              <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">City</label>
+                <input type="text" formControlName="city" placeholder="City" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-primary rounded-2xl outline-none transition-all font-medium"
+                  [class.border-red-500]="checkoutForm.get('city')?.touched && checkoutForm.get('city')?.invalid">
+                <p *ngIf="checkoutForm.get('city')?.touched && checkoutForm.get('city')?.invalid" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">City is required</p>
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Zip Code</label>
+                <input type="text" formControlName="zip" placeholder="Zip code" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-primary rounded-2xl outline-none transition-all font-medium"
+                  [class.border-red-500]="checkoutForm.get('zip')?.touched && checkoutForm.get('zip')?.invalid">
+                <p *ngIf="checkoutForm.get('zip')?.touched && checkoutForm.get('zip')?.errors?.['required']" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Zip is required</p>
+                <p *ngIf="checkoutForm.get('zip')?.touched && checkoutForm.get('zip')?.errors?.['pattern']" class="text-red-500 text-[10px] uppercase font-bold mt-1 ml-1">Invalid 6-digit zip</p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+               <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Payment Method</label>
+               <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                     <div class="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-money-bill-wave"></i>
+                     </div>
+                     <div>
+                        <p class="font-black text-gray-900 tracking-tight">Cash on Delivery</p>
+                        <p class="text-[10px] text-primary font-bold uppercase tracking-widest">Default Option</p>
+                     </div>
+                  </div>
+                  <i class="fas fa-check-circle text-primary text-xl"></i>
+               </div>
+            </div>
+
+            <div class="pt-6">
+              <button 
+                type="submit" 
+                [disabled]="checkoutForm.invalid || isOrdering"
+                class="w-full py-6 bg-primary text-white rounded-[2rem] text-xl font-black shadow-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i *ngIf="isOrdering" class="fas fa-spinner fa-spin"></i>
+                {{ isOrdering ? 'Processing Order...' : 'Confirm Pharmacy Order' }}
+              </button>
+            </div>
+          </form>
+        </app-card>
+      </div>
+
+      <div class="lg:col-span-1">
+        <app-card [cardData]="{ title: 'Order Summary', customClass: 'p-8 border border-gray-100 rounded-[3rem] shadow-2xl bg-white sticky top-24' }">
+          <div class="space-y-4 mt-4">
+            <div *ngFor="let item of cart" class="flex items-start justify-between gap-4 pb-4 border-b border-gray-50 last:border-0">
+              <div class="flex-1">
+                <p class="text-sm font-bold text-gray-900 leading-tight">{{ item.medicine.name }}</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ item.quantity }} x &#x20B9;{{ item.medicine.price }}</p>
+              </div>
+              <p class="text-sm font-black text-gray-900 shrink-0">&#x20B9;{{ item.medicine.price * item.quantity }}</p>
+            </div>
+            
+            <div class="pt-6 space-y-3">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400 font-bold">Subtotal</span>
+                <span class="text-gray-900 font-black">&#x20B9;{{ cartTotal }}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-400 font-bold">Shipping</span>
+                <span class="text-green-600 font-black">FREE</span>
+              </div>
+              <div class="pt-4 flex justify-between">
+                <span class="text-lg font-black text-gray-900">Total Payable</span>
+                <span class="text-2xl font-black text-primary">&#x20B9;{{ cartTotal }}</span>
+              </div>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+    <!-- Step 4: Success -->
+    <div *ngIf="currentStep === steps.SUCCESS" class="max-w-2xl mx-auto py-12 animate-fade-in text-center">
+      <div class="bg-white p-12 lg:p-20 rounded-[4rem] shadow-2xl border border-gray-100">
+        <div class="w-32 h-32 bg-green-500 text-white rounded-[2.5rem] flex items-center justify-center text-5xl mx-auto mb-10 shadow-2xl shadow-green-200 animate-bounce">
+          <i class="fas fa-check"></i>
+        </div>
+        <h2 class="text-4xl font-black text-gray-900 tracking-tighter mb-4">Order Successful!</h2>
+        <p class="text-gray-500 font-medium text-lg leading-relaxed mb-10">
+          Your order <span class="text-primary font-black">#{{ orderNumber }}</span> has been placed. 
+          Our pharmacist will review your order and update the status soon.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button (click)="goToShop()" class="px-10 py-5 bg-gray-950 text-white rounded-2xl font-bold shadow-xl transition-all hover:bg-gray-800">Continue Shopping</button>
+          <a routerLink="/order-history" class="px-10 py-5 bg-blue-50 text-primary rounded-2xl font-bold shadow-sm transition-all hover:bg-blue-100 flex items-center justify-center gap-2">
+            View My Orders <i class="fas fa-history"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,21 @@
+mat-stepper {
+  background: transparent !important;
+}
+
+.mat-step-header .mat-step-icon-selected {
+  background-color: #3b82f6 !important;
+}
+
+.mat-stepper-horizontal-line {
+  border-top-color: #93c5fd !important;
+}
+
+
+mat-stepper {
+  background: white !important;
+  display: block !important;
+}
+
+.mat-step-header, .mat-step {
+  display: block !important;
+}

@@ -1,0 +1,27 @@
+<section class="py-16 lg:py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+
+        <!-- Heading -->
+        <app-heading title="Why Patients Love CityCare" subtitle="Trusted by over"
+            highlight="5 Lakh+ patients every year." highlightClass="font-bold text-primary" size="md" sizeSm="lg"
+            sizeLg="xl" sizeXl="xl" align="center"></app-heading>
+
+        <!-- Cards Grid-->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+
+            @for(card of chooseUsCardData; track card.title){
+
+            <app-card [cardData]="{
+                title:card.title,
+                showIconCircle: true,
+                iconClass: card.iconClass,
+                iconBgColor: card.bgColor,
+                iconColor: card.iconColor,
+                description: card.description,
+            }"></app-card>
+
+            }
+
+        </div>
+    </div>
+</section>

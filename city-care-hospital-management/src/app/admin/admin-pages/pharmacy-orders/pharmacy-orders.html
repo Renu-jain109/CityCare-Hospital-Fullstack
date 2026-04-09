@@ -1,0 +1,109 @@
+<div class="bg-gray-50 min-h-screen py-6 lg:py-8 font-sans">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+
+    <app-heading title="Pharmacy Order Management"
+      subtitle="Process medicine orders, update delivery status, and manage patient requests." size="lg" align="center">
+    </app-heading>
+
+    <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-10">
+      <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-gray-500 font-bold animate-pulse">Loading all pharmacy orders...</p>
+    </div>
+
+    <div *ngIf="!isLoading && orders.length === 0" class="max-w-2xl mx-auto py-20 text-center">
+      <div
+        class="w-32 h-32 bg-white rounded-[2.5rem] shadow-xl flex items-center justify-center text-5xl text-gray-200 mx-auto mb-8 border border-gray-100">
+        <i class="fas fa-file-invoice"></i>
+      </div>
+      <h3 class="text-2xl font-black text-gray-900 mb-4">No pharmacy orders yet</h3>
+      <p class="text-gray-500 font-medium mb-8 leading-relaxed">Once patients place orders in the Pharmacy Shop, they
+        will appear here for processing.</p>
+    </div>
+
+    <div *ngIf="!isLoading && orders.length > 0" class="mt-10 space-y-8 animate-fade-in">
+      <div *ngFor="let order of orders" class="group">
+        <app-card [cardData]="{ 
+          customClass: 'bg-white border border-gray-100 rounded-[3rem] p-2 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden' 
+        }">
+          <div class="flex flex-col gap-2 lg:flex-row lg:gap-12 lg:items-center">
+            <!-- Patient & Order ID -->
+            <div class="w-full lg:w-1/4">
+              <div class="lg:mb-4 mb-2 grid grid-cols-2 lg:grid-cols-1 gap-4">
+                <div
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest mb-4 shadow-sm"
+                  [ngClass]="getStatusClass(order.status)">
+                  <span class="w-2 h-2 rounded-full bg-current animate-pulse"></span>
+                  {{ order.status }}
+                </div>
+                <div>
+                  <h3 class="text-2xl font-black text-gray-900 tracking-tighter truncate">{{ order.patientName }}</h3>
+                  <p class="text-gray-400 font-bold text-sm mt-1 flex items-center gap-2">
+                    <i class="fas fa-phone text-[10px]"></i> {{ order.contact }}
+                  </p>
+                  </div>
+                <p class="text-gray-400 font-bold text-[10px] uppercase tracking-widest mt-4">Order ID: #{{
+                  order._id?.slice(-8)?.toUpperCase() || '' }}</p>
+              </div>
+            </div>
+
+            <!-- Items Details -->
+            <div class="flex-1 w-full lg:flex-1 space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div *ngFor="let item of order.items"
+                  class="flex items-center gap-4 bg-gray-50 px-5 py-3 rounded-2xl border border-transparent hover:border-gray-100 transition-all group/item">
+                  <div
+                    class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary text-sm shadow-sm flex-shrink-0 group-hover/item:bg-primary group-hover/item:text-white transition-colors">
+                    <i class="fas fa-capsules"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-sm font-black text-gray-900 leading-tight">{{ item.name }}</p>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Qty: {{ item.quantity }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50 text-xs text-blue-800 flex items-start gap-3">
+                <i class="fas fa-truck mt-1"></i>
+                <p class="font-medium"><strong>Delivery to:</strong> {{ order.address }}</p>
+              </div>
+            </div>
+
+            <!-- Actions & Total -->
+            <div
+              class="lg:w-1/4 w-full lg:text-right flex flex-col items-stretch lg:items-end lg:gap-6 gap-3 border-t lg:border-t-0 lg:border-l border-gray-100 pt-4 lg:pt-0 lg:pl-12">
+              <div class="space-y-1">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Value</p>
+                <p class="text-4xl font-black text-primary tracking-tighter">&#x20B9;{{ order.totalAmount }}</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 w-full">
+                <!-- Action Buttons: Approve, Cancel, Update delivery -->
+                <button *ngIf="order.status === 'pending'" (click)="updateStatus(order._id, 'approved')"
+                  class="col-span-1 px-4 py-3 bg-green-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-700 transition-all shadow-lg active:scale-95">
+                  Approve
+                </button>
+                <button *ngIf="order.status === 'approved'" (click)="updateStatus(order._id, 'out-for-delivery')"
+                  class="col-span-1 px-4 py-3 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-purple-700 transition-all shadow-lg active:scale-95">
+                  Out for Delivery
+                </button>
+                <button *ngIf="order.status === 'out-for-delivery'" (click)="updateStatus(order._id, 'delivered')"
+                  class="col-span-1 px-4 py-3 bg-green-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-green-600 transition-all shadow-lg active:scale-95">
+                  Delivered
+                </button>
+                <button *ngIf="order.status === 'pending' || order.status === 'approved'"
+                  (click)="updateStatus(order._id, 'cancelled')"
+                  class="px-4 py-3 bg-white text-red-500 border border-red-100 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-50 transition-all shadow-sm"
+                  [class.col-span-1]="order.status === 'pending' || order.status === 'approved'"
+                  [class.col-span-2]="false">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </div>
+
+  </div>
+</div>

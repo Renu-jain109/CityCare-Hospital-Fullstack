@@ -1,0 +1,34 @@
+<h2 mat-dialog-title class="text-xl text-center"><strong>{{ data.title }}</strong></h2>
+
+<mat-dialog-content>
+
+<div class=" overflow-y-auto no-scrollbar px-5 " >
+<!-- <div class="h-[83vh] overflow-y-auto no-scrollbar px-10 "> -->
+    @if(data.fields && data.buttons && doctorForm){
+  <app-dynamic-form 
+  [fields]="data.fields" 
+  [buttons]="data.buttons"
+   [form]="doctorForm"
+    (submitForm)="onSubmit($event)">
+  </app-dynamic-form>
+  } @else if(data.message) {
+  <div class="text-lg" [innerHTML]="data.message"></div>
+  }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  @if(!data.fields && data.buttons && data.buttons.length > 0) {
+  @for(button of data.buttons; track button) {
+  <button mat-button [color]="button.color || 'primary'"
+    (click)="dialogRef.close(button.type === 'submit' ? true : false)" class="ml-2">
+    @if(button.icon) {
+    <i class="{{ button.icon }} me-2"></i>
+    }
+    {{ button.label }}
+  </button>
+  }
+  } @else if(!data.fields) {
+  <button mat-button mat-dialog-close class="ml-auto">Close</button>
+  }
+</mat-dialog-actions>

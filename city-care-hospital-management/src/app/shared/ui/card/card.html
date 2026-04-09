@@ -1,0 +1,78 @@
+@if(cardData){
+<div class="card-base group relative overflow-hidden"
+  [class]="finalcardConfig.bgColor + ' ' + finalcardConfig.customClass + ' ' + finalcardConfig.hoverClass">
+
+  <!-- Primary Visual Area (Consolidated) -->
+  <div class="flex justify-center mb-6 relative">
+    
+    <!-- Case 1: Image provided (Higher priority) -->
+    @if (finalcardConfig.imageSrc) {
+      <div class="relative w-full h-24 flex items-center justify-center">
+        <!-- Main Image -->
+        <img [src]="finalcardConfig.imageSrc" [alt]="finalcardConfig.title"
+          class="w-full h-full object-contain transition-all duration-300 group-hover:scale-110" 
+          #cardImg [class]="finalcardConfig.imageClass"
+          (error)="cardImg.classList.add('hidden'); cardFallback.classList.remove('hidden')">
+
+        <!-- Fallback Initials -->
+        <div #cardFallback
+          class="hidden flex items-center justify-center w-16 h-16 rounded-full text-white font-black text-xl shadow-inner animate-fade-in"
+          [style.background-color]="finalcardConfig.fallbackBg">
+          {{ finalcardConfig.fallbackText }}
+        </div>
+      </div>
+    }
+    
+    <!-- Case 2: Icon with Circle (If no image) -->
+    @else if (finalcardConfig.showIconCircle) {
+      <div [class]="
+            'w-20 h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center shadow-xl transition-all duration-500 group-hover:scale-110 ' +
+            finalcardConfig.iconBgColor
+          ">
+        <i [class]="finalcardConfig.iconClass + ' ' + finalcardConfig.iconColor + ' ' + finalcardConfig.iconSize"></i>
+      </div>
+    }
+
+    <!-- Case 3: Icon Without Circle (If no image and no circle) -->
+    @else if (finalcardConfig.iconClass) {
+      <div class="mb-4">
+        <i [class]="finalcardConfig.iconClass + ' ' + finalcardConfig.iconColor + ' ' + finalcardConfig.iconSize"></i>
+      </div>
+    }
+  </div>
+
+  <!-- Title -->
+  @if (finalcardConfig.title) {
+  <h3 [class]="finalcardConfig.titleClass + ' relative z-10 transition-colors '">{{ finalcardConfig.title }}</h3>
+  <!-- <h3 [class]="finalcardConfig.titleClass + ' relative z-10 transition-colors group-hover:text-primary'">{{ finalcardConfig.title }}</h3> -->
+  }
+
+  <!-- Data Display (Value, Dept, etc.) -->
+  <div class="relative z-10 transition-all duration-300" [class.group-hover:opacity-0]="finalcardConfig.showDescriptionOnHover">
+    @if(finalcardConfig.value){ <p [class]="finalcardConfig.valueClass">{{ finalcardConfig.value }}</p> }
+    @if(finalcardConfig.department){ <p [class]="finalcardConfig.deparmentClass">{{ finalcardConfig.department }}</p> }
+    @if(finalcardConfig.experience){ <p [class]="finalcardConfig.experienceClass">{{ finalcardConfig.experience }}</p> }
+    @if(finalcardConfig.qualification){ <p [class]="finalcardConfig.qualificationClass">{{ finalcardConfig.qualification }}</p> }
+    @if(finalcardConfig.availability){ <p [class]="finalcardConfig.availabilityClass">{{ finalcardConfig.availability }}</p> }
+  </div>
+
+  <!-- Description Overlay -->
+  @if (finalcardConfig.description) {
+    @if (finalcardConfig.showDescriptionOnHover) {
+       <!-- Hover Overlay -->
+       <div class="absolute inset-0 bg-primary/95 p-6 flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm transform translate-y-4 group-hover:translate-y-0">
+          <p class="text-white text-sm font-bold leading-relaxed">{{ finalcardConfig.description }}</p>
+       </div>
+    } @else {
+       <!-- Standard Display -->
+       <p [class]="finalcardConfig.descriptionClass">{{ finalcardConfig.description }}</p>
+    }
+  }
+
+  <!-- Slot for buttons or custom content -->
+  <div class="relative z-10 transition-all duration-300" [class.group-hover:opacity-0]="finalcardConfig.showDescriptionOnHover">
+    <ng-content></ng-content>
+  </div>
+
+</div>
+}

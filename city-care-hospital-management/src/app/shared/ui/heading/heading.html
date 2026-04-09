@@ -1,0 +1,22 @@
+  <div [ngClass]="{
+        'text-left': align === 'left',
+        'text-center': align === 'center',
+        'text-right': align === 'right'
+      }">
+
+    <h2 [ngClass]="[
+        'heading-' + size,
+        sizeSm ? 'sm:heading-' + sizeSm : '',
+        sizeMd ? 'md:heading-' + sizeMd : '',
+        sizeLg ? 'lg:heading-' + sizeLg : '',
+        sizeXl ? 'xl:heading-' + sizeXl : '',
+      ]" [class]="class">
+      {{ title }}
+    </h2>
+
+    <!-- Whatever subtitle appears when the value is found -->
+    <p *ngIf="subtitle" class="text-gray-600 mt-1 mb-2 text-base" [class]="class">
+      {{ subtitle }}
+      <span *ngIf="highlight" [ngClass]="highlightClass"> {{ highlight }} </span>
+    </p>
+  </div>

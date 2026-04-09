@@ -1,0 +1,175 @@
+<div class="bg-gray-50 min-h-screen">
+    <!-- Hero Section / Our Story -->
+    <section id="story" class="relative min-h-screen flex items-center py-10 lg:py-16 bg-white scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <app-heading title="Our Story & Mission" subtitle="A legacy of care since 2005" size="xl"
+                        align="left"></app-heading>
+                    <div class="mt-6 text-gray-600 space-y-4 text-lg">
+                        <p>City Care Hospital began with a simple vision: to make world-class healthcare accessible to
+                            every member of our community. What started as a 20-bed clinic has evolved into a premier
+                            multi-specialty destination.</p>
+                        <p>Our mission is to provide exceptional medical care with compassion, transparency, and
+                            clinical excellence. we don't just treat symptoms; we care for people.</p>
+                    </div>
+                    <div class="mt-10 grid grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                            <h4 class="text-3xl font-black text-primary">500+</h4>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Hospital Beds</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
+                            <h4 class="text-3xl font-black text-primary">150+</h4>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Specialist Doctors</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="assets/hospital-building.avif" alt="Hospital Building" class="rounded-3xl shadow-2xl">
+                    <div class="absolute -bottom-6 -left-6 bg-white p-8 rounded-2xl shadow-xl hidden lg:block">
+                        <p class="text-primary font-bold text-lg italic">"Compassion in Every Step"</p>
+                        <p class="text-gray-400 text-sm mt-1">— Our Founding Philosophy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision & Values -->
+    <section id="vision" class="min-h-screen relative flex items-center py-10 lg:py-16 bg-gray-50 scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <app-heading title="Vision & Values" subtitle="The North Star of our clinical practice" size="lg"
+                align="center"></app-heading>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <app-card [cardData]="{
+                    title: 'Compassion',
+                    iconClass: 'fas fa-heart',
+                    iconColor: 'text-red-500',
+                    iconBgColor: 'bg-red-50',
+                    showIconCircle: true,
+                    description: 'We treat every patient like family, ensuring empathy is at the core of our medical decisions.',
+                    hoverClass: 'hover:-translate-y-2 transition-all duration-300 bg-white border border-gray-100 shadow-lg rounded-3xl p-8 h-full'
+                }"></app-card>
+
+                <app-card [cardData]="{
+                    title: 'Integrity',
+                    iconClass: 'fas fa-shield-alt',
+                    iconColor: 'text-blue-500',
+                    iconBgColor: 'bg-blue-50',
+                    showIconCircle: true,
+                    description: 'Transparency in billing and clinical outcomes is our non-negotiable standard.',
+                    hoverClass: 'hover:-translate-y-2 transition-all duration-300 bg-white border border-gray-100 shadow-lg rounded-3xl p-8 h-full'
+                }"></app-card>
+
+                <app-card [cardData]="{
+                    title: 'Innovation',
+                    iconClass: 'fas fa-microscope',
+                    iconColor: 'text-purple-500',
+                    iconBgColor: 'bg-purple-50',
+                    showIconCircle: true,
+                    description: 'Constantly adopting the latest medical technology to ensure safer, faster recoveries.',
+                    hoverClass: 'hover:-translate-y-2 transition-all duration-300 bg-white border border-gray-100 shadow-lg rounded-3xl p-8 h-full'
+                }"></app-card>
+            </div>
+        </div>
+    </section>
+
+    <!-- Management Team -->
+    <section id="management" class="min-h-screen relative flex items-center py-10 lg:py-16 bg-white scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <app-heading title="Management Team" subtitle="The leadership driving healthcare excellence" size="lg"
+                align="center" class="mt-6 "></app-heading>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-14">
+                <div class="text-center group">
+                    <div
+                        class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-primary/20 group-hover:border-primary transition-all shadow-xl">
+                        <img src="assets/doctors/dr-sarah-chen-ceo.jpg" alt="CEO"
+                            class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all">
+                    </div>
+                    <h4 class="mt-6 text-xl font-bold text-gray-900">Dr. Sarah Chen</h4>
+                    <p class="text-primary font-bold text-sm">Chief Executive Officer</p>
+                </div>
+
+                <div class="text-center group">
+                    <div
+                        class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-primary/20 group-hover:border-primary transition-all shadow-xl">
+                        <img src="assets/doctors/dr-robert-wilson-cmo.avif" alt="CMO"
+                            class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all">
+                    </div>
+                    <h4 class="mt-6 text-xl font-bold text-gray-900">Dr. Robert Wilson</h4>
+                    <p class="text-primary font-bold text-sm">Chief Medical Officer</p>
+                </div>
+
+                <div class="text-center group">
+                    <div
+                        class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-primary/20 group-hover:border-primary transition-all shadow-xl">
+                        <img src="assets/doctors/emma-rodriguez-coo.avif" alt="COO"
+                            class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all">
+                    </div>
+                    <h4 class="mt-6 text-xl font-bold text-gray-900">Emma Rodriguez</h4>
+                    <p class="text-primary font-bold text-sm">Operations Director</p>
+                </div>
+
+                <div class="text-center group">
+                    <div
+                        class="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-primary/20 group-hover:border-primary transition-all shadow-xl">
+                        <img src="assets/doctors/james-thorne-cfo.avif" alt="CFO"
+                            class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all">
+                    </div>
+                    <h4 class="mt-6 text-xl font-bold text-gray-900">James Thorne</h4>
+                    <p class="text-primary font-bold text-sm">Financial Director</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hospital Infrastructure -->
+    <section id="infrastructure" class="min-h-screen relative flex items-center py-10 lg:py-16 bg-gray-900 text-white scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl font-black mb-6">World-Class Infrastructure</h2>
+                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">Our facility is designed to provide the
+                        highest level of safety and efficiency. From smart ICUs to advanced diagnostic labs, every
+                        square inch of City Care Hospital serves a single purpose: Healing.</p>
+
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-secondary text-xl"></i>
+                            <span class="text-lg">15 Cutting-Edge Operation Theaters</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-secondary text-xl"></i>
+                            <span class="text-lg">Intelligent Patient Monitoring Systems</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-secondary text-xl"></i>
+                            <span class="text-lg">Advanced Robotics and AI Surgery Unit</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-secondary text-xl"></i>
+                            <span class="text-lg">24/7 NABL Accredited Diagnostic Center</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="lg:w-1/2 grid grid-cols-2 gap-4">
+                    <img src="assets/hospital-infrastructure-1.avif" alt="Hospital Infrastructure"
+                        class="rounded-2xl shadow-lg h-full object-cover aspect-square">
+                    <img src="assets/hospital-infrastructure-2.avif" alt="Hospital Infrastructure"
+                        class="rounded-2xl shadow-lg h-full object-cover aspect-square mt-8">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 lg:py-28 bg-gray-50 scroll-mt-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <app-heading title="What Patients Say" subtitle="Real stories from our valued patients" size="lg"
+                align="center"></app-heading>
+            <app-testimonials-block></app-testimonials-block>
+        </div>
+    </section>
+</div>

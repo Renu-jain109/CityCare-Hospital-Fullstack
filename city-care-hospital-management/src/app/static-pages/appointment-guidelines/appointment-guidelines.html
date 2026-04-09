@@ -1,0 +1,71 @@
+<div class="bg-gray-50 min-h-screen py-10 lg:py-16 font-sans">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <app-heading
+      title="Appointment Guidelines"
+      subtitle="Ensuring a smooth and productive clinical experience for every patient at City Care."
+      size="lg"
+      align="center">
+    </app-heading>
+
+    <!-- Guidelines Grid using Reusable Card Component -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 mb-16">
+      <app-card *ngFor="let g of guidelines"
+        [cardData]="{
+          title: g.title,
+          description: g.desc,
+          iconClass: g.icon,
+          iconColor: 'text-primary',
+          iconBgColor: 'bg-blue-50',
+          iconSize: 'text-xl',
+          showIconCircle: true,
+          titleClass: 'text-lg font-bold text-gray-800 mb-2 text-center',
+          descriptionClass: 'text-gray-500 text-sm leading-relaxed text-center',
+          customClass: 'p-6 rounded-2xl border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300',
+          hoverClass: 'hover:-translate-y-1'
+        }">
+      </app-card>
+    </div>
+
+    <!-- Policy Cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+      <div class="p-10 bg-white rounded-[3rem] shadow-xl border border-gray-100 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fas fa-check-double"></i>
+        </div>
+        <h4 class="text-xl font-black text-gray-900 border-l-4 border-green-500 pl-4 py-1 uppercase tracking-tight">Do's</h4>
+        <ul class="space-y-4 text-sm font-bold text-gray-700">
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-green-500 mt-1"></i> Carry your insurance card and valid photo ID.</li>
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-green-500 mt-1"></i> Keep your previous prescriptions and test results.</li>
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-green-500 mt-1"></i> Bring someone along for complex procedures.</li>
+        </ul>
+      </div>
+
+      <div class="p-10 bg-white rounded-[3rem] shadow-xl border border-gray-100 flex flex-col gap-6">
+        <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-xl">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <h4 class="text-xl font-black text-gray-900 border-l-4 border-red-500 pl-4 py-1 uppercase tracking-tight">Dont's</h4>
+        <ul class="space-y-4 text-sm font-bold text-gray-700">
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-red-500 mt-1"></i> Don't forget your scheduled appointment time.</li>
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-red-500 mt-1"></i> Avoid eating 8 hours before blood tests.</li>
+          <li class="flex items-start gap-3"><i class="fas fa-dot-circle text-red-500 mt-1"></i> Don't withhold existing medical information.</li>
+        </ul>
+      </div>
+
+      <div class="p-10 bg-blue-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col gap-6">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-xl">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <h4 class="text-xl font-black uppercase tracking-tight">Need Help?</h4>
+        <p class="text-blue-100/80 font-medium leading-relaxed">
+          Our front desk staff is available around the clock to assist you with scheduling and queries.
+        </p>
+        <button class="w-full py-3 bg-white text-blue-900 font-semibold rounded-xl shadow-md hover:shadow-lg transition-all text-sm">
+          Support Desk
+        </button>
+
+    </div>
+
+  </div>
+</div>

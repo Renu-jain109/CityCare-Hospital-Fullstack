@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* Buttons */
+.btn { @apply px-6 py-3 font-semibold flex items-center justify-center gap-4 transition; }
+.btn-primary { @apply bg-primary text-white hover:bg-blue-800; }
+.btn-secondary { @apply bg-secondary text-white hover:bg-blue-500; }
+.btn-danger { @apply bg-danger text-white hover:bg-red-700; }
+.btn-outline { @apply border border-primary text-primary hover:bg-primary hover:text-white; }
+.btn-light-blue {@apply bg-light-blue text-white hover:bg-blue-600;}
+
+/* Headings */
+.heading-xl { @apply text-6xl font-bold text-primary mb-4 lg:mb-6; }
+.heading-lg { @apply text-5xl font-bold text-primary mb-4; }
+.heading-md { @apply text-4xl font-semibold text-primary mb-4; }
+.heading-sm { @apply text-3xl font-semibold text-primary mb-4; }
+
+/* Cards */
+.card-base { @apply rounded-2xl shadow-lg p-6 border border-gray-100 transition-transform duration-300 hover:-translate-y-2; }
+
+/* Badges */
+.badge { @apply px-3 py-1 rounded-full text-xs font-medium; }
+.badge-success { @apply bg-success text-white; }
+.badge-danger { @apply bg-danger text-white; }
+.badge-info { @apply bg-light-blue text-white; }
+
+/* Section Wrapper */
+.section-wrapper { @apply max-w-7xl mx-auto px-4 py-16; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+/* Kill ALL Material scroll behavior */
+.mat-mdc-dialog-content {
+  overflow: hidden !important;
+  max-height: none !important;
+  padding: 0 !important;
+}
+
+.mat-mdc-dialog-surface {
+  overflow: hidden !important;
+}
+
+.mat-mdc-dialog-container {
+  overflow: hidden !important;
+}

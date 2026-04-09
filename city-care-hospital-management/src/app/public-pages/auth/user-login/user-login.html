@@ -1,0 +1,151 @@
+<section class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+    
+    <!-- Left Side - Image and Welcome -->
+    <div class="lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-600 p-12 flex flex-col justify-center text-white relative overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-white rounded-full"></div>
+        <div class="absolute bottom-10 right-10 w-48 h-48 bg-white rounded-full"></div>
+        <div class="absolute top-1/2 left-1/4 w-24 h-24 bg-white rounded-full"></div>
+      </div>
+      
+      <!-- Content -->
+      <div class="relative z-10">
+        <div class="flex items-center mb-8">
+          <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mr-4">
+            <i class="fas fa-hospital text-3xl"></i>
+          </div>
+          <div>
+            <h1 class="text-4xl font-bold mb-2">City Care Hospital</h1>
+            <p class="text-blue-100">Your Health, Our Priority</p>
+          </div>
+        </div>
+        
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-user-md text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-1">Expert Doctors</h3>
+              <p class="text-blue-100">Consult with experienced medical professionals</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-clock text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-1">24/7 Service</h3>
+              <p class="text-blue-100">Round-the-clock medical assistance</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+              <i class="fas fa-shield-alt text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-1">Secure & Private</h3>
+              <p class="text-blue-100">Your health data is protected</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Side - Login Form -->
+    <div class="lg:w-1/2 p-12">
+      <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <i class="fas fa-user text-white text-3xl"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+          <p class="text-gray-600">Sign in to access your medical dashboard</p>
+        </div>
+        
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+          <div class="flex items-center">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ errorMessage }}
+          </div>
+        </div>
+        
+        <!-- Login Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-envelope mr-2 text-blue-500"></i>Email Address
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="john@example.com"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300"
+              [class.border-red-500]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
+              [class.border-green-500]="loginForm.get('email')?.touched && loginForm.get('email')?.valid">
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']" 
+                 class="text-red-500 text-xs mt-2 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Email is required
+            </div>
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']" 
+                 class="text-red-500 text-xs mt-2 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Please enter a valid email
+            </div>
+          </div>
+          
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-lock mr-2 text-blue-500"></i>Password
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password" 
+              placeholder="••••••••"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300"
+              [class.border-red-500]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+              [class.border-green-500]="loginForm.get('password')?.touched && loginForm.get('password')?.valid">
+            <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" 
+                 class="text-red-500 text-xs mt-2 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Password is required
+            </div>
+          </div>
+          
+          <!-- Remember Me & Forgot Password -->
+          <div class="flex items-center justify-between">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-600">Remember me</span>
+            </label>
+            <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Forgot password?</a>
+          </div>
+          
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            [disabled]="loginForm.invalid">
+            Sign In
+          </button>
+        </form>
+        
+        <!-- Register Link -->
+        <div class="mt-8 text-center">
+          <p class="text-gray-600">
+            Don't have an account? 
+            <a routerLink="/register" class="text-blue-600 hover:text-blue-700 font-bold ml-1">Register Here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

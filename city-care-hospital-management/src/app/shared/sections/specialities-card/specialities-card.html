@@ -1,0 +1,16 @@
+<!-- Specialities Grid -->
+
+<app-card [cardData]="{
+    title: title ?? '',
+    titleClass: 'text-lg lg:text-xl font-bold text-gray-800 group-hover:text-white transition-all duration-500 mb-2',
+    iconBgColor: 'bg-white group-hover:bg-blue-500',
+    iconColor: 'text-primary group-hover:text-white',
+    iconSize: 'text-4xl',
+    iconClass: icon,
+    showIconCircle: true,
+    bgColor: 'bg-gray-100',
+    hoverClass: 'group hover:bg-primary',
+    description: short ?? '',
+    descriptionClass: 'text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:text-white/90 ',
+    customClass: 'text-center'
+ }"></app-card>

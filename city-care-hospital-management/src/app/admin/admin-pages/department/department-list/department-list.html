@@ -1,0 +1,30 @@
+<div class="flex justify-between items-center mb-4">
+  <!-- <h2 class="text-xl font-semibold">Doctors</h2> -->
+  
+  <app-heading
+    title="Department List"
+    size="sm"
+    ></app-heading>
+  
+  <app-button
+    label="Add Department"
+    color="primary"
+    icon="fa-solid fa-plus"
+    customClass="rounded-xl"
+    (click)="addDepartment()"
+  >
+</app-button>
+</div>
+
+<app-table
+  [columns]="departmentColumns"
+  [data]="departmentData"
+  [showActions]="true"
+  [actions]="departmentActions"
+  [showPagination]="true"
+  [pageSize]="8"
+  [currentPage]="currentPage"
+  (actionClick)="handleTableAction($event)"
+  (pageChange)="onPageChange($event)"
+  >
+</app-table>

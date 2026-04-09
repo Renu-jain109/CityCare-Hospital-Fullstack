@@ -1,0 +1,14 @@
+    <!-- Testimonials Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mt-6">
+    @for (testimonial of cardData; track testimonial.name) {
+        <app-testimonials-card [testimonialCardData]="testimonial" />
+    }
+</div>
+
+<!-- Trust Badge -->
+<div class="mt-8 text-center">
+    <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white rounded-full shadow-sm border border-gray-200">
+        <span class="text-yellow-400 text-sm">★★★★★</span>
+        <span class="text-gray-600 text-sm">Trusted by <span class="text-primary font-semibold">50,000+</span> patients</span>
+    </div>
+</div>

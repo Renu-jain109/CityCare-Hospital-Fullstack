@@ -1,0 +1,16 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for(card of stats ; track card.title){
+    <app-card
+            [routerLink]="card.RouterLink"
+
+    [cardData]="{
+        bgColor: card.bgColor,
+        title: card.title,
+        value: card.value,
+        customClass: 'text-3xl font-bold mt-2 opacity-90 hover:text-gray-100 transition-colors duration-300 cursor-pointer'
+    }"
+    ></app-card>
+
+    }
+</div>
+

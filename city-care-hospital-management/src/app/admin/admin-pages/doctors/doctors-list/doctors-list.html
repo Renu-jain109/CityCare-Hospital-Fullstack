@@ -1,0 +1,33 @@
+<div class="flex justify-between items-center mb-2">
+  <!-- <h2 class="text-xl font-semibold">Doctors</h2> -->
+
+  <app-heading
+  title="Doctors List"
+  size="sm"
+  ></app-heading>
+
+  
+  <app-button
+  label="Add Doctor"
+  color="primary"
+  icon="fa-solid fa-plus"
+  customClass="rounded-xl"
+  (click)="addDoctors()"
+  >
+</app-button>
+</div>
+
+<app-table
+  [columns]="doctorColumns"
+  [data]="doctorData"
+  [showActions]="true"
+  [actions]="doctorActions"
+  [showPagination]="true"
+  [pageSize]="8"
+  [currentPage]="currentPage"
+  (actionClick)="handleTableAction($event)"
+  (pageChange)="onPageChange($event)"
+  >
+</app-table>
+
+

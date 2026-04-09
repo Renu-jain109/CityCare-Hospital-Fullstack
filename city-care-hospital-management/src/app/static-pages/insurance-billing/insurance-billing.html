@@ -1,0 +1,101 @@
+<div class="bg-gray-50 min-h-screen py-12 lg:py-20 font-sans text-blue-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Heading Section -->
+    <app-heading title="Insurance & Billing Support"
+      subtitle="Hassle-free healthcare with 50+ insurance partners and transparent billing support." size="lg"
+      align="center">
+    </app-heading>
+
+    <!-- Partners Grid using Reusable Card -->
+    <section class="mt-16 mb-32">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-black text-gray-900 mb-4">Our Insurance Partners</h2>
+        <p class="text-gray-500 font-bold">Major providers we work with for cashless hospitalization</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+        <app-card *ngFor="let p of insurancePartners" [cardData]="{
+                    title: p.title,
+                    imageSrc: p.imageSrc,
+                    fallbackText: p.fallbackText,
+                    fallbackBg: p.fallbackBg,
+                    customClass: 'h-full flex flex-col items-center justify-center p-6 border border-gray-100 rounded-3xl hover:shadow-2xl transition-all duration-300 transform hover:translate-y-[-8px] text-center'
+                  }">
+        </app-card>
+      </div>
+    </section>
+
+    <!-- Info Sections using Reusable Card -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
+      <app-card [cardData]="{
+        title: 'Cashless Hospitalization',
+        description: 'City Care Hospital is empaneled with major TPA and Insurance companies to provide seamless cashless treatment for policyholders. Please check with your provider for specific coverage details.',
+        iconClass: 'fas fa-shield-alt',
+        iconBgColor: 'bg-green-50',
+        iconColor: 'text-green-600',
+        showIconCircle: true,
+        customClass: 'p-10 bg-white border border-gray-100 rounded-[3rem] shadow-xl relative overflow-hidden group'
+      }">
+        <div
+          class="absolute -right-8 -top-8 p-4 opacity-5 text-8xl text-green-600 rotate-12 group-hover:scale-125 transition-transform">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+      </app-card>
+
+      <app-card [cardData]="{
+        title: 'Billing & TPA Support',
+        description: 'Our dedicated TPA desk helps with pre-authorization and coordination for your insurance claims. We ensure all documentation is processed efficiently to minimize any out-of-pocket expenses.',
+        iconClass: 'fas fa-file-invoice-dollar',
+        iconBgColor: 'bg-blue-50',
+        iconColor: 'text-primary',
+        showIconCircle: true,
+        customClass: 'p-10 bg-white border border-gray-100 rounded-[3rem] shadow-xl relative overflow-hidden group'
+      }">
+        <div
+          class="absolute -right-8 -top-8 p-4 opacity-5 text-8xl text-primary rotate-12 group-hover:scale-125 transition-transform">
+          <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+      </app-card>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="bg-white p-10 lg:p-20 rounded-[4rem] shadow-2xl border border-gray-50 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-12 opacity-5 text-9xl text-primary">
+        <i class="fas fa-question-circle"></i>
+      </div>
+      <app-heading title="Frequently Asked Questions" subtitle="Billing & Documentation Support" size="lg"
+        align="left"></app-heading>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mt-16">
+        <div *ngFor="let faq of faqs" class="space-y-4">
+          <h4 class="text-xl font-black text-gray-900 flex items-start gap-4">
+            <span class="w-2 h-8 bg-primary rounded-full shrink-0"></span>
+            {{ faq.q }}
+          </h4>
+          <p class="text-gray-600 leading-relaxed pl-6 font-medium">{{ faq.a }}</p>
+        </div>
+      </div>
+
+      <!-- Contact CTA -->
+      <div
+        class="mt-20 p-10 bg-blue-50 rounded-[3rem] flex flex-col md:flex-row items-center justify-between gap-8 border border-blue-100 relative group">
+        <div class="flex items-center gap-6">
+          <div
+            class="w-20 h-20 bg-primary text-white rounded-3xl flex items-center justify-center text-4xl shadow-xl group-hover:rotate-12 transition-transform">
+            <i class="fas fa-headset"></i>
+          </div>
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-primary opacity-60 mb-1">Helpdesk Support</p>
+            <p class="text-3xl font-black text-gray-900 tracking-tighter">+91 1800-CITY-CARE</p>
+          </div>
+        </div>
+        <p class="text-gray-500 font-bold text-base max-w-sm text-center md:text-left leading-relaxed">
+          Our specialized billing counselors are ready to assist you on the **Ground Floor Helpdesk**.
+          <span class="block mt-2 text-primary uppercase text-xs tracking-widest">Daily: 9:00 AM — 6:00 PM</span>
+        </p>
+      </div>
+    </section>
+
+  </div>
+</div>

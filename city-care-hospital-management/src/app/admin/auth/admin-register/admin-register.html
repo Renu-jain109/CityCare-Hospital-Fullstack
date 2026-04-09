@@ -1,0 +1,221 @@
+<section class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+    
+    <!-- Left Side - Hero Image with Overlay -->
+    <div class="lg:w-1/2 relative overflow-hidden hidden lg:block">
+      <!-- Background Image -->
+      <img 
+        src="/assets/hospital-building.avif" 
+        alt="Modern Hospital Administration"
+        class="w-full h-full object-cover">
+      
+      <!-- Dark Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-indigo-900/80 to-blue-900/90"></div>
+      
+      <!-- Content Overlay -->
+      <div class="absolute inset-0 flex flex-col justify-center p-8 text-white">
+        <!-- Header -->
+        <div class="mb-6">
+          <div class="flex items-center mb-3">
+            <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-3 border border-white/30">
+              <i class="fas fa-user-shield text-2xl"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold mb-1">Admin Portal</h1>
+              <p class="text-blue-200 text-sm">City Care Hospital Management</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+              <i class="fas fa-cogs text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">System Control</h3>
+              <p class="text-blue-100 text-xs">Complete administrative control</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+              <i class="fas fa-chart-line text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">Analytics</h3>
+              <p class="text-blue-100 text-xs">Real-time insights and reports</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+              <i class="fas fa-shield-alt text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold">Security</h3>
+              <p class="text-blue-100 text-xs">Enterprise-grade protection</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Trust Indicators -->
+        <div class="flex items-center space-x-4 text-xs">
+          <div class="flex items-center">
+            <i class="fas fa-check-circle text-green-400 mr-1"></i>
+            <span>Secure</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-lock text-green-400 mr-1"></i>
+            <span>Encrypted</span>
+          </div>
+          <div class="flex items-center">
+            <i class="fas fa-user-shield text-green-400 mr-1"></i>
+            <span>Role-Based</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Side - Registration Form -->
+    <div class="lg:w-1/2 bg-gradient-to-br from-gray-50 to-white p-6 lg:p-8">
+      <div class="max-w-sm mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <i class="fas fa-user-plus text-white text-2xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Create Admin Account</h2>
+          <p class="text-gray-600 text-sm">Register for administrative access</p>
+        </div>
+        
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm">
+          <div class="flex items-center">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        
+        <!-- Registration Form -->
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <!-- Name Field -->
+          <div>
+            <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">
+              <i class="fas fa-user mr-2 text-blue-500"></i>Full Name
+            </label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              placeholder="Enter your full name"
+              class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300 text-sm"
+              [class.border-red-500]="registerForm.get('name')?.touched && registerForm.get('name')?.invalid"
+              [class.border-green-500]="registerForm.get('name')?.touched && registerForm.get('name')?.valid">
+            <div *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Name is required
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">
+              <i class="fas fa-envelope mr-2 text-blue-500"></i>Admin Email
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="admin@citycare.com"
+              class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300 text-sm"
+              [class.border-red-500]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+              [class.border-green-500]="registerForm.get('email')?.touched && registerForm.get('email')?.valid">
+            <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Email is required
+            </div>
+            <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Please enter a valid email
+            </div>
+          </div>
+          
+          <!-- Password Field -->
+          <div>
+            <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">
+              <i class="fas fa-lock mr-2 text-blue-500"></i>Admin Password
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              formControlName="password" 
+              placeholder="Create a strong password"
+              class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300 text-sm"
+              [class.border-red-500]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+              [class.border-green-500]="registerForm.get('password')?.touched && registerForm.get('password')?.valid">
+            <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Password is required
+            </div>
+            <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Min 6 characters required
+            </div>
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div>
+            <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-1">
+              <i class="fas fa-check-double mr-2 text-blue-500"></i>Confirm Password
+            </label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              formControlName="confirmPassword" 
+              placeholder="Confirm your admin password"
+              class="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:bg-blue-50 outline-none transition-all duration-300 text-sm"
+              [class.border-red-500]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch'))"
+              [class.border-green-500]="registerForm.get('confirmPassword')?.touched && !registerForm.get('confirmPassword')?.invalid && !registerForm.hasError('passwordMismatch')">
+            <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.errors?.['required']" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Confirmation is required
+            </div>
+            <div *ngIf="registerForm.get('confirmPassword')?.touched && !registerForm.get('confirmPassword')?.errors?.['required'] && registerForm.hasError('passwordMismatch')" 
+                 class="text-red-500 text-xs mt-1 font-medium">
+              <i class="fas fa-exclamation-triangle mr-1"></i>Passwords do not match
+            </div>
+          </div>
+          
+          <!-- Admin Privileges Notice -->
+          <div class="bg-blue-50 border border-blue-200 text-blue-700 px-3 py-2 rounded-lg text-xs">
+            <div class="flex items-start">
+              <i class="fas fa-info-circle mr-2 mt-0.5"></i>
+              <div>
+                <p class="font-semibold mb-1">Administrative Privileges</p>
+                <p class="text-blue-600">This account will have access to system management and hospital operations.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            [disabled]="registerForm.invalid">
+            <i class="fas fa-user-shield mr-2"></i>Create Admin Account
+          </button>
+        </form>
+        
+        <!-- Login Link -->
+        <div class="mt-6 text-center">
+          <p class="text-gray-600 text-sm">
+            Already have admin access? 
+            <a routerLink="/admin/login" class="text-blue-600 hover:text-blue-700 font-bold ml-1 hover:underline">Sign In</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

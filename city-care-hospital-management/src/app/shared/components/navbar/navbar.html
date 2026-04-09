@@ -1,0 +1,159 @@
+<nav class="fixed top-0 left-0 right-0 z-50 bg-primary shadow-xl transition-all duration-300">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+
+      <!-- Logo + Hospital Name -->
+      <div class="flex items-center flex-shrink-0">
+        <a routerLink="/" class="flex items-center space-x-3 group">
+          <div
+            class="w-10 h-10 lg:w-12 lg:h-12 bg-accent rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+            <i class="fas fa-heartbeat text-primary text-2xl"></i>
+          </div>
+          <span class="text-white font-bold text-lg lg:text-2xl tracking-tight hidden sm:block">
+            {{ site.siteName }} </span>
+        </a>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="hidden lg:flex items-center space-x-1 gap-1 ml-4 justify-center flex-1">
+
+        <ng-container *ngFor="let item of menuItems; trackBy: trackByLabel">
+
+          <!-- Simple Link (No Children) -->
+          <a *ngIf="!item.children" [routerLink]="item.route"
+            routerLinkActive="bg-secondary/30 backdrop-blur-sm font-bold" [routerLinkActiveOptions]="{exact: true}"
+            class="px-3 py-3 rounded-xl text-sm lg:text-base font-medium transition-all duration-200 text-white hover:bg-white/10">
+            {{ item.label }}
+          </a>
+
+          <!-- Dropdown Menu (Has Children) -->
+          <div *ngIf="item.children" class="relative group">
+            <a [routerLink]="item.route" routerLinkActive="bg-secondary/30 backdrop-blur-sm font-bold"
+              [routerLinkActiveOptions]="{ exact: false }"
+              class="px-3 py-3 rounded-xl text-sm lg:text-base font-medium transition-all duration-200 text-white flex items-center gap-1 group-hover:bg-white/10">
+              {{ item.label }}
+              <i class="fas fa-chevron-down text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
+            </a>
+
+            <!-- Submenu -->
+            <ul
+              class="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 bg-white w-72 pt-2 rounded-2xl shadow-2xl top-full mt-4 left-1/2 transform -translate-x-1/2 z-50 border border-gray-100 overflow-hidden">
+              <li *ngFor="let sub of item.children" [routerLink]="sub.route" [fragment]="sub.fragment"
+                class="px-5 py-3 hover:bg-blue-50 text-gray-700 hover:text-primary cursor-pointer transition-colors border-b last:border-b-0 border-gray-50 flex items-center justify-between group/sub">
+                <span class="text-sm font-semibold">{{ sub.label }}</span>
+                <i
+                  class="fas fa-chevron-right text-[10px] opacity-0 group-hover/sub:opacity-100 transition-all translate-x-[-10px] group-hover/sub:translate-x-0"></i>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+
+      </div>
+
+      <!-- Auth & Emergency -->
+      <div class="hidden lg:flex items-center space-x-4">
+        <!-- Auth Buttons -->
+        <ng-container *ngIf="authService.currentUser() as user; else notLogged">
+          <div class="relative group">
+            <button
+              class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-all text-white flex items-center gap-2">
+              <i class="fas fa-user-circle"></i> {{ user.name }}
+            </button>
+            <ul
+              class="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 bg-white w-48 pt-1 rounded-2xl shadow-2xl top-full mt-4 text-center right-0 text-lg z-50 border border-gray-100 overflow-hidden">
+              <!-- <li *ngIf="user.role === 'admin'"
+                class="px-4 py-2 hover:bg-blue-50 text-gray-700 cursor-pointer font-semibold border-b"
+                routerLink="/admin/dashboard">Dashboard</li> -->
+              <li class="px-4 py-2 hover:bg-blue-50 text-red-600 cursor-pointer font-semibold"
+                (click)="authService.logout()">Logout</li>
+            </ul>
+          </div>
+        </ng-container>
+        <ng-template #notLogged>
+          <a routerLink="/login"
+            class="px-4 py-2 bg-secondary text-primary font-bold rounded-xl hover:bg-accent transition-all shadow-lg">Login</a>
+        </ng-template>
+
+        <!-- Call Button -->
+        <a routerLink="/emergency">
+          <app-button color="danger" label="108 Emergency" icon="fas fa-phone-alt"
+            customClass="px-6 rounded-xl animate-pulse"></app-button>
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="flex items-center lg:hidden">
+        <button (click)="toggle.emit()"
+          class="relative z-50 text-white hover:text-secondary/30 focus:outline-none p-2 lg:hidden">
+          <i class="fas text-2xl" [class.fa-bars]="!isOpen" [class.fa-times]="isOpen"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu (dropdown) -->
+  <div [class.hidden]="!isOpen"
+    class="lg:hidden bg-white border-t border-gray-100 max-h-[80vh] overflow-y-auto shadow-2xl rounded-b-3xl">
+
+    <div class="px-4 py-6 space-y-1">
+      <div *ngFor="let item of menuItems; trackBy: trackByLabel"
+        class="border-b border-gray-50 last:border-0 pb-2 mb-2 group">
+
+        <!-- Parent Link & Toggle Indication -->
+        <div class="flex items-center justify-between py-2 pr-4 transition-colors">
+          <a [routerLink]="item.route" (click)="close.emit()"
+            class="text-gray-800 font-bold text-lg px-2 py-1 rounded-lg hover:bg-blue-50 transition-colors">
+            {{ item.label }}
+          </a>
+          <i *ngIf="item.children"
+            class="fas fa-chevron-down text-gray-300 text-xs transition-transform group-hover:rotate-180"></i>
+        </div>
+
+        <!-- Children Links (Visible on Hover) -->
+        <div *ngIf="item.children"
+          class="hidden group-hover:block ml-4 mt-1 space-y-1 bg-gray-50/50 rounded-2xl p-2 animate-fade-in">
+          <a *ngFor="let sub of item.children" [routerLink]="sub.route" [fragment]="sub.fragment" (click)="close.emit()"
+            class="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-primary hover:bg-white rounded-xl transition-all border-l-2 border-transparent hover:border-primary">
+            {{ sub.label }}
+          </a>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-gray-100"></div>
+
+      <!-- User Account (Mobile) -->
+      <ng-container *ngIf="authService.currentUser() as user; else mobileNotLogged">
+        <div class="bg-blue-50 rounded-2xl p-4 mb-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+              <i class="fas fa-user"></i>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-gray-900">{{ user.name }}</p>
+              <p class="text-xs text-gray-500 capitalize">{{ user.role }}</p>
+            </div>
+          </div>
+          <button (click)="authService.logout(); close.emit()"
+            class="text-red-500 text-sm font-bold p-2 hover:bg-red-50 rounded-xl transition-all">Logout</button>
+        </div>
+        <a *ngIf="user.role === 'admin'" routerLink="/admin/dashboard" (click)="close.emit()"
+          class="bg-gray-900 text-white block px-6 py-3 rounded-2xl text-center font-bold mb-4 shadow-lg">Admin
+          Dashboard</a>
+      </ng-container>
+
+      <ng-template #mobileNotLogged>
+        <a routerLink="/login" (click)="close.emit()"
+          class="bg-primary text-white block px-6 py-4 rounded-2xl text-center font-black text-lg shadow-xl mb-4">Login
+          / Register</a>
+      </ng-template>
+
+      <a routerLink="/emergency" (click)="close.emit()"
+        class="bg-red-600 hover:bg-red-700 text-white w-full block text-center px-6 py-4 rounded-2xl font-black text-lg shadow-xl animate-pulse">
+        Emergency: Call 108
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Spacer so content doesn't hide behind fixed navbar -->
+<div class="h-16 lg:h-20"></div>

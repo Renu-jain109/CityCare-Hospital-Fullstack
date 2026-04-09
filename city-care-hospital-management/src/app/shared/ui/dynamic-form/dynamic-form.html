@@ -1,0 +1,133 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+
+@if(fields.length){
+
+<div class="grid grid-cols-2 gap-4">
+
+@for(field of fields; track field.key){
+
+<div [ngClass]="field.colSpan === 2 ? 'col-span-2' : ''">
+
+  <!-- LABEL -->
+  <label class="block text-base font-medium mb-1">
+    {{ field.label }}
+  </label>
+
+  <!-- INPUT TYPES -->
+  @if(
+    field.type === 'text' ||
+    field.type === 'email' ||
+    field.type === 'password' ||
+    field.type === 'number' ||
+    field.type === 'date'
+  ){
+    <input
+      [type]="field.type"
+      [formControlName]="field.key"
+      [placeholder]="field.placeholder || ''"
+      [required]="field.required"
+      class="w-full border rounded px-3 py-2"
+    />
+  }
+
+  <!-- TEXTAREA -->
+  @if(field.type === 'textarea'){
+    <textarea
+      [rows]="field.rows || 3"
+      [formControlName]="field.key"
+      [placeholder]="field.placeholder || ''"
+      class="w-full border rounded px-3 py-2"
+    ></textarea>
+  }
+
+  <!-- SELECT -->
+  @if(field.type === 'select' && field.options?.length){
+    <select
+      [formControlName]="field.key"
+      class="w-full border rounded px-3 py-2"
+    >
+      <option value="">Select {{ field.label }}</option>
+
+      @for(opt of field.options; track opt.value){
+        <option [value]="opt.value" [disabled]="opt.disabled">
+          {{ opt.label }}
+        </option>
+      }
+    </select>
+  }
+
+  <!-- CHECKBOX -->
+  @if(field.type === 'checkbox'){
+    <label class="flex items-center gap-2">
+      <input type="checkbox" [formControlName]="field.key" />
+      <span>{{ field.label }}</span>
+    </label>
+  }
+
+  <!-- RADIO -->
+  @if(field.type === 'radio' && field.options?.length){
+    <div class="flex gap-4">
+      @for(opt of field.options; track opt.value){
+        <label class="flex items-center gap-2">
+          <input
+            type="radio"
+            [formControlName]="field.key"
+            [value]="opt.value"
+          />
+          <span>{{ opt.label }}</span>
+        </label>
+      }
+    </div>
+  }
+
+  <!-- ERROR MESSAGE -->
+  <div *ngIf="form.get(field.key)?.touched && form.get(field.key)?.invalid" class="mt-1 animate-fade-in">
+
+    <p *ngIf="form.get(field.key)?.errors?.['required']"
+       class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-1">
+      {{ field.label }} is required
+    </p>
+
+    <p *ngIf="form.get(field.key)?.errors?.['email']"
+       class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-1">
+      Invalid email address
+    </p>
+
+    <p *ngIf="form.get(field.key)?.errors?.['pattern']"
+       class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-1">
+      {{ field.key === 'patientName'
+          ? 'First letter must be capital'
+          : field.label + ' format is invalid' }}
+    </p>
+
+    <p *ngIf="form.get(field.key)?.errors?.['min']"
+       class="text-red-500 text-[10px] font-bold uppercase tracking-widest pl-1">
+      {{ field.label }} must be 0 or greater
+    </p>
+
+  </div>
+
+</div>
+
+}
+
+</div>
+}
+
+<!-- BUTTONS -->
+@if(buttons.length){
+  <div>
+    @for(btn of buttons; track btn.label){
+      <app-button
+        [label]="btn.label"
+        [color]="btn.color || 'primary'"
+        [type]="btn.type || 'button'"
+        [icon]="btn.icon || ''"
+        [className]="btn.customClass || ''"
+        (clicked)="btn.onClick?.()"
+      ></app-button>
+    }
+  </div>
+}
+
+</form>
