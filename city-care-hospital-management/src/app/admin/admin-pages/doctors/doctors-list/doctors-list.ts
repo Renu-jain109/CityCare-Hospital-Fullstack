@@ -85,32 +85,78 @@ export class DoctorsList implements OnInit {
     switch (event.action) {
       case 'view':
       const htmlContent = `
-            <div style="text-align: left; line-height: 1.6; display: flex; gap: 10px;">
+        <!-- Hospital Banner -->
+        <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+          <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h3>
+          <p style="margin: 2px 0 0 0; font-size: 12px; opacity: 0.9;">Doctor Profile</p>
+        </div>
 
-             <!-- Left Part: Basic Information -->
-              <div style="flex: 1; background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">👨‍⚕️ Basic Information</h3>
-                <p><strong>Doctor ID:</strong> ${event.row.doctorId || 'N/A'}</p>
-                <p><strong>Doctor Name:</strong> ${event.row.doctorName || 'N/A'}</p>
-                <p><strong>Department:</strong> ${event.row.departmentName || 'N/A'}</p>
-                <p><strong>Email:</strong> ${event.row.email || 'N/A'}</p>
-                <p><strong>Mobile:</strong> ${event.row.mobile || 'N/A'}</p>
-                <p><strong>Status:</strong> <span style="color: ${this.getStatusColor(event.row.status)}; font-weight: bold;">● ${event.row.status || 'N/A'}</span></p>
-              </div>
-              
-              <!-- Right Part: Professional Information -->
-              <div style="flex: 1; background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">🩺 Professional Information</h3>
-                <p><strong>Specialization:</strong> ${event.row.specialization || 'N/A'}</p>
-                <p><strong>Experience:</strong> ${event.row.experience || 'N/A'} years</p>
-                <p><strong>Qualification:</strong> ${event.row.qualification || 'N/A'}</p>
-                <p><strong>Consultation Fee:</strong> ₹${event.row.consultationFee || '0'}</p>
-                <p><strong>Availability:</strong> ${event.row.availability || 'N/A'}</p>
-              </div>
+        <!-- Basic Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>👤</span> Basic Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Doctor ID</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.doctorId || 'N/A'}</p>
             </div>
-          `;
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Name</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.doctorName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.departmentName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Status</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: ${this.getStatusColor(event.row.status)}; font-size: 13px;">● ${event.row.status || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Email</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.email || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Mobile</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.mobile || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>🩺</span> Professional Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Specialization</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.specialization || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Experience</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.experience || '0'} years</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Qualification</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.qualification || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Consultation Fee</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">₹${event.row.consultationFee || '0'}</p>
+            </div>
+          </div>
+          <div style="margin-top: 8px;">
+            <p style="margin: 0; font-size: 11px; color: #666;">Availability</p>
+            <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.availability || 'N/A'}</p>
+          </div>
+        </div>
+      `;
 
         this.dialog.open(ConfirmationDialog, {
+          width: '650px',
           data: {
             title: 'Doctor Details',
             message: this.sanitizer.bypassSecurityTrustHtml(htmlContent)
@@ -189,9 +235,7 @@ export class DoctorsList implements OnInit {
         
         // Now open the dialog with populated departments
         const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '90%',
-      maxWidth: '700px',
-      maxHeight: '80vh',
+          width: '650px',
           data: {
             title: 'Add Doctor',
             fields: this.doctorFields,
@@ -221,7 +265,7 @@ export class DoctorsList implements OnInit {
         console.error('Error loading departments for form:', error);
         // Still open dialog even if departments fail to load
         const dialogRef = this.dialog.open(ConfirmationDialog, {
-          width: '600px',
+          width: '650px',
           data: {
             title: 'Add Doctor',
             fields: this.doctorFields,
@@ -260,7 +304,7 @@ export class DoctorsList implements OnInit {
     }
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '700px',
+      width: '650px',
       data: {
         title: 'Edit Doctor',
         fields: this.doctorFields,

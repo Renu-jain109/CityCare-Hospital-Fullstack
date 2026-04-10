@@ -25,12 +25,15 @@ export class Department {
 
   ngOnInit() {
     this.departmentService.getAllDepartmentsFromBackend().subscribe((data) => {
+      console.log('departments data', data);
       this.departments = data;
     });
   }
 
-  navigateToDepartment(slug: string) {
-    this.router.navigate(['/department', slug]);
+  navigateToDepartment(slug: string | undefined) {
+    if(!slug) return;
+    this.router.navigate(['/department-details', slug]);
   }
 
 }
+

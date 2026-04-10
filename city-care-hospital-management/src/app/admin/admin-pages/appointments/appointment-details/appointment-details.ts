@@ -2,12 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppointmentInterface } from '../../../../core/interfaces/appointment-interface';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Heading } from "../../../../shared/ui/heading/heading";
 import { AppointmentService } from '../../../../core/services/appointment-service';
 
 @Component({
   selector: 'app-appointment-details',
-  imports: [DatePipe, CommonModule, Heading],
+  imports: [DatePipe, CommonModule],
   templateUrl: './appointment-details.html',
   styleUrl: './appointment-details.css',
 })

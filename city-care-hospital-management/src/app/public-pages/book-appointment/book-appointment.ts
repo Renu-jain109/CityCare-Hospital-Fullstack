@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Heading } from "../../shared/ui/heading/heading";
+import { Card } from "../../shared/ui/card/card";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -22,10 +23,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 @Component({
   selector: 'app-book-appointment',
   standalone: true,
-  imports: [CommonModule, Heading, Button, FormsModule, ReactiveFormsModule, DynamicForm, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule],
+  imports: [CommonModule, Heading, Card, Button, FormsModule, ReactiveFormsModule, DynamicForm, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule],
   templateUrl: './book-appointment.html',
   styleUrl: './book-appointment.css',
-
 })
 export class BookAppointment implements OnInit {
 

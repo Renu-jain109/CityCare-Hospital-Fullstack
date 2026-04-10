@@ -1,15 +1,16 @@
-<div class="bg-gray-50 min-h-screen py-10 lg:py-16 font-sans">
+<!-- <div class="min-h-screen relative flex items-center py-10 lg:py-16 bg-gray-50 scroll-mt-28"> -->
+<div class="bg-gray-50 min-h-screen py-10 lg:py-12 font-sans">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <app-heading
       title="Appointment Guidelines"
       subtitle="Ensuring a smooth and productive clinical experience for every patient at City Care."
-      size="lg"
+      size="main" sizeSm="main" sizeMd="main" sizeLg="main" sizeXl="main"
       align="center">
     </app-heading>
 
     <!-- Guidelines Grid using Reusable Card Component -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 mb-16">
       <app-card *ngFor="let g of guidelines"
         [cardData]="{
           title: g.title,

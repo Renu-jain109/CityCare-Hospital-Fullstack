@@ -12,13 +12,13 @@ export class Heading {
   @Input() subtitle: string = "";
 
   // base size (used as default)
-  @Input() size: 'xl' | 'lg' | 'md' | 'sm' = 'md';
+  @Input() size: 'xl' | 'lg' | 'md' | 'sm' | 'main' = 'md';
 
   // responsive overrides (optional)
-  @Input() sizeSm: 'xl' | 'lg' | 'md' | 'sm' | '' = '';
-  @Input() sizeMd: 'xl' | 'lg' | 'md' | 'sm' | '' = '';
-  @Input() sizeLg: 'xl' | 'lg' | 'md' | 'sm' | '' = '';
-  @Input() sizeXl: 'xl' | 'lg' | 'md' | 'sm' | '' = '';
+  @Input() sizeSm: 'xl' | 'lg' | 'md' | 'sm' | 'main' | '' = '';
+  @Input() sizeMd: 'xl' | 'lg' | 'md' | 'sm' | 'main' | '' = '';
+  @Input() sizeLg: 'xl' | 'lg' | 'md' | 'sm' | 'main' | '' = '';
+  @Input() sizeXl: 'xl' | 'lg' | 'md' | 'sm' | 'main' | '' = '';
 
   // alignment: left, center, right
   @Input() align: 'left' | 'center' | 'right' = 'left';

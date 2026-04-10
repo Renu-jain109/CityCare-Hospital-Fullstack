@@ -3,15 +3,8 @@
 
     <!-- Heading -->
     <div class="text-center mb-10 lg:mb-14">
-      <app-heading 
-      title=" Our Departments"
-      subtitle="World-class treatment across"
-      highlight="20+ medical departments"
-      highlightClass="font-bold text-primary"
-      size="md" 
-      sizeSm="lg"
-      sizeLg="xl"
-      sizeXl="xl"
+      <app-heading title=" Our Departments" subtitle="World-class treatment across" highlight="20+ medical departments"
+        highlightClass="font-bold text-primary" size="md" sizeSm="lg" sizeLg="xl" sizeXl="xl"
         align="center"></app-heading>
 
     </div>
@@ -19,23 +12,13 @@
 
       @for( dept of departments ; track dept.departmentId ){
 
-      <app-specialities-card 
-
-
-      (click)="navigateToDepartment(dept.slug ?? '')"></app-specialities-card>
+      <app-specialities-card [icon]="dept.icon" [title]="dept.departmentName" [short]="dept.short" [id]="dept.departmentId" (click)="navigateToDepartment(dept.slug)"></app-specialities-card>
       } @empty {
-        <div class="col-span-full py-12 text-center text-gray-500">
-          <i class="fas fa-hospital text-4xl mb-4 text-gray-300"></i>
-          <p class="text-xl">No Departments Currently Available.</p>
-        </div>
+      <div class="col-span-full py-12 text-center text-gray-500">
+        <i class="fas fa-hospital text-4xl mb-4 text-gray-300"></i>
+        <p class="text-xl">No Departments Currently Available.</p>
+      </div>
       }
-
-            <!-- [icon]="dept.icon" 
-      [title]="dept.name" 
-      [short]="dept.short"
-      [id]="dept.id"
- -->
     </div>
-
   </div>
 </section>

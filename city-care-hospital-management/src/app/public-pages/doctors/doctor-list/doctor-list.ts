@@ -20,6 +20,7 @@ export class DoctorList {
 
   ngOnInit() {
     this.doctorService.getAllDoctors().subscribe((doctors) => {
+      console.log('doctors', doctors);
       this.allDoctor = doctors;
     });
   }
@@ -29,3 +30,4 @@ export class DoctorList {
   }
 
 }
+

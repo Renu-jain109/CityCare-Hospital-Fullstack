@@ -128,44 +128,95 @@ export class AppointmentList implements OnInit {
         break;
       case 'view':
       const htmlContent = `
-            <div style="text-align: left; line-height: 1.6; display: flex; gap: 15px;">
+        <!-- Hospital Banner -->
+        <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+          <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h3>
+          <p style="margin: 2px 0 0 0; font-size: 12px; opacity: 0.9;">Appointment Details</p>
+        </div>
 
-              <!-- Left Part: Appointment Information -->
-              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">📋 Appointment Information</h3>
-                <p><strong>Appointment ID:</strong> ${event.row.appointmentCode || event.row.shortId || 'N/A'}</p>
-                <p><strong>Patient Name:</strong> ${event.row.patientName || 'N/A'}</p>
-                <p><strong>Mobile:</strong> ${event.row.mobile || 'N/A'}</p>
-                <p><strong>Email:</strong> ${event.row.email || 'N/A'}</p>
-                <p><strong>Status:</strong> <span style="color: ${this.getStatusColor(event.row.status)}; font-weight: bold;">● ${event.row.status || 'N/A'}</span></p>
-              </div>
-
-              <!-- Right Part: Schedule Information -->
-              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-              <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">📅 Schedule Information</h3>
-              <p><strong>Date:</strong> ${event.row.date ? new Date(event.row.date).toLocaleDateString() : 'N/A'}</p>
-              <p><strong>Time Slot:</strong> ${event.row.timeSlot || 'N/A'}</p>
-              <p><strong>Duration:</strong> ${event.row.duration || '30 minutes'}</p>
-              <p><strong>Appointment Type:</strong> ${event.row.appointmentType || 'Regular'}</p>
+        <!-- Appointment Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>📋</span> Appointment Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Appointment ID</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.appointmentCode || event.row.shortId || 'N/A'}</p>
             </div>
-
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Status</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: ${this.getStatusColor(event.row.status)}; font-size: 13px;">● ${event.row.status || 'N/A'}</p>
             </div>
-              <!-- Middle Part: Medical Details -->
-              <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #f59e0b   ; font-size: 18px;">🏥 Medical Details</h3>
-                <p><strong>Department:</strong> ${event.row.department || 'N/A'}</p>
-                <p><strong>Doctor:</strong> ${event.row.doctorName || 'N/A'}</p>
-                <p><strong>Specialization:</strong> ${event.row.specialization || 'N/A'}</p>
-                <p><strong>Consultation Fee:</strong> ₹${event.row.consultationFee || '0'}</p>
-              </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Patient Name</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.patientName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Mobile</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.mobile || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
 
-          `;
+        <!-- Schedule Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>📅</span> Schedule Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Date</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.appointmentDate ? new Date(event.row.appointmentDate).toLocaleDateString() : 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Time Slot</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.timeSlot || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Duration</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.duration || '30 minutes'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Type</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.appointmentType || 'Regular'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Details Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>🏥</span> Medical Details
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.department || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Doctor</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.doctorName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Specialization</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.specialization || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Consultation Fee</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #10b981; font-size: 13px;">₹${event.row.consultationFee || '0'}</p>
+            </div>
+          </div>
+        </div>
+      `;
       
         this.dialog.open(ConfirmationDialog, {
+          width: '650px',
           data: {
             title: 'Appointment Details',
             message: this.sanitizer.bypassSecurityTrustHtml(htmlContent)
-            }
+          }
         });
         break;
     }
@@ -286,29 +337,110 @@ export class AppointmentList implements OnInit {
     };
 
     this.dialog.open(ConfirmationDialog, {
-      width: '500px',
+      width: '650px',
       data: {
-        title: 'Generate Invoice',
+        title: 'Invoice Details',
         message: `
-        <div style="text-align: left; line-height: 1.6;">
-          <h3 style="margin: 0 0 15px 0; color: #1e40af;">🧾 Invoice Details</h3>
-          <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-            <p><strong>Invoice Number:</strong> INV-${appointment.appointmentCode}</p>
-            <p><strong>Patient:</strong> ${appointment.patientName}</p>
-            <p><strong>Doctor:</strong> ${appointment.doctorName}</p>
-            <p><strong>Department:</strong> ${appointment.department}</p>
-            <p><strong>Date:</strong> ${appointment.appointmentDate}</p>
-            <p><strong>Time:</strong> ${appointment.timeSlot}</p>
-            <p><strong>Amount:</strong> <span style="color: #059669; font-size: 18px; font-weight: bold;">₹${appointment.consultationFee || 500}</span></p>
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.5;">
+          <!-- Invoice Header -->
+          <div style="background: #005EB8; color: white; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 12px;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+            <h2 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h2>
+            <p style="margin: 2px 0 0 0; font-size: 11px; opacity: 0.9;">Invoice for Medical Consultation</p>
+          </div>
+          
+          <!-- Invoice Number and Date -->
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 2px solid #005EB8; padding-bottom: 10px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Invoice Number</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #005EB8; font-size: 14px;">INV-${appointment.appointmentCode}</p>
+            </div>
+            <div style="text-align: right;">
+              <p style="margin: 0; font-size: 11px; color: #666;">Date</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 14px;">${new Date().toLocaleDateString('en-IN')}</p>
+            </div>
+          </div>
+          
+          <!-- Patient Information -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>👤</span> Patient Information
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Name</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.patientName}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Email</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.email || 'N/A'}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Mobile</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.mobile || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Appointment Details -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>📅</span> Appointment Details
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Appointment ID</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentCode}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.department}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Doctor</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">Dr. ${appointment.doctorName}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Date & Time</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentDate} ${appointment.timeSlot}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Payment Details -->
+          <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>💰</span> Payment Details
+            </h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+              <div>
+                <p style="margin: 0; font-size: 13px; color: #333;">Medical Consultation Fee</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 18px; font-weight: bold; color: #10b981;">₹${appointment.consultationFee || 500}</p>
+              </div>
+            </div>
           </div>
         </div>
         `,
-        confirmText: 'Generate PDF',
-        cancelText: 'Cancel'
+        buttons: [
+          {
+            label: 'Download PDF',
+            color: 'primary',
+            type: 'submit',
+            icon: 'fa-solid fa-download'
+          },
+          {
+            label: 'Close',
+            color: 'secondary',
+            type: 'button'
+          }
+        ]
       }
     }).afterClosed().subscribe(result => {
       if (result) {
         // Here you would implement actual PDF generation
+        console.log('Download invoice PDF for:', invoiceData);
       }
     });
   }

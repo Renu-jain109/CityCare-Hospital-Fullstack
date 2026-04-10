@@ -1,7 +1,6 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Button } from "../../../shared/ui/button/button";
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
@@ -9,7 +8,7 @@ import { LayoutService } from '../../../core/services/layout.service';
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [Button, CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './admin-login.html',
   styles: ``
 })

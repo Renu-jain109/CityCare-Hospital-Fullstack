@@ -1,8 +1,7 @@
-<div class=" flex bg-gray-100 min-h-screen
- overflow-hidden">
+<div class="flex bg-gray-100 min-h-screen overflow-hidden">
 
-    <!-- Sidebar -->
-    <app-admin-sidebar class="fixed md:static z-40 transform md:translate-x-0 transition-transform duration-300" [class.-translate-x-full]="!sidebarOpen" (close)="closeSidebar()"></app-admin-sidebar>
+    <!-- Sidebar - Fixed position -->
+    <app-admin-sidebar class="fixed inset-y-0 left-0 z-40 transform md:translate-x-0 transition-transform duration-300" [class.-translate-x-full]="!sidebarOpen" (close)="closeSidebar()"></app-admin-sidebar>
 
 
  <!-- Overlay (Click here to close) -->
@@ -14,8 +13,8 @@
   ></div>
  }
 
-    <!-- Main Content -->
-    <div class="flex flex-1 flex-col overflow-hidden" >
+    <!-- Main Content - With margin for fixed sidebar -->
+    <div class="flex-1 flex flex-col overflow-hidden md:ml-72 lg:ml-80" >
 
         <!-- Header -->
 

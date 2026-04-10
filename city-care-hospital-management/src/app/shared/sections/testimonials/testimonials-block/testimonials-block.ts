@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { TestimonialsCard } from "../testimonials-card/testimonials-card";
 import { CommonModule } from '@angular/common';
-import { Heading } from "../../../ui/heading/heading";
 import { TestimonialsCardInterface } from '../../interfaces/testimonials-card-interface';
 @Component({
     selector: 'app-testimonials-block',
     standalone: true,
-    imports: [TestimonialsCard, CommonModule, Heading],
+    imports: [TestimonialsCard, CommonModule],
     templateUrl: './testimonials-block.html',
     styleUrl: './testimonials-block.css',
 })

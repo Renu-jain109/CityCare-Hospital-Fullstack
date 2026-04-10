@@ -35,9 +35,8 @@ export class HtmlDialogService {
       modalContent.style.cssText = `
         background: white;
         border-radius: 12px;
-        max-width: ${data.width || '600px'};
-        max-height: 80vh;
-        overflow-y: auto;
+        max-width: ${data.width || '650px'};
+        width: 90%;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       `;
 

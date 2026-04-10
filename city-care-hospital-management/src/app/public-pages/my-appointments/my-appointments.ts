@@ -170,74 +170,92 @@ export class MyAppointments implements OnInit, OnDestroy {
     const dialogData: HtmlDialogData = {
       title: 'Invoice Details',
       message: `
-        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.8; max-width: 600px; ">
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.5;">
           <!-- Invoice Header -->
-          <div style="background: #1e40af; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
-            <h2 style="margin: 0; font-size: 24px;">🏥 City Care Hospital</h2>
-            <p style="margin: 5px 0 0 0; opacity: 0.9;">Invoice for Medical Consultation</p>
+          <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+            <h2 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h2>
+            <p style="margin: 2px 0 0 0; font-size: 11px; opacity: 0.9;">Invoice for Medical Consultation</p>
           </div>
           
-          <!-- Invoice Body -->
-          <div style="background: #f8f9fa; padding: 20px; border: 1px solid #e5e7eb;">
-            <!-- Invoice Number and Date -->
-            <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #1e40af; padding-bottom: 10px;">
+          <!-- Invoice Number and Date -->
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 2px solid #005EB8; padding-bottom: 10px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Invoice Number</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #005EB8; font-size: 14px;">INV-${appointment.appointmentCode}</p>
+            </div>
+            <div style="text-align: right;">
+              <p style="margin: 0; font-size: 11px; color: #666;">Date</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 14px;">${new Date().toLocaleDateString('en-IN')}</p>
+            </div>
+          </div>
+          
+          <!-- Patient Information -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>👤</span> Patient Information
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <strong>Invoice Number:</strong><br>
-                <span style="color: #1e40af; font-weight: bold;">INV-${appointment.appointmentCode}</span>
+                <p style="margin: 0; font-size: 11px; color: #666;">Name</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.patientName}</p>
               </div>
-              <div style="text-align: right;">
-                <strong>Date:</strong><br>
-                <span>${new Date().toLocaleDateString('en-IN')}</span>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Email</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.email || 'N/A'}</p>
               </div>
-            </div>
-            
-            <!-- Patient Information -->
-            <div style="margin-bottom: 20px;">
-              <h3 style="color: #1e40af; margin: 0 0 10px 0;">👤 Patient Information</h3>
-              <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb;">
-                <p style="margin: 5px 0;"><strong>Name:</strong> ${appointment.patientName}</p>
-                <p style="margin: 5px 0;"><strong>Email:</strong> ${appointment.email || 'N/A'}</p>
-                <p style="margin: 5px 0;"><strong>Mobile:</strong> ${appointment.mobile || 'N/A'}</p>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Mobile</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.mobile || 'N/A'}</p>
               </div>
             </div>
-            
-            <!-- Appointment Details -->
-            <div style="margin-bottom: 20px;">
-              <h3 style="color: #1e40af; margin: 0 0 10px 0;">📅 Appointment Details</h3>
-              <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb;">
-                <p style="margin: 5px 0;"><strong>Appointment ID:</strong> ${appointment.appointmentCode}</p>
-                <p style="margin: 5px 0;"><strong>Department:</strong> ${appointment.department}</p>
-                <p style="margin: 5px 0;"><strong>Doctor:</strong> Dr. ${appointment.doctorName}</p>
-                <p style="margin: 5px 0;"><strong>Date:</strong> ${appointment.appointmentDate}</p>
-                <p style="margin: 5px 0;"><strong>Time:</strong> ${appointment.timeSlot}</p>
-                <p style="margin: 5px 0;"><strong>Status:</strong> <span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${appointment.status}</span></p>
+          </div>
+          
+          <!-- Appointment Details -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>📅</span> Appointment Details
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Appointment ID</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentCode}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.department}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Doctor</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">Dr. ${appointment.doctorName}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Date & Time</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentDate} ${appointment.timeSlot}</p>
               </div>
             </div>
-            
-            <!-- Payment Details -->
-            <div style="margin-bottom: 20px;">
-              <h3 style="color: #1e40af; margin: 0 0 10px 0;">💰 Payment Details</h3>
-              <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb;">
-                <table style="width: 100%; border-collapse: collapse;">
-                  <tr>
-                    <td style="padding: 8px 0; border-bottom: 1px solid #e5e7eb;">Medical Consultation Fee</td>
-                    <td style="padding: 8px 0; text-align: right; border-bottom: 1px solid #e5e7eb;">₹${(appointment as any).consultationFee || 500}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 8px 0;"><strong>Total Amount</strong></td>
-                    <td style="padding: 8px 0; text-align: right;"><strong style="color: #10b981; font-size: 18px;">₹${(appointment as any).consultationFee || 500}</strong></td>
-                  </tr>
-                </table>
+          </div>
+          
+          <!-- Payment Details -->
+          <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>💰</span> Payment Details
+            </h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+              <div>
+                <p style="margin: 0; font-size: 13px; color: #333;">Medical Consultation Fee</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 18px; font-weight: bold; color: #10b981;">₹${(appointment as any).consultationFee || 500}</p>
               </div>
             </div>
-            
           </div>
         </div>
       `,
       confirmText: 'Download PDF',
       cancelText: 'Close',
       showCancel: true,
-      width: '600px'
+      width: '650px'
     };
     
     this.htmlDialogService.showDialog(dialogData).then(result => {

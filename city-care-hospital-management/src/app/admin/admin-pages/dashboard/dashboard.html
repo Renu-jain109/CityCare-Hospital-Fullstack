@@ -1,16 +1,221 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    @for(card of stats ; track card.title){
-    <app-card
-            [routerLink]="card.RouterLink"
+<div class="p-4 lg:p-6 space-y-6">
+  
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl lg:text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+      <p class="text-gray-500 mt-1">Welcome back! Manage your hospital operations.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-sm text-gray-500">{{ currentDate | date:'EEEE, MMMM d, y' }}</span>
+      <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+        <i class="fas fa-user-shield text-white"></i>
+      </div>
+    </div>
+  </div>
 
-    [cardData]="{
-        bgColor: card.bgColor,
-        title: card.title,
-        value: card.value,
-        customClass: 'text-3xl font-bold mt-2 opacity-90 hover:text-gray-100 transition-colors duration-300 cursor-pointer'
-    }"
-    ></app-card>
+  <!-- Stats Cards Row - Clickable cards with proper navigation -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Doctors -->
+    <div (click)="navigateTo('/admin/dashboard/doctors-list')"
+         class="cursor-pointer">
+      <app-card 
+        [cardData]="{
+          bgColor: 'bg-white',
+          customClass: 'rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/20',
+          showIconCircle: true,
+          iconClass: 'fas fa-user-md',
+          iconColor: 'text-blue-600',
+          iconBgColor: 'bg-blue-100',
+          iconSize: 'text-2xl',
+          title: 'Total Doctors',
+          titleClass: 'text-gray-500 text-xs lg:text-sm font-medium mt-4',
+          value: stats[0].value,
+          valueClass: 'text-2xl lg:text-3xl font-bold text-gray-800 mt-1'
+        }">
+      </app-card>
+    </div>
 
-    }
+    <!-- Total Departments -->
+    <div (click)="navigateTo('/admin/dashboard/department-list')"
+         class="cursor-pointer">
+      <app-card 
+        [cardData]="{
+          bgColor: 'bg-white',
+          customClass: 'rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/20',
+          showIconCircle: true,
+          iconClass: 'fas fa-hospital',
+          iconColor: 'text-green-600',
+          iconBgColor: 'bg-green-100',
+          iconSize: 'text-2xl',
+          title: 'Departments',
+          titleClass: 'text-gray-500 text-xs lg:text-sm font-medium mt-4',
+          value: stats[1].value,
+          valueClass: 'text-2xl lg:text-3xl font-bold text-gray-800 mt-1'
+        }">
+      </app-card>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div (click)="navigateTo('/admin/dashboard/appointment-list')"
+         class="cursor-pointer">
+      <app-card 
+        [cardData]="{
+          bgColor: 'bg-white',
+          customClass: 'rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/20',
+          showIconCircle: true,
+          iconClass: 'fas fa-calendar-check',
+          iconColor: 'text-yellow-600',
+          iconBgColor: 'bg-yellow-100',
+          iconSize: 'text-2xl',
+          title: 'Today Appointments',
+          titleClass: 'text-gray-500 text-xs lg:text-sm font-medium mt-4',
+          value: stats[2].value,
+          valueClass: 'text-2xl lg:text-3xl font-bold text-gray-800 mt-1'
+        }">
+      </app-card>
+    </div>
+
+    <!-- Pending Appointments -->
+    <div (click)="navigateTo('/admin/dashboard/appointment-list')"
+         class="cursor-pointer">
+      <app-card 
+        [cardData]="{
+          bgColor: 'bg-white',
+          customClass: 'rounded-2xl p-4 lg:p-5 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/20',
+          showIconCircle: true,
+          iconClass: 'fas fa-clock',
+          iconColor: 'text-red-600',
+          iconBgColor: 'bg-red-100',
+          iconSize: 'text-2xl',
+          title: 'Pending',
+          titleClass: 'text-gray-500 text-xs lg:text-sm font-medium mt-4',
+          value: stats[3].value,
+          valueClass: 'text-2xl lg:text-3xl font-bold text-gray-800 mt-1'
+        }">
+      </app-card>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="bg-white rounded-2xl p-4 lg:p-5 shadow-sm border border-gray-100">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <button (click)="navigateTo('/admin/dashboard/doctors-list')"
+              class="w-full py-3 rounded-xl flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 transition-all duration-200">
+        <i class="fas fa-user-plus"></i>
+        <span>Add Doctor</span>
+      </button>
+      
+      <button (click)="navigateTo('/admin/dashboard/department-list')"
+              class="w-full py-3 rounded-xl flex items-center justify-center gap-2 bg-secondary text-white hover:bg-secondary/90 transition-all duration-200">
+        <i class="fas fa-plus"></i>
+        <span>Add Dept</span>
+      </button>
+      
+      <button (click)="navigateTo('/admin/dashboard/appointment-list')"
+              class="w-full py-3 rounded-xl flex items-center justify-center gap-2 bg-light-blue text-white hover:bg-light-blue/90 transition-all duration-200">
+        <i class="fas fa-calendar"></i>
+        <span>Appointments</span>
+      </button>
+      
+      <button (click)="navigateTo('/admin/dashboard/pharmacy-orders')"
+              class="w-full py-3 rounded-xl flex items-center justify-center gap-2 border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200">
+        <i class="fas fa-pills"></i>
+        <span>Pharmacy</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- Recent Appointments -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 lg:p-5 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Recent Appointments</h3>
+          <p class="text-sm text-gray-500">Latest patient appointments</p>
+        </div>
+        <button (click)="navigateTo('/admin/dashboard/appointment-list')"
+                class="px-4 py-2 rounded-lg text-sm border border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200 flex items-center gap-2">
+          <span>View All</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      <div class="p-4 lg:p-5">
+        @if(recentAppointments.length === 0){
+          <div class="text-center py-8 text-gray-400">
+            <i class="fas fa-calendar-times text-4xl mb-3"></i>
+            <p>No appointments yet</p>
+          </div>
+        } @else {
+          <div class="space-y-3">
+            @for(apt of recentAppointments; track apt.id){
+            <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-user text-primary"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-800 truncate">{{ apt.patientName }}</h4>
+                <p class="text-sm text-gray-500">{{ apt.doctorName }} • {{ apt.department }}</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span [class]="getStatusClass(apt.status) + ' px-3 py-1 rounded-full text-xs font-medium'">
+                  {{ apt.status | titlecase }}
+                </span>
+                <p class="text-xs text-gray-400 mt-1">{{ apt.time }}</p>
+              </div>
+            </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent Pharmacy Orders -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 lg:p-5 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">Recent Orders</h3>
+          <p class="text-sm text-gray-500">Latest pharmacy orders</p>
+        </div>
+        <button (click)="navigateTo('/admin/dashboard/pharmacy-orders')"
+                class="px-4 py-2 rounded-lg text-sm border border-primary text-primary hover:bg-primary hover:text-white transition-all duration-200 flex items-center gap-2">
+          <span>View All</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+      <div class="p-4 lg:p-5">
+        @if(recentOrders.length === 0){
+          <div class="text-center py-8 text-gray-400">
+            <i class="fas fa-shopping-cart text-4xl mb-3"></i>
+            <p>No orders yet</p>
+          </div>
+        } @else {
+          <div class="space-y-3">
+            @for(order of recentOrders; track order.id){
+            <div class="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-pills text-purple-600"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-800 truncate">{{ order.patientName || 'Unknown' }}</h4>
+                <p class="text-sm text-gray-500">{{ order.medicineName || 'Medicine' }} • {{ order.quantity }} items</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span [class]="getOrderStatusClass(order.status) + ' px-3 py-1 rounded-full text-xs font-medium'">
+                  {{ order.status | titlecase }}
+                </span>
+                <p class="text-xs text-gray-400 mt-1">₹{{ order.totalPrice || 0 }}</p>
+              </div>
+            </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
 </div>
 

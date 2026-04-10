@@ -1,24 +1,39 @@
-<section class="bg-blue-100 relative overflow-hidden max-w-6xl mx-auto py-6 px-4 mt-2 rounded-lg">
+<section class="bg-gradient-to-b from-blue-50 to-white min-h-screen py-4 px-4">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header Card -->
+    <app-card className="mb-4">
+      <div class="text-center py-4">
+        <app-heading 
+          title="Book an Appointment"
+          subtitle="Fill in your details and choose a suitable time slot. Our team will confirm your appointment shortly."
+          size="md" 
+          align="center">
+        </app-heading>
+      </div>
+    </app-card>
 
-  <div class=" text-center ">
-    <app-heading title="Book an Appointment"
-      subtitle="Fill in your details and choose a suitable time slot. Our team will confirm your appointment shortly."
-      size="md" sizeSm="lg" sizeLg="xl" sizeXl="xl" align="center"></app-heading>
+    <!-- Form Card -->
+    <app-card className="shadow-lg">
+      <div class="p-4">
+        <app-dynamic-form 
+          [fields]="appintmentFields" 
+          [form]="appointmentForm" 
+          [buttons]="buttons"
+          (submitForm)="onSubmit()">
+        </app-dynamic-form>
+      </div>
+    </app-card>
 
+    <!-- Home Button -->
+    <div class="flex justify-center mt-4">
+      <app-button 
+        color="outline" 
+        label="Go to Home" 
+        icon="fas fa-arrow-right" 
+        customClass="rounded-lg"
+        (click)="goHome()">
+      </app-button>
+    </div>
   </div>
-
-  <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
-
-    <app-dynamic-form [fields]="appintmentFields" [form]="appointmentForm" [buttons]="buttons"
-      (submitForm)="onSubmit()">
-    </app-dynamic-form>
-
-  </div>
-
-  <div class="flex justify-center mb-2 mt-4">
-  <app-button color="outline" label="Go to Home" icon="fas fa-arrow-right" customClass="rounded-xl inline-flex"
-    (click)="goHome()">
-  </app-button>
-</div>
 </section>
 

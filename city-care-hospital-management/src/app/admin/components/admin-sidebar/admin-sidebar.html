@@ -1,40 +1,82 @@
-  <aside class="h-screen w-64 md:w-72 lg:w-80 bg-gray-900 text-white flex flex-col shrink-0">
-    <div class="p-5 text-xl font-bold border-b border-gray-700">
-      Admin Panel
+<aside class="h-screen w-64 md:w-72 lg:w-80 bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col shrink-0">
+  <!-- Logo Section -->
+  <div class="p-5 border-b border-gray-700/50">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+        <i class="fas fa-hospital text-white text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold">City Care</h1>
+        <p class="text-xs text-gray-400">Admin Panel</p>
+      </div>
     </div>
+  </div>
 
-    <nav class="flex-1 p-4 space-y-2">
-      <a routerLink="/admin/dashboard"
-         class="block px-4 py-2 rounded hover:bg-gray-700" (click)="onLinkClick()">
-        Dashboard
-      </a>
+  <!-- Navigation -->
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+    <p class="text-xs text-gray-500 uppercase font-semibold mb-2 px-3">Main Menu</p>
+    
+    <a routerLink="/admin/dashboard" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-tachometer-alt w-5"></i>
+      <span>Dashboard</span>
+    </a>
 
-      <a routerLink="/admin/dashboard/doctors-list"
-         class="block px-4 py-2 rounded hover:bg-gray-700" (click)="onLinkClick()">
-        Doctors
-      </a>
+    <a routerLink="/admin/dashboard/doctors-list" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-user-md w-5"></i>
+      <span>Doctors</span>
+    </a>
 
-      <a routerLink="/admin/dashboard/department-list"
-         class="block px-4 py-2 rounded hover:bg-gray-700" (click)="onLinkClick()">
-        Departments
-      </a>
+    <a routerLink="/admin/dashboard/department-list" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-hospital w-5"></i>
+      <span>Departments</span>
+    </a>
 
-      <a routerLink="/admin/dashboard/appointment-list"
-         class="block px-4 py-2 rounded hover:bg-gray-700" (click)="onLinkClick()">
-        Appointments
-      </a>
-      
-      <a routerLink="/admin/dashboard/pharmacy-orders"
-         class="block px-4 py-2 rounded hover:bg-gray-700" (click)="onLinkClick()">
-        Pharmacy Orders
-      </a>
-    </nav>
+    <a routerLink="/admin/dashboard/appointment-list" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-calendar-check w-5"></i>
+      <span>Appointments</span>
+    </a>
+    
+    <a routerLink="/admin/dashboard/pharmacy-orders" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-pills w-5"></i>
+      <span>Pharmacy Orders</span>
+    </a>
 
-    <div class="p-4 border-t border-gray-700">
-      <button
-        class="w-full bg-red-500 hover:bg-red-600 py-2 rounded"
-        (click)="logout()">
-        Logout
-      </button>
+    <p class="text-xs text-gray-500 uppercase font-semibold mt-6 mb-2 px-3">Support</p>
+    
+    <a routerLink="/admin/dashboard/support-desk" routerLinkActive="bg-primary/20 text-white border-r-2 border-primary"
+       class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all duration-200" 
+       (click)="onLinkClick()">
+      <i class="fas fa-headset w-5"></i>
+      <span>Support Desk</span>
+    </a>
+  </nav>
+
+  <!-- User Section -->
+  <div class="p-4 border-t border-gray-700/50">
+    <div class="flex items-center gap-3 mb-3 px-2">
+      <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+        <i class="fas fa-user-shield text-white text-sm"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">Admin User</p>
+        <p class="text-xs text-gray-400">Administrator</p>
+      </div>
     </div>
-  </aside>
+    <button
+      class="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 py-2.5 rounded-lg transition-all duration-200"
+      (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>

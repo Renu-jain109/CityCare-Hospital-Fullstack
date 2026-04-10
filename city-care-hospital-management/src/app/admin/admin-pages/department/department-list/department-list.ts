@@ -77,42 +77,65 @@ export class DepartmentList implements OnInit {
     switch (event.action) {
       case 'view':
       const htmlContent = `
-            <div style="text-align: left; line-height: 1.6; display: flex;  gap: 15px;">
-            
-              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">📋 Basic Information</h3>
-                <p><strong>Department ID:</strong> ${event.row.departmentId || 'N/A'}</p>
-                <p><strong>Department Name:</strong> ${event.row.departmentName || 'N/A'}</p>
-                <p><strong>Head of Department:</strong> ${event.row.headOfDepartment || 'N/A'}</p>
-                <p><strong>Number of Doctors:</strong> ${event.row.numberOfDoctors}</p>
-                <p><strong>Status:</strong> <span style="color: ${this.getStatusColor(event.row.status)}; font-weight: bold;">● ${event.row.status || 'N/A'}</span></p>
-              </div>
-              
-              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">🌐 Details</h3>
-                <p><strong>Subtitle:</strong> ${event.row.subtitle || 'N/A'}</p>
-                <p><strong>Description:</strong></p>
-                <div style="background: #fff; padding: 10px; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-                  ${event.row.description || 'N/A'}
-                </div>
+        <!-- Hospital Banner -->
+        <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+          <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h3>
+          <p style="margin: 2px 0 0 0; font-size: 12px; opacity: 0.9;">Department Profile</p>
+        </div>
 
-      <p><strong>Treatments:</strong></p>
-                <div style="background: #fff; padding: 10px; border-radius: 4px; margin-top: 5px;">
-                  ${event.row.treatments && event.row.treatments.length > 0 ?
-                event.row.treatments.map((treatment: string, index: number) =>
-                  `<span style="display: inline-block; background: #3b82f6; color: white; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;">${index + 1}</span> ${treatment}`
-                ).join('') :
-                '<span style="color: #666;">No treatments added</span>'
-              }
-                </div>                
-                <p><strong>Linked Doctor IDs:</strong> ${event.row.doctorIds && event.row.doctorIds.length > 0 ? event.row.doctorIds.join(', ') : 'No doctors linked'}</p>
+        <!-- Basic Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>📋</span> Basic Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Department ID</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.departmentId || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Department Name</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.departmentName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Head of Department</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.headOfDepartment || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Status</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: ${this.getStatusColor(event.row.status)}; font-size: 13px;">● ${event.row.status || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Number of Doctors</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.numberOfDoctors || '0'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Linked Doctors</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.doctorIds && event.row.doctorIds.length > 0 ? event.row.doctorIds.length + ' doctors' : 'None'}</p>
+            </div>
+          </div>
+        </div>
 
-              </div>
-              </div>
-            `;
+        <!-- Additional Details Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>🌐</span> Additional Details
+          </h4>
+          <div>
+            <div style="margin-bottom: 8px;">
+              <p style="margin: 0; font-size: 11px; color: #666;">Subtitle</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${event.row.subtitle || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Description</p>
+              <p style="margin: 2px 0 0 0; font-weight: 500; color: #555; font-size: 13px; line-height: 1.4;">${event.row.description || 'No description available'}</p>
+            </div>
+          </div>
+        </div>
+      `;
 
         this.dialog.open(ConfirmationDialog, {
-          width: '700px',
           data: {
             title: 'Department Details',
             message: this.sanitizer.bypassSecurityTrustHtml(htmlContent)
@@ -230,8 +253,7 @@ export class DepartmentList implements OnInit {
     this.departmentFields = structuredClone(DEPARTMENT_FORM_FIELDS);
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '90%',
-      maxWidth: '700px',
+      width: '650px',
       data: {
         title: 'Add Department',
         fields: this.departmentFields,
@@ -306,7 +328,7 @@ export class DepartmentList implements OnInit {
 
 
     const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: '600px',
+      width: '650px',
       data: {
         title: 'Edit Department',
         fields: this.departmentFields,
@@ -316,7 +338,6 @@ export class DepartmentList implements OnInit {
           type: 'submit',
           icon: 'fa-solid fa-save',
           customClass: 'flex justify-end'
-
         }]
       }
     });

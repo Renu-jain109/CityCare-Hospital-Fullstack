@@ -1,70 +1,116 @@
 @if(appointment){
-<div class="p-6 space-y-6">
+<div class="p-4 lg:p-5">
 
-  <!-- Page Title -->
-    <app-heading title="Appointment Details" size="sm"></app-heading>
+  <!-- Hospital Banner -->
+  <div class="bg-primary p-5 rounded-xl text-center text-white mb-5">
+    <div class="text-3xl mb-2">🏥</div>
+    <h2 class="text-xl font-bold m-0">City Care Hospital</h2>
+    <p class="text-sm opacity-90 mt-1">Appointment Details</p>
+  </div>
 
   <!-- Action Buttons -->
-  <div class="flex gap-4">
-    <button class="px-4 py-2 bg-blue-600 text-white rounded-md">Confirm</button>
-    <button class="px-4 py-2 bg-red-600 text-white rounded-md">Cancel</button>
-    <button class="px-4 py-2 bg-gray-600 text-white rounded-md">Mark Completed</button>
+  <div class="flex flex-wrap gap-2 mb-5">
+    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+      <i class="fas fa-check mr-2"></i>Confirm
+    </button>
+    <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium">
+      <i class="fas fa-times mr-2"></i>Cancel
+    </button>
+    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+      <i class="fas fa-check-double mr-2"></i>Complete
+    </button>
   </div>
 
-  <!-- Patient Information -->
-  <div class="bg-white shadow rounded-lg p-6">
-    <h3 class="text-lg font-semibold mb-4 bg-gray-300 p-2">Patient Information</h3>
-
-    <div class="grid grid-cols-2 gap-4">
-      <p><strong>Name:</strong> {{ appointment.patientName }}</p>
-      <p><strong>Mobile:</strong> {{ appointment.mobile }}</p>
-      <p><strong>Age:</strong> {{ appointment.age }}</p>
-      <p><strong>Gender:</strong> {{ appointment.gender }}</p>
+  <!-- Patient Information Card -->
+  <div class="bg-white rounded-xl p-5 mb-4 shadow-sm border border-gray-100">
+    <h4 class="text-primary text-base font-semibold mb-4 flex items-center gap-2">
+      <i class="fas fa-user-injured"></i> Patient Information
+    </h4>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Name</p>
+        <p class="font-semibold text-gray-800">{{ appointment.patientName }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Mobile</p>
+        <p class="font-semibold text-gray-800">{{ appointment.mobile }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Age</p>
+        <p class="font-semibold text-gray-800">{{ appointment.age }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Gender</p>
+        <p class="font-semibold text-gray-800">{{ appointment.gender }}</p>
+      </div>
     </div>
   </div>
 
-  <!-- Appointment Information -->
-  <div class="bg-white shadow rounded-lg p-6">
-    <h3 class="text-lg font-semibold mb-4 bg-gray-300 p-2">Appointment Information</h3>
-
-    <div class="grid grid-cols-2 gap-4">
-      <p><strong>Appointment ID:</strong> {{ appointment.appointmentCode }}</p>
-      <p><strong>Department:</strong> {{ appointment.department }}</p>
-      <p><strong>Doctor:</strong> {{ appointment.doctorName }}</p>
-      <p><strong>Date:</strong> {{ appointment.appointmentDate | date:'mediumDate' }}</p>
-      <p><strong>Time:</strong> {{ appointment.timeSlot }}</p>
-      <p>
-        <strong>Status:</strong>
-        <span class="px-3 py-1 rounded-full text-sm font-medium"
-              [ngClass]="getStatusClass(appointment.status)">
+  <!-- Appointment Information Card -->
+  <div class="bg-white rounded-xl p-5 mb-4 shadow-sm border border-gray-100">
+    <h4 class="text-primary text-base font-semibold mb-4 flex items-center gap-2">
+      <i class="fas fa-calendar-check"></i> Appointment Information
+    </h4>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Appointment ID</p>
+        <p class="font-semibold text-gray-800">{{ appointment.appointmentCode }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Department</p>
+        <p class="font-semibold text-gray-800">{{ appointment.department }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Doctor</p>
+        <p class="font-semibold text-gray-800">{{ appointment.doctorName }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Date</p>
+        <p class="font-semibold text-gray-800">{{ appointment.appointmentDate | date:'mediumDate' }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Time</p>
+        <p class="font-semibold text-gray-800">{{ appointment.timeSlot }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-gray-500 mb-1">Status</p>
+        <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="getStatusClass(appointment.status)">
           {{ appointment.status }}
         </span>
-      </p>
-      <p><strong>Created At:</strong> {{ appointment.createdAt | date:'medium' }}</p>
+      </div>
     </div>
   </div>
 
-  <!-- Notes Section -->
-  <div class="bg-white shadow rounded-lg p-6 ">
-    <h3 class="text-lg font-semibold mb-4 bg-gray-300 p-2">Notes</h3>
-    <p>{{ appointment.notes }}</p>
+  <!-- Notes Card -->
+  <div class="bg-white rounded-xl p-5 mb-4 shadow-sm border border-gray-100">
+    <h4 class="text-primary text-base font-semibold mb-3 flex items-center gap-2">
+      <i class="fas fa-sticky-note"></i> Notes
+    </h4>
+    <div class="bg-yellow-50 p-3 rounded-lg">
+      <p class="text-sm text-gray-700">{{ appointment.notes || 'No notes available' }}</p>
+    </div>
   </div>
 
-  <!-- Status History -->
-  <div class="bg-white shadow rounded-lg p-6">
-    <h3 class="text-lg font-semibold mb-4 bg-gray-300 p-2">Status Change History</h3>
-
-    <div class="space-y-3">
-      @for(history of appointment.statusHistory; track history.updatedAt) {
-        <div class="border-l-4 pl-4"
-             [ngClass]="getStatusClass(history.status)">
-          <p class="font-medium">{{ history.status }}</p>
-          <p class="text-sm text-gray-500">
-            {{ history.updatedAt | date:'medium' }} - {{ history.updatedBy }}
-          </p>
-        </div>
-      }
-    </div>
+  <!-- Status History Card -->
+  <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+    <h4 class="text-primary text-base font-semibold mb-4 flex items-center gap-2">
+      <i class="fas fa-history"></i> Status History
+    </h4>
+    @if(appointment.statusHistory && appointment.statusHistory.length > 0) {
+      <div class="flex flex-wrap gap-3">
+        @for(history of appointment.statusHistory; track history.updatedAt) {
+          <div class="bg-gray-50 px-4 py-2 rounded-lg text-sm">
+            <span class="font-medium" [ngClass]="getStatusClass(history.status)">{{ history.status }}</span>
+            <span class="text-gray-400 mx-2">|</span>
+            <span class="text-gray-500">{{ history.updatedAt | date:'short' }}</span>
+            <span class="text-gray-400 mx-2">|</span>
+            <span class="text-gray-600">{{ history.updatedBy }}</span>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="text-gray-400 text-sm">No status history available</p>
+    }
   </div>
 
 </div>
