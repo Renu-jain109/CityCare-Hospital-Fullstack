@@ -31,8 +31,7 @@ export const MENU_ITEMS: MenuItem[] = [
     route: '/doctor-list',
     children: [
       { label: 'All Doctors List', route: '/doctor-list' },
-      { label: 'By Department', route: '/department' },
-      { label: 'Book Appointment with Doctor', route: '/book-appointment' }
+      { label: 'By Department', route: '/department' }
     ]
   },
   {

@@ -1,44 +1,133 @@
-<section class="relative overflow-hidden max-w-4xl mx-auto py-12 px-4">
+<section class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-12">
 
-  <div class=" text-center">
-    <app-heading title="Our Doctors" subtitle="Meet our experienced and dedicated medical specialists." size="md"
-      sizeSm="lg" sizeLg="xl" sizeXl="xl" align="center"></app-heading>
+  <!-- Header -->
+  <!-- <div class="text-center mb-8">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Our Doctors</h2>
+    <p class="text-gray-600 text-lg">Meet our experienced medical specialists</p>
+    <div class="w-24 h-1.5 bg-primary mx-auto mt-4 rounded-full"></div>
+  </div> -->
 
+      <div class="text-center mb-10 lg:mb-8">
+      <app-heading title="Our Doctors"
+        subtitle="Meet our experienced medical specialists"
+        highlightClass="font-bold text-primary"
+        size="md" sizeSm="lg" sizeLg="xl" sizeXl="xl"
+        align="center">
+      </app-heading>
+    </div>
+
+
+  <!-- Filter Bar -->
+  <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-8">
+    <div class="flex flex-wrap items-center gap-4">
+      <div class="flex items-center gap-2 text-gray-700 font-medium">
+        <i class="fas fa-filter text-primary text-lg"></i>
+        <span class="text-base">Filters:</span>
+      </div>
+
+      <!-- Department Filter -->
+      <select [(ngModel)]="selectedDepartment" (change)="applyFilters()"
+        class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary min-w-[160px]">
+        <option value="">All Departments</option>
+        @for(dept of departments; track dept.departmentId){
+        <option [value]="dept.departmentName">{{dept.departmentName}}</option>
+        }
+      </select>
+
+      <!-- Experience Filter -->
+      <select [(ngModel)]="selectedExperience" (change)="applyFilters()"
+        class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary min-w-[150px]">
+        @for(option of experienceOptions; track option.value){
+        <option [value]="option.value">{{option.label}}</option>
+        }
+      </select>
+
+      <!-- Availability Filter -->
+      <select [(ngModel)]="selectedAvailability" (change)="applyFilters()"
+        class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary min-w-[160px]">
+        @for(option of availabilityOptions; track option.value){
+        <option [value]="option.value">{{option.label}}</option>
+        }
+      </select>
+
+      <!-- Clear Filters -->
+      <button (click)="selectedDepartment=''; selectedExperience=''; selectedAvailability=''; applyFilters()"
+        class="ml-auto px-4 py-3 text-base text-gray-500 hover:text-primary transition-colors flex items-center gap-2">
+        <i class="fas fa-times"></i>
+        Clear
+      </button>
+    </div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+  <!-- Results Count -->
+  <div class="mb-6 text-lg text-gray-600">
+    Showing <span class="font-semibold text-primary">{{filteredDoctors.length}}</span> of {{allDoctor.length}} doctors
+  </div>
 
-    @for(doctor of allDoctor; track doctor.doctorId){
+  <!-- Doctors Grid - All Doctors -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+    @for(doctor of filteredDoctors; track doctor.doctorId){
+    <div
+      class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary/20 hover:-translate-y-2">
+      <!-- Top Accent Bar -->
+      <div class="h-2 bg-gradient-to-r from-primary to-blue-400"></div>
 
-    <div (click)="navigateToDoctorDetails(doctor.slug || '')">
-      <app-card [cardData]="{
-                title:doctor.doctorName,
-                titleClass: 'text-lg lg:text-xl font-bold text-gray-800 group-hover:text-white transition-all duration-500 mb-2',
-                showIconCircle: true,
-                bgColor: 'bg-gray-100',
-                iconBgColor: 'bg-white group-hover:bg-blue-500',
-                iconClass: doctor.icon,
-                iconColor: 'text-primary group-hover:text-white',
-                hoverClass: 'group hover:bg-primary',
-                department: doctor.departmentName,
-                deparmentClass: 'text-sm text-gray-600 group-hover:text-white',
-                experience: doctor.experience + ' years',
-                experienceClass: 'text-sm text-gray-600 group-hover:text-white',
-                qualification: doctor.qualification,
-                qualificationClass: 'text-sm text-gray-600 group-hover:text-white',
-                availability: doctor.availability,
-                availabilityClass: 'text-sm text-gray-600 group-hover:text-white'
-                
-            }"></app-card>
+      <!-- Card Content -->
+      <div class="p-3">
+        <!-- Icon Circle -->
+        <div class="flex justify-center mb-3 lg:mb-4">
+          <div
+            class="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
+            <i [class]="doctor.icon || 'fas fa-user-md'" class="text-2xl text-primary"></i>
+          </div>
+        </div>
+
+        <!-- Doctor Info -->
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-gray-900 mb-1 lg:text-xl lg:mb-2">{{doctor.doctorName}}</h3>
+          <span class="inline-block px-3 py-0.5 bg-blue-50 text-primary text-sm font-medium rounded-full mb-2">
+            {{doctor.departmentName}}
+          </span>
+
+          <!-- Availability Status -->
+          <div class="flex items-center justify-center gap-1 mb-2 text-sm"
+            [class]="getAvailabilityStatus(doctor).color">
+            <i [class]="getAvailabilityStatus(doctor).icon" class="text-sm"></i>
+            <span class="font-semibold">
+              {{getAvailabilityStatus(doctor).text}}
+            </span>
+          </div>
+
+          <div class="space-y-0.5 text-sm text-gray-600 mb-3">
+            <p><i class="fas fa-clock text-primary mr-2"></i>{{doctor.experience}} years</p>
+            <p><i class="fas fa-graduation-cap text-primary mr-2"></i>{{doctor.qualification}}</p>
+            <p><i class="fas fa-calendar-alt text-primary mr-2"></i>{{doctor.availability || 'Schedule not set'}}</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 pt-4 border-t border-gray-100">
+          <button (click)="navigateToDoctorDetails(doctor.slug || '')"
+            class="flex-1 bg-primary text-white py-2 px-3 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-1">
+            <i class="fas fa-eye"></i>
+            View
+          </button>
+          <button (click)="bookAppointment(doctor)"
+            class="flex-1 border-2 border-primary text-primary py-2 px-3 rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-1">
+            <i class="fas fa-calendar-check"></i>
+            Book
+          </button>
+        </div>
+      </div>
     </div>
     } @empty {
-      <div class="col-span-full py-12 text-center text-gray-500 rounded-2xl bg-white border border-dashed border-gray-300">
-        <i class="fas fa-user-md text-6xl mb-6 text-gray-300"></i>
-        <h3 class="text-2xl font-bold mb-2">No Doctors Available</h3>
-        <p class="text-lg">We couldn't find any registered doctors at this time. Please check back later.</p>
+    <div class="col-span-full py-20 text-center">
+      <div class="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-user-md text-5xl text-gray-400"></i>
       </div>
+      <h3 class="text-2xl font-bold text-gray-900 mb-3">No Doctors Available</h3>
+      <p class="text-gray-500 text-lg">We couldn't find any registered doctors at this time.</p>
+    </div>
     }
-
   </div>
-
 </section>

@@ -1,24 +1,55 @@
-<section class="py-14 bg-gray-50">
+<section class="py-8 lg:py-6 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 text-center">
 
     <!-- Heading -->
-    <div class="text-center mb-10 lg:mb-14">
-      <app-heading title=" Our Departments" subtitle="World-class treatment across" highlight="20+ medical departments"
-        highlightClass="font-bold text-primary" size="md" sizeSm="lg" sizeLg="xl" sizeXl="xl"
-        align="center"></app-heading>
-
+    <div class="text-center mb-10 lg:mb-4">
+      <app-heading title="Our Departments"
+        subtitle="World-class treatment across"
+        [highlight]="filteredDepartments.length + '+ medical departments'"
+        highlightClass="font-bold text-primary"
+        size="md" sizeSm="lg" sizeLg="xl" sizeXl="xl"
+        align="center">
+      </app-heading>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8 bg-white p-14 rounded-2xl">
 
-      @for( dept of departments ; track dept.departmentId ){
+    <!-- Filter Bar -->
+    <app-filter-bar
+      [showSearch]="true"
+      [showCategory]="false"
+      [showSort]="true"
+      [sortOptions]="sortOptions"
+      (searchChange)="onSearchChange($event)"
+      (sortChange)="onSortChange($event)"
+      (filtersChange)="onFiltersChange($event)">
+    </app-filter-bar>
 
-      <app-specialities-card [icon]="dept.icon" [title]="dept.departmentName" [short]="dept.short" [id]="dept.departmentId" (click)="navigateToDepartment(dept.slug)"></app-specialities-card>
+    <!-- Departments Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8 bg-white p-8 lg:p-18 rounded-2xl shadow-sm">
+      @for( dept of filteredDepartments; track dept.departmentId ){
+        <div class="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg rounded-xl"
+             (click)="navigateToDepartment(dept.slug)">
+          <app-specialities-card [icon]="dept.icon || 'fas fa-hospital'"
+                                 [title]="dept.departmentName"
+                                 [short]="dept.short"
+                                 [id]="dept.departmentId">
+          </app-specialities-card>
+        </div>
       } @empty {
-      <div class="col-span-full py-12 text-center text-gray-500">
-        <i class="fas fa-hospital text-4xl mb-4 text-gray-300"></i>
-        <p class="text-xl">No Departments Currently Available.</p>
-      </div>
+        <div class="col-span-full py-12 text-center text-gray-500">
+          <i class="fas fa-hospital text-4xl mb-4 text-gray-300"></i>
+          <p class="text-xl">No Departments Found.</p>
+        </div>
       }
+    </div>
+
+    <!-- View All Button -->
+    <div class="mt-10">
+      <app-button color="outline"
+                  label="View All Departments"
+                  icon="fas fa-arrow-right"
+                  customClass="rounded-xl px-8"
+                  (click)="viewAllDepartments()">
+      </app-button>
     </div>
   </div>
 </section>
