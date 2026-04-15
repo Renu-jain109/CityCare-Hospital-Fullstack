@@ -104,7 +104,4 @@ export class DepartmentService {
     return this.departments
   }
 
-  //  getDepartmentBySlug(slug: string): DepartmentInterface | undefined {
-  //   return this.departments.find(d => d.slug === slug);
-  // }
 }

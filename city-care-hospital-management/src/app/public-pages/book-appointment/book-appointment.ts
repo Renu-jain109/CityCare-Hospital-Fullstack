@@ -14,6 +14,7 @@ import { Appointment_Form_Fields } from '../../core/config/appintment-form-field
 import { DoctorService } from '../../core/services/doctor-service';
 import { DepartmentService } from '../../core/services/department-service';
 import { AppointmentService } from '../../core/services/appointment-service';
+import { AuthService } from '../../core/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialog } from '../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -37,6 +38,7 @@ export class BookAppointment implements OnInit {
   appointmentService = inject(AppointmentService)
   route = inject(ActivatedRoute)
   doctorService = inject(DoctorService)
+  authService = inject(AuthService)
   router = inject(Router)
   http = inject(HttpClient)
   sanitizer = inject(DomSanitizer)
@@ -55,6 +57,7 @@ export class BookAppointment implements OnInit {
 
   appintmentFields: DynamicFormInterface[] = [];
   doctorsList: any[] = [];
+  noDoctorsMessage: string = '';
 
   ngOnInit() {
     this.appointmentForm = this.fb.group({});
@@ -119,20 +122,29 @@ export class BookAppointment implements OnInit {
             this.doctorService.getDoctorsByDepartment(departmentName, true).subscribe({
               next: (doctors) => {
                 this.doctorsList = doctors;
-                const doctorOptions = doctors.map((doc: any) => ({
-                  label: doc.doctorName,
-                  value: doc.doctorName
-                }));
-                this.setSelectOptions('doctorName', doctorOptions);
+                if (doctors.length === 0) {
+                  // No active doctors available for this department
+                  this.noDoctorsMessage = `No doctors are currently available in ${departmentName} department. Please select a different department or try again later.`;
+                  this.setSelectOptions('doctorName', []);
+                } else {
+                  this.noDoctorsMessage = '';
+                  const doctorOptions = doctors.map((doc: any) => ({
+                    label: doc.doctorName,
+                    value: doc.doctorName
+                  }));
+                  this.setSelectOptions('doctorName', doctorOptions);
+                }
               },
               error: () => {
                 this.setSelectOptions('doctorName', []);
                 this.doctorsList = [];
+                this.noDoctorsMessage = `Unable to load doctors for ${departmentName} department. Please try again.`;
               }
             });
           } else {
             this.setSelectOptions('doctorName', []);
             this.doctorsList = [];
+            this.noDoctorsMessage = '';
           }
           this.appointmentForm.patchValue({ doctorName: '' });
         });
@@ -193,11 +205,16 @@ export class BookAppointment implements OnInit {
       }
     }
 
+    // Get logged-in user's email (the person making the booking)
+    const currentUser = this.authService.currentUser();
+    const bookedByEmail = currentUser?.email || null;
+
     const appointmentData = {
       ...formData,
       appointmentDate: formattedDate,
       doctorId: doctorId,
-      age: Number(formData.age)
+      age: Number(formData.age),
+      bookedBy: bookedByEmail // Track who made the booking (for family appointments)
     };
 
     console.log('Sending appointment data:', JSON.stringify(appointmentData, null, 2));

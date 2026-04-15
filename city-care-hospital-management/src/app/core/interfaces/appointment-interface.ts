@@ -8,6 +8,7 @@ export interface AppointmentInterface {
   age: number;
   gender: 'Male' | 'Female' | 'Other';
   email: string;
+  bookedBy?: string; // Email of user who booked (for family appointments)
   department: string;
   doctorName: string;
   appointmentDate: string;

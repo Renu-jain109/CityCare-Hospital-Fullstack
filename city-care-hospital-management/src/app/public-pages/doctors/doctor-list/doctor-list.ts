@@ -47,12 +47,14 @@ export class DoctorList implements OnInit {
   ];
 
   ngOnInit() {
-    this.doctorService.getAllDoctors().subscribe((doctors) => {
+    // Load only Active doctors for public UI
+    this.doctorService.getActiveDoctors().subscribe((doctors) => {
       this.allDoctor = doctors;
       this.filteredDoctors = doctors;
     });
 
-    this.departmentService.getAllDepartmentsFromBackend().subscribe((depts) => {
+    // Load only Active departments for public UI
+    this.departmentService.getActiveDepartments().subscribe((depts) => {
       this.departments = depts;
     });
   }

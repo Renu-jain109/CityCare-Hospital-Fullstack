@@ -125,8 +125,11 @@ export class MyAppointments implements OnInit, OnDestroy {
           console.warn('This means admin updates are not reaching this user.');
         }
         
-        const userAppointments = allAppointments.filter(a => a.email === userEmail);
-        console.log('Filtered for user:', userEmail, '- found:', userAppointments.length);
+        // Show appointments where user is the patient OR the one who booked (for family bookings)
+        const userAppointments = allAppointments.filter(a => 
+          a.email === userEmail || a.bookedBy === userEmail
+        );
+        console.log('Filtered for user:', userEmail, '- found:', userAppointments.length, '(as patient or booked-by)');
         
         // Always update the list, even if empty (to clear old data if needed)
         this.appointments = userAppointments;

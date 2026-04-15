@@ -38,8 +38,9 @@ export class Department implements OnInit {
   ];
 
   ngOnInit() {
-    this.departmentService.getAllDepartmentsFromBackend().subscribe((data) => {
-      console.log('departments data', data);
+    // Load only Active departments for public UI
+    this.departmentService.getActiveDepartments().subscribe((data) => {
+      console.log('Active departments data', data);
       this.departments = data;
       this.filteredDepartments = [...data];
     });

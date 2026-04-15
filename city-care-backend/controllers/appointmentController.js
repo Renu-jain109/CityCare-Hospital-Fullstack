@@ -39,6 +39,7 @@ exports.bookAppointment = async (req, res) => {
     const appointment = new Appointment({
       patientName,
       email,
+      bookedBy: req.body.bookedBy || null, // Track who made the booking (for family appointments)
       mobile,
       age,
       gender,
