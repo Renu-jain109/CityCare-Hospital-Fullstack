@@ -10,6 +10,7 @@ export interface DoctorInterface {
 
     experience: string;
     qualification?: string;
+    specialization?: string;
 
     icon?: string;
     image?: string;

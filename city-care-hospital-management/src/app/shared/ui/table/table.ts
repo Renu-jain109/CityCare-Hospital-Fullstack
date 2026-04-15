@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output, Renderer2, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TableColumnInterface } from '../interfaces/table/table-column-interface';
 import { TableRow } from '../interfaces/table/table-row.type';
 
 @Component({
   selector: 'app-table',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './table.html',
   styleUrl: './table.css',
 })

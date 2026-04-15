@@ -39,7 +39,12 @@ export class DoctorService {
     return this.http.get<DoctorInterface[]>(`${environment.apiUrl}/doctors`, { headers: this.getAuthHeaders() });
   }
 
-  getDoctorsByDepartment(department: string): Observable<DoctorInterface[]> {
+  // Get only Active doctors (for patient side booking)
+  getActiveDoctors(): Observable<DoctorInterface[]> {
+    return this.http.get<DoctorInterface[]>(`${environment.apiUrl}/doctors/active`, { headers: this.getAuthHeaders() });
+  }
+
+  getDoctorsByDepartment(department: string, activeOnly: boolean = false): Observable<DoctorInterface[]> {
     if(!department) {
       return new Observable(observer => {
         observer.next([]);
@@ -47,7 +52,8 @@ export class DoctorService {
       });
     }
 
-    return this.http.get<DoctorInterface[]>(`${environment.apiUrl}/doctors/by-department?department=${department}`, { headers: this.getAuthHeaders() });
+    const url = `${environment.apiUrl}/doctors/by-department?department=${department}${activeOnly ? '&activeOnly=true' : ''}`;
+    return this.http.get<DoctorInterface[]>(url, { headers: this.getAuthHeaders() });
   }
 
 }

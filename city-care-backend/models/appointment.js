@@ -16,6 +16,7 @@ const AppointmentSchema = new mongoose.Schema({
   email: { type: String, required: true, trim: true },
   department: { type: String, required: true, trim: true },
   doctorName: { type: String, required: true, trim: true },
+  consultationFee: { type: Number, default: 0 },
   appointmentDate: { type: Date, required: true },
   appointmentCode: { type: String, unique: true },
   timeSlot: { type: String, required: true },

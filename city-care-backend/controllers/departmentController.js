@@ -10,6 +10,16 @@ const getAllDepartments = async (req, res) => {
   }
 };
 
+// Get only Active departments (for patient side)
+const getActiveDepartments = async (req, res) => {
+  try {
+    const departments = await Department.find({ status: 'Active' }).sort({ name: 1 });
+    res.status(200).json(departments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Get department by ID
 const getDepartmentById = async (req, res) => {
   try {
@@ -64,7 +74,7 @@ const addDepartment = async (req, res) => {
     
     // Generate departmentId
     const count = await Department.countDocuments();
-    departmentData.departmentId = `DEPT${count + 1}`;
+    departmentData.departmentId = `DEPT-${count + 1}`;
     
     console.log('Processed department data:', departmentData);
     
@@ -187,6 +197,7 @@ const deleteDepartment = async (req, res) => {
 
 module.exports = {
   getAllDepartments,
+  getActiveDepartments,
   getDepartmentById,
   addDepartment,
   updateDepartment,

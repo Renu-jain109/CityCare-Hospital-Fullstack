@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Table } from "../../../../shared/ui/table/table";
 import { Heading } from "../../../../shared/ui/heading/heading";
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AppointmentService } from '../../../../core/services/appointment-service';
 import { AppointmentInterface } from '../../../../core/interfaces/appointment-interface';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,6 +30,7 @@ export class AppointmentList implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private appointmentService: AppointmentService,
     private doctorService: DoctorService,
     private departmentService: DepartmentService,
@@ -44,30 +45,67 @@ export class AppointmentList implements OnInit {
       this.appointmentData = data.map((appointment) => ({
         ...appointment,
         shortId: appointment.appointmentCode
-          ? `${appointment.appointmentCode.substring(0, 6)}...${appointment.appointmentCode.substring(14, 20)}`
+          ? `${appointment.appointmentCode.substring(0, 6)}${appointment.appointmentCode.substring(14, 20)}`
           : ''
       }));
 
-      // Initialize filtered data
-      this.filteredAppointmentData = [...this.appointmentData];
+      // Apply filter from query params
+      this.applyFilterFromQueryParams();
     });
 
     // Initial load
     this.appointmentService.getAllAppointments().subscribe();
+
+    // Subscribe to query params changes
+    this.route.queryParams.subscribe(params => {
+      this.applyFilterFromQueryParams();
+    });
   }
 
-  onSearchChange() {
-    this.filteredAppointmentData = this.appointmentData.filter(appointment => {
-      const searchLower = this.searchTerm.toLowerCase();
-      return (
-        appointment.patientName?.toLowerCase().includes(searchLower) ||
-        appointment.doctorName?.toLowerCase().includes(searchLower) ||
-        appointment.department?.toLowerCase().includes(searchLower) ||
-        appointment.appointmentCode?.toLowerCase().includes(searchLower) ||
-        (appointment as any).shortId?.toLowerCase().includes(searchLower) ||
-        appointment.status?.toLowerCase().includes(searchLower)
+  applyFilterFromQueryParams() {
+    const filter = this.route.snapshot.queryParams['filter'];
+
+    if (!filter || filter === 'all') {
+      this.filteredAppointmentData = [...this.appointmentData];
+    } else if (filter === 'pending') {
+      this.filteredAppointmentData = this.appointmentData.filter(apt =>
+        apt.status?.toLowerCase() === 'pending'
       );
-    });
+    } else if (filter === 'today') {
+      const today = new Date();
+      this.filteredAppointmentData = this.appointmentData.filter(apt => {
+        const aptDate = new Date(apt.appointmentDate);
+        return aptDate.toDateString() === today.toDateString();
+      });
+    }
+  }
+
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value.toLowerCase();
+    this.filterAppointments();
+    this.currentPage = 1; // Reset to first page on search
+  }
+
+  filterAppointments() {
+    if (!this.searchTerm) {
+      this.filteredAppointmentData = [...this.appointmentData];
+      return;
+    } else {
+      this.filteredAppointmentData = this.appointmentData.filter(appointment =>
+        appointment.patientName?.toLowerCase().includes(this.searchTerm) ||
+        appointment.doctorName?.toLowerCase().includes(this.searchTerm) ||
+        appointment.department?.toLowerCase().includes(this.searchTerm) ||
+        appointment.appointmentCode?.toLowerCase().includes(this.searchTerm) ||
+        (appointment as any).shortId?.toLowerCase().includes(this.searchTerm) ||
+        appointment.status?.toLowerCase().includes(this.searchTerm)
+      );
+    }
+  }
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredAppointmentData = this.appointmentData;
+    this.currentPage = 1;
   }
 
   appointmentColumns = [
@@ -84,21 +122,22 @@ export class AppointmentList implements OnInit {
       action: 'menu',
       show: (row: any) => true,
       menuItems: [
-        { label: 'View Details', action: 'view' },
+        // View - Always available
+        { label: '<i class="fa-solid fa-eye text-blue-500 mr-2"></i>View Details', action: 'view' },
 
-        // Pending → Approve/Reject
-        { label: 'Approve', action: 'confirm', show: (row: any) => row.status === 'pending' },
-        { label: 'Reject', action: 'reject', show: (row: any) => row.status === 'pending' },
+        // Pending → Approve (Green) / Reject (Red)
+        { label: '<i class="fa-solid fa-check text-green-500 mr-2"></i>Approve', action: 'confirm', show: (row: any) => row.status === 'pending' },
+        { label: '<i class="fa-solid fa-xmark text-red-500 mr-2"></i>Reject', action: 'reject', show: (row: any) => row.status === 'pending' },
 
-        // Confirmed → Cancel or Complete
-        { label: 'Cancel/Reject', action: 'cancel', show: (row: any) => row.status === 'confirmed' },
-        { label: 'Mark Complete', action: 'complete', show: (row: any) => row.status === 'confirmed' },
+        // Confirmed → Cancel (Red) / Complete (Green)
+        { label: '<i class="fa-solid fa-ban text-red-500 mr-2"></i>Cancel/Reject', action: 'cancel', show: (row: any) => row.status === 'confirmed' },
+        { label: '<i class="fa-solid fa-check-double text-green-500 mr-2"></i>Mark Complete', action: 'complete', show: (row: any) => row.status === 'confirmed' },
 
-        // Completed → Invoice
-        { label: 'Generate Invoice', action: 'invoice', show: (row: any) => row.status === 'completed' },
+        // Edit - Only for Pending/Confirmed (Blue)
+        { label: '<i class="fa-solid fa-pen text-blue-500 mr-2"></i>Edit', action: 'edit', show: (row: any) => row.status === 'pending' || row.status === 'confirmed' },
 
-        { label: 'Edit', action: 'edit' },
-        { label: 'Delete', action: 'delete' }
+        // Delete - Only for Cancelled/Completed (Red)
+        { label: '<i class="fa-solid fa-trash text-red-500 mr-2"></i>Delete', action: 'delete', show: (row: any) => row.status === 'cancelled' || row.status === 'completed' }
       ]
     }
   ];
@@ -127,7 +166,7 @@ export class AppointmentList implements OnInit {
         this.deleteAppointment(event.row);
         break;
       case 'view':
-      const htmlContent = `
+        const htmlContent = `
         <!-- Hospital Banner -->
         <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
           <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
@@ -210,7 +249,7 @@ export class AppointmentList implements OnInit {
           </div>
         </div>
       `;
-      
+
         this.dialog.open(ConfirmationDialog, {
           width: '650px',
           data: {

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Heading } from "../../shared/ui/heading/heading";
 import { Card } from "../../shared/ui/card/card";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -38,20 +39,8 @@ export class BookAppointment implements OnInit {
   doctorService = inject(DoctorService)
   router = inject(Router)
   http = inject(HttpClient)
+  sanitizer = inject(DomSanitizer)
   constructor(public dialog: MatDialog) { }
-
-
-  timeSlots = [
-    '09:00 AM', '09:30 AM',
-    '10:00 AM', '10:30 AM',
-    '11:00 AM', '11:30 AM',
-    '12:00 PM',
-
-    '03:00 PM', '03:30 PM',
-    '04:00 PM', '04:30 PM',
-    '05:00 PM'
-  ];
-
 
   buttons: ButtonInterface[] = [
     {
@@ -65,102 +54,105 @@ export class BookAppointment implements OnInit {
 
 
   appintmentFields: DynamicFormInterface[] = [];
+  doctorsList: any[] = [];
 
   ngOnInit() {
     this.appointmentForm = this.fb.group({});
 
     this.appintmentFields = structuredClone(Appointment_Form_Fields);
 
-    // Note: Form controls are now created by dynamic-form component with proper validation
+    setTimeout(() => {
+      const dateControl = this.appointmentForm.get('appointmentDate');
+      if (dateControl) {
+        dateControl.valueChanges.subscribe(date => {
+          const doctorName = this.appointmentForm.value.doctorName;
+          // Lookup doctorId from stored doctors list
+          const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === doctorName);
+          const doctorId = selectedDoctor?.doctorId || selectedDoctor?._id || selectedDoctor?.id;
 
-    this.appointmentForm.get('appointmentDate')?.valueChanges.subscribe(date => {
-      const doctorId = this.appointmentForm.value.doctor;
-      if (doctorId && date) {
-        this.appointmentService.getSlotByDate(doctorId, date).subscribe((slots: any[]) => {
-          const slotOptions: any = slots.map(slot => ({
-            label: slot.time,
-            value: slot.time,
-            disabled: slot.isBooked   // disable booked slots
-          }));
-          this.setSelectOptions('timeSlot', slotOptions);
+          // Convert date to ISO format (yyyy-mm-dd) for API
+          let formattedDate = date;
+          if (date instanceof Date) {
+            formattedDate = date.toISOString().split('T')[0];
+          } else if (typeof formattedDate === 'string' && formattedDate.includes('-')) {
+            const parts = formattedDate.split('-');
+            if (parts.length === 3 && parts[0].length === 2) {
+              // Convert from dd-mm-yyyy to yyyy-mm-dd
+              formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+          }
+
+          console.log('Frontend - doctorId sent:', doctorId, 'doctorName:', doctorName);
+          if (doctorId && formattedDate) {
+            this.appointmentService.getSlotByDate(doctorId, formattedDate).subscribe((slots: any[]) => {
+              console.log('Slots from backend:', slots);
+              // Show all slots - booked ones will be disabled (no color change)
+              const allSlots = slots.map(slot => ({
+                label: slot.time,
+                value: slot.time,
+                disabled: slot.isBooked
+              }));
+              console.log('Processed slots:', allSlots);
+              this.setSelectOptions('timeSlot', allSlots);
+            });
+          }
         });
       }
-    });
+    }, 0);
 
 
 
-    // Get Departments from backend
-    this.departmentService.getAllDepartmentsFromBackend().subscribe(departments => {
+    // Load only Active departments for patient booking
+    this.departmentService.getActiveDepartments().subscribe(departments => {
       const departmentOptions = departments.map((dept: any) => dept.departmentName);
       this.setSelectOptions('department', departmentOptions);
     });
 
-    // Initially doctor empty
-    this.setSelectOptions('doctor', []);
-
-    // Time Slot
-    this.setSelectOptions('timeSlot', this.timeSlots);
-
-
-
     // Update doctors when department changes
-    this.appointmentForm.get('department')?.valueChanges.subscribe(departmentName => {
-      console.log('select department', departmentName);
-
-      if (departmentName) {
-        this.doctorService.getDoctorsByDepartment(departmentName).subscribe({
-          next: (doctors) => {
-            console.log('Doctors received from backend:', doctors);
-            const doctorOptions = doctors.map((doc: any) => doc.doctorName);
-            console.log('Doctor options for dropdown:', doctorOptions);
-            this.setSelectOptions('doctorName', doctorOptions);
-          },
-          error: (error) => {
-            console.error('Error loading doctors:', error);
+    // Use setTimeout to ensure form controls are created by dynamic-form component first
+    setTimeout(() => {
+      const departmentControl = this.appointmentForm.get('department');
+      if (departmentControl) {
+        departmentControl.valueChanges.subscribe(departmentName => {
+          if (departmentName) {
+            // Load only Active doctors for patient booking
+            this.doctorService.getDoctorsByDepartment(departmentName, true).subscribe({
+              next: (doctors) => {
+                this.doctorsList = doctors;
+                const doctorOptions = doctors.map((doc: any) => ({
+                  label: doc.doctorName,
+                  value: doc.doctorName
+                }));
+                this.setSelectOptions('doctorName', doctorOptions);
+              },
+              error: () => {
+                this.setSelectOptions('doctorName', []);
+                this.doctorsList = [];
+              }
+            });
+          } else {
             this.setSelectOptions('doctorName', []);
+            this.doctorsList = [];
           }
+          this.appointmentForm.patchValue({ doctorName: '' });
         });
-      } else {
-        this.setSelectOptions('doctorName', []);
       }
-
-      // Reset doctor when department changes
-      this.appointmentForm.patchValue({ doctorName: '' });
-    })
+    }, 0);
 
 
-
-    // Department auto-select
 
     this.route.queryParams.subscribe(params => {
       if (params['department']) {
-        this.appointmentForm.patchValue({
-          department: params['department']
-        });
-        console.log(params['department']);
-
-        // Trigger valueChanges to load doctors for the pre-selected department
+        this.appointmentForm.patchValue({ department: params['department'] });
         this.appointmentForm.get('department')?.updateValueAndValidity();
       }
-
       if (params['doctor']) {
-        this.appointmentForm.patchValue({
-          doctor: params['doctor']
-        })
-        console.log(params['doctor']);
-
+        this.appointmentForm.patchValue({ doctor: params['doctor'] });
       }
-    })
+    });
 
 
   }
-
-  selectSlot(slot: any) {
-    if (slot.isBooked) {
-      this.appointmentForm.patchValue({ timeSlot: slot.timeSlot });
-    }
-  }
-
 
   setSelectOptions(key: string, data: string[] | { label: string; value: any; disabled?: boolean }[]) {
     const field = this.appintmentFields.find(f => f.key === key);
@@ -180,7 +172,37 @@ export class BookAppointment implements OnInit {
       return;
     }
 
-    this.appointmentService.bookAppointment(this.appointmentForm.value).subscribe({
+    // Prepare data with proper types for backend
+    const formData = this.appointmentForm.value;
+
+    // Lookup doctorId from selected doctorName
+    const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === formData.doctorName);
+    const doctorId = selectedDoctor?.doctorId || selectedDoctor?._id || selectedDoctor?.id;
+
+    // Convert date to ISO format (yyyy-mm-dd)
+    let formattedDate = formData.appointmentDate;
+
+    // Handle Date object or string
+    if (formData.appointmentDate instanceof Date) {
+      formattedDate = formData.appointmentDate.toISOString().split('T')[0]; // yyyy-mm-dd
+    } else if (typeof formattedDate === 'string' && formattedDate.includes('-')) {
+      const parts = formattedDate.split('-');
+      if (parts.length === 3 && parts[0].length === 2) {
+        // Convert from dd-mm-yyyy to yyyy-mm-dd
+        formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+    }
+
+    const appointmentData = {
+      ...formData,
+      appointmentDate: formattedDate,
+      doctorId: doctorId,
+      age: Number(formData.age)
+    };
+
+    console.log('Sending appointment data:', JSON.stringify(appointmentData, null, 2));
+
+    this.appointmentService.bookAppointment(appointmentData).subscribe({
       next: (appointment) => {
         const formattedDate = new Date(appointment.appointmentDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -189,62 +211,131 @@ export class BookAppointment implements OnInit {
           const selectedDoctor = doctors.find((doc: any) => doc.doctorName === appointment.doctorName);
           const consultationFee = selectedDoctor?.consultationFee || appointment.consultationFee || 'Will be informed';
 
+          const htmlContent = `
+        <!-- Hospital Banner -->
+        <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+          <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h3>
+          <p style="margin: 2px 0 0 0; font-size: 12px; opacity: 0.9;">Appointment Details</p>
+        </div>
+
+        <!-- Appointment Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>📋</span> Appointment Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Appointment ID</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentCode || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Status</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #10b981; font-size: 13px;">${appointment.status || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Patient Name</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.patientName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Mobile</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.mobile || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule Information Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>📅</span> Schedule Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Date</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${formattedDate || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Time Slot</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.timeSlot || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Duration</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.duration || '30 minutes'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Type</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.appointmentType || 'Regular'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical Details Card -->
+        <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+            <span>🏥</span> Medical Details
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.department || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Doctor</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.doctorName || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Specialization</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${selectedDoctor?.specialization || 'N/A'}</p>
+            </div>
+            <div>
+              <p style="margin: 0; font-size: 11px; color: #666;">Consultation Fee</p>
+              <p style="margin: 2px 0 0 0; font-weight: 600; color: #10b981; font-size: 13px;">₹${consultationFee}</p>
+            </div>
+          </div>
+          <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+            <p style="margin: 0; font-size: 12px; color: #666; text-align: center;">Your appointment request has been submitted. Waiting for confirmation.</p>
+          </div>
+        </div>
+          `;
+
           this.dialog.open(ConfirmationDialog, {
-            width: '500px',
+            width: '650px',
             data: {
               title: 'Appointment Confirmed!',
-              message: `
-              <div style="text-align: left; line-height: 1.6;">
-                <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3b82f6;">
-                  <h3 style="margin: 0 0 10px 0; color: #1e40af; font-size: 18px;">🎉 Appointment Details</h3>
-                  <p><strong>Patient Name:</strong> ${appointment.patientName}</p>
-                  <p><strong>Age/Gender:</strong> ${appointment.age} / ${appointment.gender}</p>
-                  <p><strong>Contact:</strong> ${appointment.mobile}</p>
-                  <p><strong>Email:</strong> ${appointment.email}</p>
-                </div>
-                
-                <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #22c55e;">
-                  <h3 style="margin: 0 0 10px 0; color: #166534; font-size: 18px;">📅 Schedule</h3>
-                  <p><strong>Department:</strong> ${appointment.department}</p>
-                  <p><strong>Doctor:</strong> ${appointment.doctorName}</p>
-                  <p><strong>Date:</strong> ${formattedDate}</p>
-                  <p><strong>Time:</strong> ${appointment.timeSlot}</p>
-                </div>
-                
-                <div style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-                  <h3 style="margin: 0 0 10px 0; color: #92400e; font-size: 18px;">💰 Consultation Fee</h3>
-                  <p style="font-size: 18px; font-weight: bold; color: #dc2626;">₹${consultationFee}</p>
-                  <p style="font-size: 12px; color: #666; margin-top: 5px;">Please pay this amount at the hospital reception</p>
-                </div>
-                
-                <div style="background: #f3f4f6; padding: 10px; border-radius: 4px; margin-top: 15px;">
-                  <p style="margin: 0; font-size: 12px; color: #666;"><strong>Appointment Code:</strong> ${appointment.appointmentCode}</p>
-                </div>
-              </div>
-              `
+              message: this.sanitizer.bypassSecurityTrustHtml(htmlContent)
             }
           });
+
+          // Reset form after successful booking
+          this.resetForm();
+
+          // Notify other tabs about the new appointment
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('appointments_updated', Date.now().toString());
+            setTimeout(() => {
+              localStorage.removeItem('appointments_updated');
+            }, 1000);
+          }
         });
 
       },
 
       error: (err: any) => {
-        console.error('Failed to book appointment', err);
-        alert('Unable to book appointment. Please try again.');
+        console.error('Full error object:', err);
+        console.error('Error status:', err.status);
+        console.error('Error body:', err.error);
+        const errorMsg = err.error?.message || err.error || err.message || 'Unknown error';
+        alert(`Unable to book appointment. Error: ${errorMsg}`);
       }
     });
   }
 
-
   goHome() {
-    // window.location.href = '/';
     this.router.navigate(['/']);
   }
 
   resetForm() {
     this.submitted = false;
-    // this.bookedAppointment = null;
     this.appointmentForm?.reset();
   }
-
 }

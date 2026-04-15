@@ -90,6 +90,11 @@ export class DepartmentService {
     return this.http.get<any[]>(`${environment.apiUrl}/departments`, { headers: this.getAuthHeaders() });
   }
 
+  // Get only Active departments (for patient side booking)
+  getActiveDepartments(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/departments/active`, { headers: this.getAuthHeaders() });
+  }
+
   getDepartmentById(departmentId: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}/departments/${departmentId}`, { headers: this.getAuthHeaders() });
   }

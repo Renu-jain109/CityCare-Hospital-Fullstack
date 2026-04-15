@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   getAllDoctors,
+  getActiveDoctors,
   getDoctorById,
   getDoctorsByDepartment,
   addDoctor,
@@ -11,6 +12,9 @@ const {
 
 // GET /api/doctors - Get all doctors
 router.get('/', getAllDoctors);
+
+// GET /api/doctors/active - Get only Active doctors (for patient side)
+router.get('/active', getActiveDoctors);
 
 // GET /api/doctors/by-department - Get doctors by department
 router.get('/by-department', getDoctorsByDepartment);

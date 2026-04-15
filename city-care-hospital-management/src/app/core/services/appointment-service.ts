@@ -33,7 +33,6 @@ export class AppointmentService implements OnDestroy {
       this.broadcastChannel = new BroadcastChannel('appointments_channel');
       this.broadcastChannel.onmessage = (event) => {
         if (event.data && event.data.type === 'appointments_updated') {
-          console.log('Received cross-tab update, refreshing appointments...');
           this.refreshFromBroadcast();
         }
       };
@@ -43,7 +42,6 @@ export class AppointmentService implements OnDestroy {
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', (event) => {
         if (event.key === 'appointments_updated' && event.newValue) {
-          console.log('Received storage event update, refreshing...');
           this.refreshFromBroadcast();
         }
       });
@@ -77,15 +75,7 @@ export class AppointmentService implements OnDestroy {
 
   // Refresh data when notified by other tabs
   private refreshFromBroadcast() {
-    console.log('Cross-tab refresh triggered');
-    this.getAllAppointments().subscribe({
-      next: (appointments) => {
-        console.log('Refreshed from broadcast:', appointments.length, 'appointments');
-      },
-      error: (err) => {
-        console.error('Error refreshing from broadcast:', err);
-      }
-    });
+    this.getAllAppointments().subscribe();
   }
 
   // Helper method to get headers with authentication
@@ -99,7 +89,11 @@ export class AppointmentService implements OnDestroy {
 
 
   bookAppointment(data: AppointmentInterface): Observable<any> {
-    return this.http.post(`${this.apiUrl}/appointments`, data, { headers: this.getAuthHeaders() });
+    return this.http.post(`${this.apiUrl}/appointments`, data, { headers: this.getAuthHeaders() }).pipe(
+      tap({
+        error: (err) => console.error('Booking API error:', err)
+      })
+    );
   }
 
   getSlotByDate(doctorId: string, date: string): Observable<any[]> {
@@ -107,26 +101,16 @@ export class AppointmentService implements OnDestroy {
   }
 
   getAllAppointments(): Observable<AppointmentInterface[]> {
-    console.log('getAllAppointments called - fetching from server...');
     return this.http
       .get<AppointmentInterface[]>(`${this.apiUrl}/appointments`, { headers: this.getAuthHeaders() })
       .pipe(
-        map((appointments) => {
-          console.log('Raw appointments from server:', appointments.length);
-          return appointments.map((a) => ({
-            ...a,
-            // Ensure the UI can always use `id` even if backend returns `_id`.
-            id: a.appointmentCode || a._id || '',
-          }));
-        }),
-        tap((appointments) => {
-          console.log('Updating BehaviorSubject with', appointments.length, 'appointments');
-          console.log('Current BehaviorSubject subscribers will be notified');
-          // Update BehaviorSubject for real-time updates
-          this.appointmentsSubject.next(appointments);
-        })
+        map((appointments) => appointments.map((a) => ({
+          ...a,
+          id: a.appointmentCode || a._id || '',
+        }))),
+        tap((appointments) => this.appointmentsSubject.next(appointments))
       );
-  };
+  }
 
   getById(id: string) {
     return this.appointments.find(a => a.appointmentCode === id);
@@ -137,11 +121,6 @@ export class AppointmentService implements OnDestroy {
     return this.http.get<AppointmentInterface[]>(`${this.apiUrl}/appointments/patient/${email}`, { headers: this.getAuthHeaders() });
   }
 
-  // Backend API methods
-  addAppointment(appointmentData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/appointments`, appointmentData, { headers: this.getAuthHeaders() });
-  }
-
   // Update appointment status
   updateAppointmentStatus(appointmentId: string, status: string, notes?: string): Observable<any> {
     const updateData = {
@@ -149,20 +128,10 @@ export class AppointmentService implements OnDestroy {
       notes,
       updatedAt: new Date().toISOString()
     };
-    console.log('Updating appointment status:', appointmentId, 'to:', status);
     return this.http.put(`${this.apiUrl}/appointments/${appointmentId}/status`, updateData, { headers: this.getAuthHeaders() }).pipe(
       tap(() => {
-        console.log('Status update successful, refreshing all appointments...');
-        // Refresh appointments list for real-time updates
         this.getAllAppointments().subscribe({
-          next: () => {
-            console.log('All appointments refreshed after status update');
-            // Notify other browser tabs about the update
-            this.notifyOtherTabs();
-          },
-          error: (err) => {
-            console.error('Error refreshing appointments after status update:', err);
-          }
+          next: () => this.notifyOtherTabs()
         });
       })
     );
@@ -170,23 +139,13 @@ export class AppointmentService implements OnDestroy {
 
   updateAppointment(appointmentId: string, appointmentData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/appointments/${appointmentId}`, appointmentData, { headers: this.getAuthHeaders() }).pipe(
-      tap(() => {
-        // Refresh appointments list for real-time updates
-        this.getAllAppointments().subscribe({
-          next: () => this.notifyOtherTabs()
-        });
-      })
+      tap(() => this.getAllAppointments().subscribe({ next: () => this.notifyOtherTabs() }))
     );
   }
 
   deleteAppointment(appointmentId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/appointments/${appointmentId}`, { headers: this.getAuthHeaders() }).pipe(
-      tap(() => {
-        // Refresh appointments list for real-time updates
-        this.getAllAppointments().subscribe({
-          next: () => this.notifyOtherTabs()
-        });
-      })
+      tap(() => this.getAllAppointments().subscribe({ next: () => this.notifyOtherTabs() }))
     );
   }
 

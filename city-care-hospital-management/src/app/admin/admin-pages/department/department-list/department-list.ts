@@ -31,6 +31,7 @@ export class DepartmentList implements OnInit {
     this.departmentService.getAllDepartmentsFromBackend().subscribe({
       next: (departments) => {
         this.departmentData = departments;
+        this.filterDepartments(); // Re-apply search filter
       },
       error: (error) => {
         console.error('Error loading departments:', error);
@@ -72,6 +73,8 @@ export class DepartmentList implements OnInit {
   ];
 
   departmentData: any[] = [];
+  filteredDepartmentData: any[] = [];
+  searchTerm: string = '';
 
   handleTableAction(event: { action: string, row: any }) {
     switch (event.action) {
@@ -220,6 +223,7 @@ export class DepartmentList implements OnInit {
           next: (response: any) => {
             console.log('Department deleted successfully:', response);
             this.refreshDepartmentsList(); // Refresh list
+            this.filterDepartments(); // Re-apply search filter
           },
           error: (error: any) => {
             console.error('Error deleting department:', error);
@@ -242,11 +246,38 @@ export class DepartmentList implements OnInit {
     this.departmentService.getAllDepartmentsFromBackend().subscribe({
       next: (departments) => {
         this.departmentData = departments;
+        this.filteredDepartmentData = departments;
       },
       error: (error) => {
         console.error('Error loading departments:', error);
       }
     });
+  }
+
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value.toLowerCase();
+    this.filterDepartments();
+    this.currentPage = 1; // Reset to first page on search
+  }
+
+  filterDepartments(): void {
+    if (!this.searchTerm) {
+      this.filteredDepartmentData = this.departmentData;
+    } else {
+      this.filteredDepartmentData = this.departmentData.filter(dept =>
+        dept.departmentName?.toLowerCase().includes(this.searchTerm) ||
+        dept.departmentId?.toLowerCase().includes(this.searchTerm) ||
+        dept.headOfDepartment?.toLowerCase().includes(this.searchTerm) ||
+        dept.status?.toLowerCase().includes(this.searchTerm)
+      );
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredDepartmentData = this.departmentData;
+    this.currentPage = 1;
   }
 
   addDepartment() {
@@ -277,6 +308,7 @@ export class DepartmentList implements OnInit {
             console.log('Department added successfully:', response);
             // Refresh departments list
             this.refreshDepartmentsList();
+            this.clearSearch(); // Clear search to show new department
           },
           error: (error) => {
             console.error('Error adding department:', error);
@@ -352,6 +384,7 @@ export class DepartmentList implements OnInit {
 
             // Refresh departments list
             this.refreshDepartmentsList();
+            this.filterDepartments(); // Re-apply search filter
           },
           error: (error: any) => {
             console.error('Error updating department:', error);

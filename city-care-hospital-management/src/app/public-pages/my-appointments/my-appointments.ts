@@ -27,8 +27,47 @@ export class MyAppointments implements OnInit, OnDestroy {
   appointments: AppointmentInterface[] = [];
   isLoading = false;
   
+  // Pagination
+  currentPage = 1;
+  pageSize = 5;
+  
   private appointmentsSubscription: Subscription | null = null;
   private currentUserEmail: string | null = null;
+  
+  get paginatedAppointments(): AppointmentInterface[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.appointments.slice(start, start + this.pageSize);
+  }
+  
+  get totalPages(): number {
+    return Math.ceil(this.appointments.length / this.pageSize);
+  }
+  
+  get startIndex(): number {
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+  
+  get endIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.appointments.length);
+  }
+  
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+  
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
 
   ngOnInit() {
     const currentUser = this.user();
@@ -62,6 +101,7 @@ export class MyAppointments implements OnInit, OnDestroy {
       next: (data) => {
         console.log('Initial load - appointments:', data.length);
         this.appointments = data;
+        this.currentPage = 1; // Reset to first page on new data
         this.isLoading = false;
       },
       error: (err) => {
@@ -90,6 +130,10 @@ export class MyAppointments implements OnInit, OnDestroy {
         
         // Always update the list, even if empty (to clear old data if needed)
         this.appointments = userAppointments;
+        // Reset to first page if current page exceeds total pages
+        if (this.currentPage > this.totalPages && this.totalPages > 0) {
+          this.currentPage = 1;
+        }
         this.isLoading = false;
         console.log('=== END REAL-TIME UPDATE ===');
       },
@@ -104,6 +148,7 @@ export class MyAppointments implements OnInit, OnDestroy {
     this.appointmentService.getAppointmentsByPatient(email).subscribe({
         next: (data) => {
             this.appointments = data;
+            this.currentPage = 1; // Reset to first page
             this.isLoading = false;
         },
         error: (err) => {

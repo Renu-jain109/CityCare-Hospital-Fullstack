@@ -10,6 +10,16 @@ const getAllDoctors = async (req, res) => {
   }
 };
 
+// Get only Active doctors (for patient side)
+const getActiveDoctors = async (req, res) => {
+  try {
+    const doctors = await Doctor.find({ status: 'Active' }).sort({ createdAt: -1 });
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Get doctor by ID
 const getDoctorById = async (req, res) => {
   try {
@@ -23,15 +33,20 @@ const getDoctorById = async (req, res) => {
   }
 };
 
-// Get doctors by department
+// Get doctors by department (only Active doctors for patient side)
 const getDoctorsByDepartment = async (req, res) => {
   try {
-    const { department } = req.query;
+    const { department, activeOnly } = req.query;
     if (!department) {
       return res.status(400).json({ message: 'Department parameter is required' });
     }
     
-    const doctors = await Doctor.find({ departmentName: department }).sort({ createdAt: -1 });
+    const query = { departmentName: department };
+    if (activeOnly === 'true') {
+      query.status = 'Active';
+    }
+    
+    const doctors = await Doctor.find(query).sort({ createdAt: -1 });
     res.status(200).json(doctors);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -51,7 +66,7 @@ const addDoctor = async (req, res) => {
     
     // Generate doctorId and slug
     const count = await Doctor.countDocuments();
-    doctorData.doctorId = `DOC${count + 1}`;
+    doctorData.doctorId = `DOC-${count + 1}`;
     doctorData.slug = doctorData.doctorName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -122,6 +137,7 @@ const deleteDoctor = async (req, res) => {
 
 module.exports = {
   getAllDoctors,
+  getActiveDoctors,
   getDoctorById,
   getDoctorsByDepartment,
   addDoctor,

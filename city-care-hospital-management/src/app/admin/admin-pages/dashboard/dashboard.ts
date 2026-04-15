@@ -148,4 +148,11 @@ export class Dashboard implements OnInit {
   navigateTo(route: string) {
     this.router.navigate([route]);
   }
+
+  // Navigate to appointments with filter
+  navigateToAppointments(filter: string) {
+    this.router.navigate(['/admin/dashboard/appointment-list'], {
+      queryParams: { filter: filter }
+    });
+  }
 }

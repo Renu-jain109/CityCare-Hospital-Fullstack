@@ -51,6 +51,8 @@ export class DoctorsList implements OnInit {
 
 
   doctorData: DoctorInterface[] = [];
+  filteredDoctorData: DoctorInterface[] = [];
+  searchTerm: string = '';
   doctorActions = [
     {
       label: '<i class="fa-solid fa-ellipsis"></i>',
@@ -78,6 +80,7 @@ export class DoctorsList implements OnInit {
     // Load doctors
     this.doctorService.getAllDoctors().subscribe((doctors) => {
       this.doctorData = doctors;
+      this.filteredDoctorData = doctors;
     });
   }
 
@@ -204,6 +207,7 @@ export class DoctorsList implements OnInit {
             // Refresh doctors list
             this.doctorService.getAllDoctors().subscribe((doctors) => {
               this.doctorData = doctors;
+              this.filterDoctors(); // Re-apply search filter
             });
           },
           error: (error: any) => {
@@ -217,6 +221,33 @@ export class DoctorsList implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
+  }
+
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value.toLowerCase();
+    this.filterDoctors();
+    this.currentPage = 1; // Reset to first page on search
+  }
+
+  filterDoctors(): void {
+    if (!this.searchTerm) {
+      this.filteredDoctorData = this.doctorData;
+    } else {
+      this.filteredDoctorData = this.doctorData.filter(doctor =>
+        doctor.doctorName?.toLowerCase().includes(this.searchTerm) ||
+        doctor.departmentName?.toLowerCase().includes(this.searchTerm) ||
+        doctor.doctorId?.toLowerCase().includes(this.searchTerm) ||
+        doctor.email?.toLowerCase().includes(this.searchTerm) ||
+        doctor.mobile?.toLowerCase().includes(this.searchTerm)
+      );
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredDoctorData = this.doctorData;
+    this.currentPage = 1;
   }
 
   addDoctors() {
@@ -252,6 +283,7 @@ export class DoctorsList implements OnInit {
                 // Refresh the doctors list
                 this.doctorService.getAllDoctors().subscribe((doctors) => {
                   this.doctorData = doctors;
+                  this.filterDoctors(); // Re-apply search filter
                 });
               },
               error: (error: any) => {
@@ -327,6 +359,7 @@ export class DoctorsList implements OnInit {
             // Refresh the doctors list
             this.doctorService.getAllDoctors().subscribe((doctors) => {
               this.doctorData = doctors;
+              this.filterDoctors(); // Re-apply search filter
             });
           },
           error: (error: any) => {

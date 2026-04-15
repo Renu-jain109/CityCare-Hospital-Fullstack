@@ -22,7 +22,19 @@
 
                 @for( col of columns; track col.key){
                 <td class="px-6 py-4">
-                    {{ row[col.key] }}
+                    @if(col.key === 'status'){
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold uppercase"
+                              [ngClass]="{
+                                'bg-green-100 text-green-700': row[col.key] === 'confirmed' || row[col.key] === 'Active',
+                                'bg-yellow-100 text-yellow-700': row[col.key] === 'pending',
+                                'bg-blue-100 text-blue-700': row[col.key] === 'completed',
+                                'bg-red-100 text-red-700': row[col.key] === 'cancelled' || row[col.key] === 'rejected' || row[col.key] === 'Inactive'
+                              }">
+                            {{ row[col.key] }}
+                        </span>
+                    }@else{
+                        {{ row[col.key] }}
+                    }
                 </td>
                 }
 
@@ -37,10 +49,12 @@
                     <div class="absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-50 min-w-32 position-fixed transform-translate-x-5" 
                          (mouseleave)="onMouseLeaveDropdown()">
                         @for(item of action.menuItems; track item.action){
-                        <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                            (click)="handleAction(item.action, row); toggleDropdown(null)">
-                            {{ item.label }}
+                        @if(!item.show || item.show(row)){
+                        <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center"
+                            (click)="handleAction(item.action, row); toggleDropdown(null)"
+                            [innerHTML]="item.label">
                         </button>
+                        }
                         }
                     </div>
                     }
