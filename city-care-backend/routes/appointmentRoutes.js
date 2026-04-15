@@ -41,10 +41,15 @@ router.get('/:id', authMiddleware.protect, async (req, res) => {
   }
 });
 
-// Get appointments for a specific patient by email
+// Get appointments for a specific patient by email (where user is patient OR booked-by/family)
 router.get('/patient/:email', authMiddleware.protect, async (req, res) => {
   try {
-    const appointments = await Appointment.find({ email: req.params.email }).sort({ appointmentDate: -1 });
+    const appointments = await Appointment.find({
+      $or: [
+        { email: req.params.email },           // User is the patient
+        { bookedBy: req.params.email }         // User booked for family member
+      ]
+    }).sort({ appointmentDate: -1 });
     return res.json(appointments);
   } catch (err) {
     return res.status(500).json({ message: 'Unable to fetch appointments', error: err.message });
