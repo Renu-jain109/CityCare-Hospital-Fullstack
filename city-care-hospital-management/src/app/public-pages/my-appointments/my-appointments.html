@@ -1,12 +1,34 @@
-<section class="bg-gray-50 min-h-screen py-10 lg:py-8 font-sans">
+<section class="bg-gray-50 min-h-screen py-4 font-sans ">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <app-heading title="My Medical Sessions" subtitle="Track your upcoming and past medical consultations at City Care."
-      size="main" sizeSm="main" sizeMd="main" sizeLg="main" sizeXl="main" align="center">
-    </app-heading>
+    <!-- <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"> -->
+      <app-heading title="My Medical Sessions" subtitle="Track your upcoming and past medical consultations at City Care."
+        size="main" sizeSm="main" sizeMd="main" sizeLg="main" sizeXl="main" align="center">
+      </app-heading>
+
+      <!-- Search Bar -->
+      <div class="relative w-full sm:w-64 mb-2 ml-16">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        <input
+          type="text"
+          placeholder="Search appointments..."
+          [value]="searchTerm"
+          (input)="onSearch($event)"
+          class="pl-10 pr-10 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-full"
+        />
+        @if(searchTerm) {
+          <button
+            (click)="clearSearch()"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <i class="fa-solid fa-times"></i>
+          </button>
+        }
+      </div>
+    <!-- </div> -->
 
     <!-- Content Container -->
-    <div class="mt-8 bg-white rounded-[3.5rem] shadow-2xl overflow-hidden border border-gray-100">
+    <div class="bg-white rounded-[3.5rem] shadow-2xl overflow-hidden border border-gray-100">
 
       <!-- Login Check -->
       <div *ngIf="!user()" class="p-20 text-center flex flex-col items-center justify-center gap-10">
@@ -26,7 +48,7 @@
       </div>
 
       <!-- Table View (Visible only when logged in) -->
-      <div *ngIf="user()" class="overflow-x-auto min-h-[400px]">
+      <div *ngIf="user()" class="min-h-[150px]">
 
         <!-- Loading State -->
         <div *ngIf="isLoading" class="p-20 text-center flex flex-col items-center justify-center gap-6">
@@ -34,30 +56,30 @@
           <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Synchronizing your records...</p>
         </div>
 
-        <table *ngIf="!isLoading && appointments.length > 0" class="w-full text-left border-separate border-spacing-0">
+        <!-- DESKTOP TABLE (hidden on mobile) -->
+        <table *ngIf="!isLoading && filteredAppointments.length > 0" class="hidden sm:table w-full table-auto text-left border-separate border-spacing-0">
           <thead>
             <tr class="bg-blue-950 text-white uppercase text-xs tracking-widest font-black">
-              <th class="px-8 py-6">ID Code</th>
-              <th class="px-8 py-6">Doctor / Department</th>
-              <th class="px-8 py-6 text-center">Date & Time</th>
-              <th class="px-8 py-6">Status</th>
-              <th class="px-8 py-6 text-right">Action</th>
+              <th class="px-4 lg:px-8 py-4 lg:py-6 whitespace-nowrap">ID</th>
+              <th class="px-4 lg:px-8 py-4 lg:py-6">Doctor</th>
+              <th class="px-4 lg:px-8 py-4 lg:py-6 text-center whitespace-nowrap">Date & Time</th>
+              <th class="px-4 lg:px-8 py-4 lg:py-6 text-center">Status</th>
+              <th class="px-4 lg:px-8 py-4 lg:py-6 text-right">Action</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
             <tr *ngFor="let app of paginatedAppointments" class="hover:bg-blue-50/50 transition-colors group">
-              <td class="px-8 py-6 font-mono font-bold text-gray-400">#{{ app.appointmentCode || 'TBD' }}</td>
-              <td class="px-8 py-6">
-                <div class="font-black text-gray-900 group-hover:text-primary transition-colors">{{ app.doctorName }}
-                </div>
-                <div class="text-[10px] font-black text-gray-300 uppercase tracking-widest">{{ app.department }}</div>
+              <td class="px-2 lg:px-8 py-4 lg:py-6 font-mono font-bold text-gray-400 whitespace-nowrap">#{{ app.appointmentCode || 'TBD' }}</td>
+              <td class="px-4 lg:px-8 py-4 lg:py-6">
+                <div class="font-bold text-gray-900 group-hover:text-primary transition-colors text-sm lg:text-base">{{ app.doctorName }}</div>
+                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ app.department }}</div>
               </td>
-              <td class="px-8 py-6 text-center">
-                <div class="font-bold text-gray-700">{{ app.appointmentDate | date:'mediumDate' }}</div>
-                <div class="text-xs text-gray-400 font-medium">{{ app.timeSlot }}</div>
+              <td class="px-4 lg:px-8 py-4 lg:py-6 text-center whitespace-nowrap">
+                <div class="font-bold text-gray-700 text-sm">{{ app.appointmentDate | date:'mediumDate' }}</div>
+                <div class="text-xs text-gray-400">{{ app.timeSlot }}</div>
               </td>
-              <td class="px-8 py-6">
-                <span class="text-[0.75rem] px-3 py-1 rounded-full font-extrabold uppercase tracking-widest shadow-sm"
+              <td class="px-4 lg:px-8 py-4 lg:py-6 text-center">
+                <span class="text-xs px-2 py-1 rounded-full font-bold uppercase tracking-wide"
                   [ngClass]="{
                         'bg-green-100 text-green-700': app.status === 'confirmed',
                         'bg-yellow-100 text-yellow-700': app.status === 'pending',
@@ -67,48 +89,36 @@
                   {{ app.status }}
                 </span>
               </td>
-              <td class="px-8 py-6 text-right">
-                <!-- Status-based Actions -->
-                <div class="flex gap-2 justify-end">
-                  <!-- Pending Status Actions -->
+              <td class="px-4 lg:px-8 py-4 lg:py-6 text-right whitespace-nowrap">
+                <button (click)="viewDetails(app)"
+                  class="mb-1 px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-all lg:px-3 lg:py-1 lg:rounded-lg">
+                  <i class="fas fa-eye mr-1"></i>Details
+                </button>
+                <div class="flex flex-col lg:flex-row gap-1 justify-end">
                   @if(app.status === 'pending') {
-                  <button
-                    class="px-3 py-1 bg-yellow-500 text-white text-xs rounded-lg hover:bg-yellow-600 transition-all">
-                    <i class="fas fa-clock mr-1"></i>Waiting Confirmation
+                  <button class="px-2 py-1 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-clock mr-1"></i><span class="hidden lg:inline">Wait</span>
                   </button>
                   }
-
-                  <!-- Confirmed Status Actions -->
                   @if(app.status === 'confirmed') {
-                  <button
-                    class="px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition-all">
-                    <i class="fas fa-check-circle mr-1"></i>Confirmed
+                  <button class="px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-check mr-1"></i><span class="hidden lg:inline">Confirmed</span>
                   </button>
-                  <button (click)="cancelAppointment(app)"
-                    class="px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all">
-                    <i class="fas fa-times mr-1"></i>Cancel
+                  <button (click)="cancelAppointment(app)" class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-times"></i><span class="hidden lg:inline">Cancel</span>
                   </button>
                   }
-
-                  <!-- Completed Status Actions -->
                   @if(app.status === 'completed') {
-                  <button class="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-all">
-                    <i class="fas fa-check-double mr-1"></i>Completed
+                  <button class="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-check-double mr-1"></i><span class="hidden lg:inline">completed</span>
                   </button>
-                  <button (click)="downloadInvoice(app)"
-                    class="px-3 py-1 bg-purple-500 text-white text-xs rounded-lg hover:bg-purple-600 transition-all">
-                    <i class="fas fa-download mr-1"></i>Invoice
+                  <button (click)="downloadInvoice(app)" class="px-2 py-1 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-file-invoice"></i><span class="hidden lg:inline">Invoice</span>
                   </button>
                   }
-
-                  <!-- Cancelled Status Actions -->
                   @if(app.status === 'cancelled') {
-                  <button class="px-3 py-1 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all">
-                    <i class="fas fa-ban mr-1"></i>Cancelled
-                  </button>
-                  <button (click)="rescheduleAppointment(app)"
-                    class="px-3 py-1 bg-orange-500 text-white text-xs rounded-lg hover:bg-orange-600 transition-all">
-                    <i class="fas fa-redo mr-1"></i>Reschedule
+                  <button class="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-all lg:px-3 lg:rounded-lg">
+                    <i class="fas fa-ban mr-1"></i><span class="hidden lg:inline">Cancelled</span>
                   </button>
                   }
                 </div>
@@ -117,28 +127,90 @@
           </tbody>
         </table>
 
+        <!-- MOBILE CARDS (visible only on mobile) -->
+        <div *ngIf="!isLoading && filteredAppointments.length > 0" class="sm:hidden divide-y divide-gray-100">
+          <div *ngFor="let app of paginatedAppointments" class="p-4 bg-white hover:bg-gray-50 transition-colors">
+            <!-- Card Header: Code + Status -->
+            <div class="flex justify-between items-center mb-3">
+              <span class="font-mono font-bold text-gray-400 text-sm">#{{ app.appointmentCode || 'TBD' }}</span>
+              <span class="text-xs px-2 py-1 rounded-full font-extrabold uppercase tracking-widest"
+                [ngClass]="{
+                      'bg-green-100 text-green-700': app.status === 'confirmed',
+                      'bg-yellow-100 text-yellow-700': app.status === 'pending',
+                      'bg-blue-100 text-blue-700': app.status === 'completed',
+                      'bg-red-100 text-red-700': app.status === 'cancelled'
+                    }">
+                {{ app.status }}
+              </span>
+            </div>
+
+            <!-- Card Body: Date & Time only -->
+            <div class="mb-3">
+              <div class="flex items-center gap-4 text-sm">
+                <div class="flex items-center gap-1 text-gray-600">
+                  <i class="fas fa-calendar text-primary"></i>
+                  <span>{{ app.appointmentDate | date:'shortDate' }}</span>
+                </div>
+                <div class="flex items-center gap-1 text-gray-600">
+                  <i class="fas fa-clock text-primary"></i>
+                  <span>{{ app.timeSlot }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="flex gap-2">
+              <button (click)="viewDetails(app)"
+                class="flex-1 px-3 py-2 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-all">
+                <i class="fas fa-eye mr-1"></i>Details
+              </button>
+              @if(app.status === 'confirmed') {
+              <button (click)="cancelAppointment(app)"
+                class="px-3 py-2 bg-red-500 text-white text-xs rounded-lg hover:bg-red-600 transition-all">
+                <i class="fas fa-times"></i>
+              </button>
+              }
+              @if(app.status === 'completed') {
+              <button (click)="downloadInvoice(app)"
+                class="px-3 py-2 bg-purple-500 text-white text-xs rounded-lg hover:bg-purple-600 transition-all">
+                <i class="fas fa-download"></i>
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+
         <!-- Pagination -->
-        <div *ngIf="!isLoading && appointments.length > 0"
-          class="px-8 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-          <div class="text-sm text-gray-500">
+        <div *ngIf="!isLoading && filteredAppointments.length > 0"
+          class="px-4 sm:px-8 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+          <!-- Showing Text -->
+          <div class="text-xs sm:text-sm text-gray-500 order-2 sm:order-1">
             Showing <span class="font-bold text-gray-700">{{ startIndex }}</span> - <span
               class="font-bold text-gray-700">{{ endIndex }}</span> of <span class="font-bold text-gray-700">{{
-              appointments.length }}</span> appointments
+              filteredAppointments.length }}</span> appointments
           </div>
-          <div class="flex items-center gap-2">
+
+          <!-- Page Controls -->
+          <div class="flex items-center gap-2 order-1 sm:order-2">
             <!-- Previous Button -->
             <button (click)="prevPage()" [disabled]="currentPage === 1"
-              class="px-3 py-1.5 rounded-lg text-sm font-bold transition-all" [ngClass]="{
+              class="px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all" [ngClass]="{
                 'bg-primary text-white hover:bg-primary/90': currentPage !== 1,
                 'bg-gray-200 text-gray-400 cursor-not-allowed': currentPage === 1
               }">
-              <i class="fas fa-chevron-left mr-1"></i>Prev
+              <i class="fas fa-chevron-left mr-1"></i><span class="hidden sm:inline">Prev</span>
             </button>
 
-            <!-- Page Numbers -->
+            <!-- Page Numbers - Simplified on mobile -->
             <div class="flex items-center gap-1">
+              <!-- Mobile: Just show current/total -->
+              <span class="sm:hidden text-sm font-bold text-gray-700 px-2">
+                {{ currentPage }} / {{ totalPages }}
+              </span>
+              <!-- Desktop: Show all page numbers -->
               <button *ngFor="let page of [].constructor(totalPages); let i = index" (click)="goToPage(i + 1)"
-                class="w-8 h-8 rounded-lg text-sm font-bold transition-all" [ngClass]="{
+                class="hidden sm:block w-8 h-8 rounded-lg text-sm font-bold transition-all" [ngClass]="{
                   'bg-primary text-white': currentPage === i + 1,
                   'bg-gray-100 text-gray-600 hover:bg-gray-200': currentPage !== i + 1
                 }">
@@ -148,23 +220,27 @@
 
             <!-- Next Button -->
             <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-              class="px-3 py-1.5 rounded-lg text-sm font-bold transition-all" [ngClass]="{
+              class="px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all" [ngClass]="{
                 'bg-primary text-white hover:bg-primary/90': currentPage !== totalPages,
                 'bg-gray-200 text-gray-400 cursor-not-allowed': currentPage === totalPages
               }">
-              Next<i class="fas fa-chevron-right ml-1"></i>
+              <span class="hidden sm:inline">Next</span><i class="fas fa-chevron-right ml-1"></i>
             </button>
           </div>
         </div>
 
-        <!-- Empty State Mock -->
-        <div *ngIf="!isLoading && appointments.length === 0" class="p-20 text-center">
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && filteredAppointments.length === 0" class="p-20 text-center">
           <div
             class="w-24 h-24 bg-blue-500 text-white rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
             <i class="fas fa-calendar-check "></i>
           </div>
-          <h3 class="text-2xl font-black text-gray-900 mb-2">No Active Appointments</h3>
-          <p class="text-gray-400 font-bold mb-8">You don't have any medical sessions scheduled yet.</p>
+          <h3 class="text-2xl font-black text-gray-900 mb-2">
+            {{ searchTerm ? 'No Matching Appointments' : 'No Active Appointments' }}
+          </h3>
+          <p class="text-gray-400 font-bold mb-8">
+            {{ searchTerm ? 'No appointments match your search criteria.' : "You don't have any medical sessions scheduled yet." }}
+          </p>
           <button routerLink="/book-appointment"
             class="px-8 py-3 bg-primary text-white font-black rounded-2xl shadow-xl">Book Now</button>
         </div>

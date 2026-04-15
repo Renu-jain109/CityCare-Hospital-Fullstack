@@ -3,6 +3,11 @@
   max-height: none !important;
   overflow: hidden !important;
   padding-right: 0 !important; /* remove extra scrollbar space */
+  color: #fff !important;
+}
+
+:hover {
+  color: #fff !important;
 }
 
 ::ng-deep .mat-dialog-container {

@@ -17,6 +17,7 @@ const AppointmentSchema = new mongoose.Schema({
   bookedBy: { type: String, trim: true }, // Email of user who booked (for family bookings)
   department: { type: String, required: true, trim: true },
   doctorName: { type: String, required: true, trim: true },
+  doctorId: { type: String, trim: true },
   consultationFee: { type: Number, default: 0 },
   appointmentDate: { type: Date, required: true },
   appointmentCode: { type: String, unique: true },

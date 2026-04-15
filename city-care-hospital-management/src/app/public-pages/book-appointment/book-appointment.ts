@@ -58,6 +58,8 @@ export class BookAppointment implements OnInit {
   appintmentFields: DynamicFormInterface[] = [];
   doctorsList: any[] = [];
   noDoctorsMessage: string = '';
+  preFilledDepartment: string | null = null;
+  preFilledDoctor: string | null = null;
 
   ngOnInit() {
     this.appointmentForm = this.fb.group({});
@@ -68,7 +70,8 @@ export class BookAppointment implements OnInit {
       const dateControl = this.appointmentForm.get('appointmentDate');
       if (dateControl) {
         dateControl.valueChanges.subscribe(date => {
-          const doctorName = this.appointmentForm.value.doctorName;
+          // Use preFilledDoctor if doctor field is disabled, otherwise get from form
+          const doctorName = this.preFilledDoctor || this.appointmentForm.getRawValue().doctorName;
           // Lookup doctorId from stored doctors list
           const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === doctorName);
           const doctorId = selectedDoctor?.doctorId || selectedDoctor?._id || selectedDoctor?.id;
@@ -155,11 +158,19 @@ export class BookAppointment implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       if (params['department']) {
+        this.preFilledDepartment = params['department'];
         this.appointmentForm.patchValue({ department: params['department'] });
         this.appointmentForm.get('department')?.updateValueAndValidity();
+        // Disable department field when pre-filled
+        this.appointmentForm.get('department')?.disable();
+        // Hide department field from form
+        this.hideDepartmentField();
+        // Automatically load doctors for pre-filled department
+        this.loadDoctorsForDepartment(params['department']);
       }
       if (params['doctor']) {
-        this.appointmentForm.patchValue({ doctor: params['doctor'] });
+        this.preFilledDoctor = params['doctor'];
+        // Store pre-filled doctor to set after doctors are loaded
       }
     });
 
@@ -178,6 +189,48 @@ export class BookAppointment implements OnInit {
     }
   }
 
+  hideDepartmentField() {
+    // Remove department field from visible form fields
+    this.appintmentFields = this.appintmentFields.filter(f => f.key !== 'department');
+  }
+
+  loadDoctorsForDepartment(departmentName: string): void {
+    // Load only Active doctors for patient booking
+    this.doctorService.getDoctorsByDepartment(departmentName, true).subscribe({
+      next: (doctors) => {
+        this.doctorsList = doctors;
+        if (doctors.length === 0) {
+          this.noDoctorsMessage = `No doctors are currently available in ${departmentName} department. Please try again later.`;
+          this.setSelectOptions('doctorName', []);
+        } else {
+          this.noDoctorsMessage = '';
+          const doctorOptions = doctors.map((doc: any) => ({
+            label: doc.doctorName,
+            value: doc.doctorName
+          }));
+          this.setSelectOptions('doctorName', doctorOptions);
+
+          // If doctor is pre-filled, set it and hide the field
+          if (this.preFilledDoctor) {
+            this.appointmentForm.patchValue({ doctorName: this.preFilledDoctor });
+            this.appointmentForm.get('doctorName')?.disable();
+            this.hideDoctorField();
+          }
+        }
+      },
+      error: () => {
+        this.setSelectOptions('doctorName', []);
+        this.doctorsList = [];
+        this.noDoctorsMessage = `Unable to load doctors for ${departmentName} department. Please try again.`;
+      }
+    });
+  }
+
+  hideDoctorField() {
+    // Remove doctorName field from visible form fields
+    this.appintmentFields = this.appintmentFields.filter(f => f.key !== 'doctorName');
+  }
+
   onSubmit(): void {
     if (this.appointmentForm.invalid) {
       this.appointmentForm.markAllAsTouched();
@@ -185,7 +238,8 @@ export class BookAppointment implements OnInit {
     }
 
     // Prepare data with proper types for backend
-    const formData = this.appointmentForm.value;
+    // Use getRawValue() to include disabled fields (pre-filled department/doctor)
+    const formData = this.appointmentForm.getRawValue();
 
     // Lookup doctorId from selected doctorName
     const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === formData.doctorName);
@@ -211,6 +265,8 @@ export class BookAppointment implements OnInit {
 
     const appointmentData = {
       ...formData,
+      department: this.preFilledDepartment || formData.department,
+      doctorName: this.preFilledDoctor || formData.doctorName,
       appointmentDate: formattedDate,
       doctorId: doctorId,
       age: Number(formData.age),

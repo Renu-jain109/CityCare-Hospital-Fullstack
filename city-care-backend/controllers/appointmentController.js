@@ -45,6 +45,7 @@ exports.bookAppointment = async (req, res) => {
       gender,
       department,
       doctorName: actualDoctorName,
+      doctorId: doctorId || null,
       consultationFee,
       appointmentDate,
       timeSlot,

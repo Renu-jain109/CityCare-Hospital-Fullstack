@@ -25,30 +25,59 @@ export class MyAppointments implements OnInit, OnDestroy {
   
   user = this.authService.currentUser;
   appointments: AppointmentInterface[] = [];
+  filteredAppointments: AppointmentInterface[] = [];
   isLoading = false;
-  
+  searchTerm: string = '';
+
   // Pagination
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 4;
   
   private appointmentsSubscription: Subscription | null = null;
   private currentUserEmail: string | null = null;
   
   get paginatedAppointments(): AppointmentInterface[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.appointments.slice(start, start + this.pageSize);
+    return this.filteredAppointments.slice(start, start + this.pageSize);
   }
-  
+
   get totalPages(): number {
-    return Math.ceil(this.appointments.length / this.pageSize);
+    return Math.ceil(this.filteredAppointments.length / this.pageSize);
   }
-  
+
   get startIndex(): number {
     return (this.currentPage - 1) * this.pageSize + 1;
   }
-  
+
   get endIndex(): number {
-    return Math.min(this.currentPage * this.pageSize, this.appointments.length);
+    return Math.min(this.currentPage * this.pageSize, this.filteredAppointments.length);
+  }
+
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value.toLowerCase();
+    this.filterAppointments();
+    this.currentPage = 1;
+  }
+
+  filterAppointments(): void {
+    if (!this.searchTerm) {
+      this.filteredAppointments = this.appointments;
+    } else {
+      this.filteredAppointments = this.appointments.filter(apt =>
+        apt.patientName?.toLowerCase().includes(this.searchTerm) ||
+        apt.doctorName?.toLowerCase().includes(this.searchTerm) ||
+        apt.department?.toLowerCase().includes(this.searchTerm) ||
+        apt.appointmentCode?.toLowerCase().includes(this.searchTerm) ||
+        apt.status?.toLowerCase().includes(this.searchTerm)
+      );
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.filteredAppointments = this.appointments;
+    this.currentPage = 1;
   }
   
   goToPage(page: number): void {
@@ -101,6 +130,7 @@ export class MyAppointments implements OnInit, OnDestroy {
       next: (data) => {
         console.log('Initial load - appointments:', data.length);
         this.appointments = data;
+        this.filteredAppointments = data; // Initialize filtered list
         this.currentPage = 1; // Reset to first page on new data
         this.isLoading = false;
       },
@@ -126,13 +156,14 @@ export class MyAppointments implements OnInit, OnDestroy {
         }
         
         // Show appointments where user is the patient OR the one who booked (for family bookings)
-        const userAppointments = allAppointments.filter(a => 
+        const userAppointments = allAppointments.filter(a =>
           a.email === userEmail || a.bookedBy === userEmail
         );
         console.log('Filtered for user:', userEmail, '- found:', userAppointments.length, '(as patient or booked-by)');
-        
+
         // Always update the list, even if empty (to clear old data if needed)
         this.appointments = userAppointments;
+        this.filterAppointments(); // Re-apply search filter
         // Reset to first page if current page exceeds total pages
         if (this.currentPage > this.totalPages && this.totalPages > 0) {
           this.currentPage = 1;
@@ -186,20 +217,97 @@ export class MyAppointments implements OnInit, OnDestroy {
     });
   }
 
-  rescheduleAppointment(appointment: AppointmentInterface) {
-    const confirmationData: ConfirmationData = {
-      title: 'Reschedule Appointment',
-      message: `Would you like to reschedule your appointment with ${appointment.doctorName}? You will need to book a new appointment.`,
-      confirmText: 'Book New Appointment',
-      cancelText: 'Cancel'
+  viewDetails(appointment: AppointmentInterface) {
+    const dialogData: HtmlDialogData = {
+      title: 'Appointment Details',
+      message: `
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.5;">
+          <!-- Header -->
+          <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>
+            <h2 style="margin: 0; font-size: 16px; font-weight: bold;">City Care Hospital</h2>
+            <p style="margin: 2px 0 0 0; font-size: 11px; opacity: 0.9;">Appointment Details</p>
+          </div>
+
+          <!-- Appointment Info -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>📋</span> Appointment Information
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Appointment ID</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">#${appointment.appointmentCode || 'N/A'}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Status</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: ${this.getStatusColor(appointment.status)}; font-size: 13px; text-transform: uppercase;">${appointment.status}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Patient Name</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.patientName}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Age / Gender</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.age} years / ${appointment.gender}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Info -->
+          <div style="background: white; padding: 12px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>📅</span> Schedule Information
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Date</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${new Date(appointment.appointmentDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Time Slot</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.timeSlot}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Duration</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">30 minutes</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doctor Info -->
+          <div style="background: white; padding: 12px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h4 style="color: #005EB8; margin: 0 0 10px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+              <span>👨‍⚕️</span> Doctor Information
+            </h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Doctor</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">Dr. ${appointment.doctorName}</p>
+              </div>
+              <div>
+                <p style="margin: 0; font-size: 11px; color: #666;">Department</p>
+                <p style="margin: 2px 0 0 0; font-weight: 600; color: #333; font-size: 13px;">${appointment.department}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      confirmText: 'Close',
+      showCancel: false
     };
-    
-    this.confirmationService.confirm(confirmationData).then(result => {
-      if (result) {
-        // Navigate to book appointment page with pre-filled data
-        console.log('Navigate to book appointment with pre-filled data');
-      }
-    });
+
+    this.htmlDialogService.showDialog(dialogData);
+  }
+
+  private getStatusColor(status: string): string {
+    const colors: { [key: string]: string } = {
+      'confirmed': '#10b981',
+      'pending': '#f59e0b',
+      'completed': '#3b82f6',
+      'cancelled': '#ef4444'
+    };
+    return colors[status] || '#666';
   }
 
   downloadInvoice(appointment: AppointmentInterface) {

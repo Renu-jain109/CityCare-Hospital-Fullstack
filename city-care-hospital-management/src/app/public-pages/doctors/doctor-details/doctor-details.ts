@@ -32,7 +32,12 @@ export class DoctorDetails {
     this.router.navigate(['/']);
   }
   goToBookAppointment(){
-    this.router.navigate(['book-appointment'], {queryParams: {department: this.doctor?.doctorName}});
+    this.router.navigate(['book-appointment'], {
+      queryParams: {
+        department: this.doctor?.departmentName,
+        doctor: this.doctor?.doctorName
+      }
+    });
   }
 }
 
