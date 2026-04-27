@@ -16,6 +16,7 @@ export class DynamicForm implements OnInit {
   @Input() initialData: any = null;
   @Input() buttons: ButtonInterface[] = [];
   @Output() submitForm = new EventEmitter<any>();
+  @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
   @Input() form!: FormGroup;
 
   constructor(private fb: FormBuilder) { };
@@ -43,6 +44,16 @@ export class DynamicForm implements OnInit {
 
       }
 
+    });
+
+    // Subscribe to field changes and emit fieldChange event
+    this.fields.forEach(field => {
+      const control = this.form.get(field.key);
+      if (control) {
+        control.valueChanges.subscribe(value => {
+          this.fieldChange.emit({ key: field.key, value });
+        });
+      }
     });
 
   }
@@ -94,9 +105,9 @@ export class DynamicForm implements OnInit {
     return validators;
   }
 
-  isArray(value: any): boolean {
-    return Array.isArray(value);
-  }
+  // isArray(value: any): boolean {
+  //   return Array.isArray(value);
+  // }
 
   submit() {
     if (this.form.invalid) {

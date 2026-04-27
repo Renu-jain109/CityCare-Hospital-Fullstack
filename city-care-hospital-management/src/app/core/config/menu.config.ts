@@ -43,7 +43,6 @@ export const MENU_ITEMS: MenuItem[] = [
       { label: 'Physiotherapy', route: '/department-details/physiotherapy' },
       { label: 'Neurology', route: '/department-details/neurology' },
       { label: 'Pediatrics', route: '/department-details/pediatrics' },
-      { label: 'General Medicine', route: '/department-details/general-medicine' }
     ]
   },
   {

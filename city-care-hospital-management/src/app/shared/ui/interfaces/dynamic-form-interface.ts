@@ -9,4 +9,5 @@ export interface DynamicFormInterface {
     rows?: number; // for textarea
     value?: any; // for pre-filling in edit mode
     readonly?: boolean; // for read-only fields
+    hidden?: boolean; // for hidden fields
 }

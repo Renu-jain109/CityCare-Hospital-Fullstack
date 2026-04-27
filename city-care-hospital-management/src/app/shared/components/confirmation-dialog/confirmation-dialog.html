@@ -7,12 +7,13 @@
   <!-- Content -->
   <mat-dialog-content class="!p-0 !overflow-visible">
     <div class="p-5 bg-gray-50">
-      @if(data.fields && data.buttons && doctorForm){
+      @if(data.fields && doctorForm){
         <app-dynamic-form 
           [fields]="data.fields" 
-          [buttons]="data.buttons"
+          [buttons]="data.buttons || []"
           [form]="doctorForm"
-          (submitForm)="onSubmit($event)">
+          (submitForm)="onSubmit($event)"
+          (fieldChange)="onFieldChange($event)">
         </app-dynamic-form>
       } @else if(data.message) {
         <div [innerHTML]="data.message"></div>

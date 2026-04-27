@@ -2,7 +2,8 @@ import { DynamicFormInterface } from "../../shared/ui/interfaces/dynamic-form-in
 
 export const DOCTOR_FORM_FIELDS: DynamicFormInterface[] = [
     { key: 'doctorName', label: 'Doctor Name', type: 'text', placeholder: 'Doctor Name', required: true },
-    { key: 'departmentName', label: 'Department', type: 'select', options: [{ label: 'ENT', value: 'ent' }, { label: 'Physician', value: 'physician' }], placeholder: 'Department', required: true },
+    { key: 'departmentId', label: 'Department ID', type: 'text', placeholder: 'Department ID', hidden: true, required: true },
+    { key: 'departmentName', label: 'Department', type: 'select', options: [], placeholder: 'Select Department', required: true },
     { key: 'email', label: 'Email', placeholder: 'Email', type: 'text', required: true },
     { key: 'specialization', label: 'Specialization', placeholder: 'Specialization', type: 'text', required: true },
     { key: 'experience', label: 'Experience (Years)', type: 'text', placeholder: 'Experience', required: true },

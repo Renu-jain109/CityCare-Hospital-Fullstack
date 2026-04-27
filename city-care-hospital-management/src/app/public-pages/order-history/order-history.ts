@@ -5,6 +5,7 @@ import { Card } from '../../shared/ui/card/card';
 import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { PharmacyOrder } from '../../core/interfaces/order-interface';
+import { StatusHelper } from '../../core/utils';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -44,14 +45,7 @@ export class OrderHistory implements OnInit {
     }
   }
 
-  getStatusClass(status: string) {
-    switch (status) {
-      case 'pending': return 'bg-yellow-50 text-yellow-700 border-yellow-100';
-      case 'approved': return 'bg-blue-50 text-blue-700 border-blue-100';
-      case 'out-for-delivery': return 'bg-purple-50 text-purple-700 border-purple-100';
-      case 'delivered': return 'bg-green-50 text-green-700 border-green-100';
-      case 'cancelled': return 'bg-red-50 text-red-700 border-red-100';
-      default: return 'bg-gray-50 text-gray-700 border-gray-100';
-    }
+  getStatusClass(status: string): string {
+    return StatusHelper.getStatusClasses(status);
   }
 }

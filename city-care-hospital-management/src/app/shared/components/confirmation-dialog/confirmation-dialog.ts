@@ -29,4 +29,13 @@ export class ConfirmationDialog {
   onSubmit(formData: any) {
     this.dialogRef.close(formData);
   }
+
+  onFieldChange(event: { key: string; value: any }) {
+    if (event.key === 'departmentName' && this.data.onDepartmentChange) {
+      const additionalData = this.data.onDepartmentChange(event.value);
+      if (additionalData.departmentId) {
+        this.doctorForm.patchValue({ departmentId: additionalData.departmentId });
+      }
+    }
+  }
 }

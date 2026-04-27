@@ -1,4 +1,5 @@
 const Doctor = require('../models/doctor');
+const Department = require('../models/department');
 
 // Get all doctors
 const getAllDoctors = async (req, res) => {
@@ -74,7 +75,15 @@ const addDoctor = async (req, res) => {
 
     const doctor = new Doctor(doctorData);
     const savedDoctor = await doctor.save();
-    
+
+    // Update department - increment numberOfDoctors
+    if (doctorData.departmentId) {
+      await Department.findOneAndUpdate(
+        { departmentId: doctorData.departmentId },
+        { $inc: { numberOfDoctors: 1 } }
+      );
+    }
+
     res.status(201).json({
       message: 'Doctor added successfully',
       doctor: savedDoctor
@@ -95,17 +104,42 @@ const updateDoctor = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    
+
+    // Get existing doctor to check for department change
+    const existingDoctor = await Doctor.findOne({ doctorId: id });
+    if (!existingDoctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    const oldDepartmentId = existingDoctor.departmentId;
+    const newDepartmentId = updateData.departmentId;
+
     const doctor = await Doctor.findOneAndUpdate(
       { doctorId: id },
       updateData,
       { new: true, runValidators: true }
     );
-    
+
     if (!doctor) {
       return res.status(404).json({ message: 'Doctor not found' });
     }
-    
+
+    // Handle department change - update counts only
+    if (newDepartmentId && newDepartmentId !== oldDepartmentId) {
+      // Decrement old department count
+      if (oldDepartmentId) {
+        await Department.findOneAndUpdate(
+          { departmentId: oldDepartmentId },
+          { $inc: { numberOfDoctors: -1 } }
+        );
+      }
+      // Increment new department count
+      await Department.findOneAndUpdate(
+        { departmentId: newDepartmentId },
+        { $inc: { numberOfDoctors: 1 } }
+      );
+    }
+
     res.status(200).json({
       message: 'Doctor updated successfully',
       doctor: doctor
@@ -121,11 +155,19 @@ const deleteDoctor = async (req, res) => {
     const { id } = req.params;
     
     const doctor = await Doctor.findOneAndDelete({ doctorId: id });
-    
+
     if (!doctor) {
       return res.status(404).json({ message: 'Doctor not found' });
     }
-    
+
+    // Update department - decrement numberOfDoctors
+    if (doctor.departmentId) {
+      await Department.findOneAndUpdate(
+        { departmentId: doctor.departmentId },
+        { $inc: { numberOfDoctors: -1 } }
+      );
+    }
+
     res.status(200).json({
       message: 'Doctor deleted successfully',
       doctor: doctor

@@ -10,6 +10,7 @@ import { DEPARTMENT_FORM_FIELDS, validateDepartmentForm } from '../../../../core
 import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { DepartmentService } from '../../../../core/services/department-service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { StatusHelper, SearchFilterHelper } from '../../../../core/utils';
 
 @Component({
   selector: 'app-department-list',
@@ -46,6 +47,7 @@ export class DepartmentList implements OnInit {
     { key: 'departmentId', label: 'Department ID' },
     { key: 'departmentName', label: 'Department Name' },
     { key: 'headOfDepartment', label: 'Head of Department' },
+    { key: 'numberOfDoctors', label: 'Doctors' },
     { key: 'status', label: 'Status' }
   ];
 
@@ -142,45 +144,6 @@ export class DepartmentList implements OnInit {
           data: {
             title: 'Department Details',
             message: this.sanitizer.bypassSecurityTrustHtml(htmlContent)
-            
-            
-            // `
-            // <div style="text-align: left; line-height: 1.6;">
-            //   <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            //     <h3 style="margin: 0 0 10px 0; color: #2563eb; font-size: 18px;">📋 Basic Information</h3>
-            //     <p><strong>Department ID:</strong> ${event.row.departmentId || 'N/A'}</p>
-            //     <p><strong>Department Name:</strong> ${event.row.departmentName || 'N/A'}</p>
-            //     <p><strong>Head of Department:</strong> ${event.row.headOfDepartment || 'N/A'}</p>
-            //     <p><strong>Status:</strong> <span style="color: ${this.getStatusColor(event.row.status)}; font-weight: bold;">● ${event.row.status || 'N/A'}</span></p>
-            //   </div>
-              
-            //   <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            //     <h3 style="margin: 0 0 10px 0; color: #1e40af; font-size: 18px;">🌐 Details</h3>
-            //     <p><strong>Subtitle:</strong> ${event.row.subtitle || 'N/A'}</p>
-            //     <p><strong>Number of Doctors:</strong> ${event.row.numberOfDoctors}</p>
-            //     <p><strong>Description:</strong></p>
-            //     <div style="background: #f1f3f4; padding: 10px; border-radius: 4px; max-height: 150px; overflow-y: auto;">
-            //       ${event.row.description || 'N/A'}
-            //     </div>
-            //   </div>
-              
-            //   <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            //     <h3 style="margin: 0 0 10px 0; color: #f59e0b; font-size: 18px;">⚕ Medical Information</h3>
-            //     <p><strong>Treatments:</strong></p>
-            //     <div style="background: #fff; padding: 10px; border-radius: 4px; margin-top: 5px;">
-            //       ${event.row.treatments && event.row.treatments.length > 0 ?
-            //     event.row.treatments.map((treatment: string, index: number) =>
-            //       `<span style="display: inline-block; background: #3b82f6; color: white; padding: 4px 8px; margin: 2px; border-radius: 4px; font-size: 12px;">${index + 1}</span> ${treatment}`
-            //     ).join('') :
-            //     '<span style="color: #666;">No treatments added</span>'
-            //   }
-            //     </div>
-                
-            //     <p><strong>Linked Doctor IDs:</strong> ${event.row.doctorIds && event.row.doctorIds.length > 0 ? event.row.doctorIds.join(', ') : 'No doctors linked'}</p>
-            //     <p><strong>Number of Doctors:</strong> ${event.row.numberOfDoctors || '0'}</p>
-            //   </div>
-            // </div>
-            // `
           }
         });
         break;
@@ -221,7 +184,6 @@ export class DepartmentList implements OnInit {
         const departmentId = department.departmentId || department._id;
         this.departmentService.deleteDepartment(departmentId).subscribe({
           next: (response: any) => {
-            console.log('Department deleted successfully:', response);
             this.refreshDepartmentsList(); // Refresh list
             this.filterDepartments(); // Re-apply search filter
           },
@@ -302,15 +264,12 @@ export class DepartmentList implements OnInit {
           return;
         }
 
-        console.log('Department data:', result);
         this.departmentService.addDepartment(result).subscribe({
-          next: (response) => {
-            console.log('Department added successfully:', response);
-            // Refresh departments list
+          next: (response: any) => {
             this.refreshDepartmentsList();
             this.clearSearch(); // Clear search to show new department
           },
-          error: (error) => {
+          error: (error: any) => {
             console.error('Error adding department:', error);
             if (error.status === 400) {
               if (error.error?.message?.includes('already exists')) {
@@ -380,11 +339,9 @@ export class DepartmentList implements OnInit {
 
         this.departmentService.updateDepartment(updateId, result).subscribe({
           next: (response: any) => {
-            console.log('Department updated successfully:', response);
-
             // Refresh departments list
             this.refreshDepartmentsList();
-            this.filterDepartments(); // Re-apply search filter
+            this.filterDepartments();
           },
           error: (error: any) => {
             console.error('Error updating department:', error);
@@ -405,22 +362,12 @@ export class DepartmentList implements OnInit {
             }
           }
         });
-      } else {
-        console.log('Form cancelled or closed');
       }
     });
   }
 
   private getStatusColor(status: string): string {
-    switch (status?.toLowerCase()) {
-      case 'active': return '#28a745';
-      case 'inactive': return '#dc3545';
-      case 'confirmed': return '#28a745';
-      case 'cancelled': return '#dc3545';
-      case 'completed': return '#17a2b8';
-      case 'pending': return '#ffc107';
-      default: return '#6c757d';
-    }
+    return StatusHelper.getStatusColor(status);
   }
 
 }

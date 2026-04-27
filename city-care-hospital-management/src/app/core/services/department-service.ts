@@ -23,7 +23,7 @@ export class DepartmentService {
   }
 
   // For public pages - detailed department info
-  departments: DepartmentInterface[] = []
+  // departments: DepartmentInterface[] = []
 
   // Backend API methods for admin
   addDepartment(departmentData: any): Observable<any> {
@@ -100,8 +100,8 @@ export class DepartmentService {
   }
 
   // For public pages - detailed department info
-  getAllDepartments(): DepartmentInterface[] {
-    return this.departments
-  }
+  // getAllDepartments(): Observable<DepartmentInterface[]> {
+  //   return this.http.get<DepartmentInterface[]>(`${environment.apiUrl}/departments`, { headers: this.getAuthHeaders() });
+  // }
 
 }

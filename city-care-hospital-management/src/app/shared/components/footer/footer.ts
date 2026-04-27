@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
 export class Footer {
 
   site = SITE_CONFIG;
-  phoneNo = SITE_CONFIG;
-  email = SITE_CONFIG;
+  phone = SITE_CONFIG.phone;
+  email = SITE_CONFIG.email;
 
 }

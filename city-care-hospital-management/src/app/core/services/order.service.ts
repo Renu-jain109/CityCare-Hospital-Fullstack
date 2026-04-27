@@ -23,6 +23,15 @@ export class OrderService {
     });
   }
 
+  // Helper method to get headers with admin authentication
+  private getAdminAuthHeaders(): HttpHeaders {
+    const token = this.authService.getAdminToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
   // Place a new pharmacy order
   createOrder(order: PharmacyOrder): Observable<PharmacyOrder> {
     return this.http.post<PharmacyOrder>(this.apiUrl, order, { headers: this.getAuthHeaders() });
@@ -35,11 +44,11 @@ export class OrderService {
 
   // Get all orders for Admin
   getAllOrders(): Observable<PharmacyOrder[]> {
-    return this.http.get<PharmacyOrder[]>(this.apiUrl, { headers: this.getAuthHeaders() });
+    return this.http.get<PharmacyOrder[]>(this.apiUrl, { headers: this.getAdminAuthHeaders() });
   }
 
   // Update order status (Admin)
   updateOrderStatus(orderId: string, status: string): Observable<PharmacyOrder> {
-    return this.http.put<PharmacyOrder>(`${this.apiUrl}/${orderId}/status`, { status }, { headers: this.getAuthHeaders() });
+    return this.http.put<PharmacyOrder>(`${this.apiUrl}/${orderId}/status`, { status }, { headers: this.getAdminAuthHeaders() });
   }
 }

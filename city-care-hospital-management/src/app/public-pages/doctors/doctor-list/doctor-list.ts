@@ -29,6 +29,10 @@ export class DoctorList implements OnInit {
   selectedExperience: string = '';
   selectedAvailability: string = '';
 
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+
   // View mode
   showAllDoctors: boolean = false;
 
@@ -46,11 +50,49 @@ export class DoctorList implements OnInit {
     { label: 'Not Available', value: 'off' }
   ];
 
+  // Get paginated doctors
+  get paginatedDoctors(): DoctorInterface[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredDoctors.slice(startIndex, endIndex);
+  }
+
+  // Get total pages
+  get totalPages(): number {
+    return Math.ceil(this.filteredDoctors.length / this.itemsPerPage);
+  }
+
+  // Get page numbers array
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  // Navigate to specific page
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Next page
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Previous page
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
   ngOnInit() {
     // Load only Active doctors for public UI
     this.doctorService.getActiveDoctors().subscribe((doctors) => {
       this.allDoctor = doctors;
-      this.filteredDoctors = doctors;
+      this.applyFilters();
     });
 
     // Load only Active departments for public UI
@@ -186,6 +228,9 @@ export class DoctorList implements OnInit {
 
       return true;
     });
+
+    // Reset to first page when filters change
+    this.currentPage = 1;
   }
 
   navigateToDoctorDetails(slug: string) {

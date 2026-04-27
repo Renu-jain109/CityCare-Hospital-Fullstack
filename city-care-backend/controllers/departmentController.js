@@ -1,10 +1,23 @@
 const Department = require('../models/department');
+const Doctor = require('../models/doctor');
 
 // Get all departments
 const getAllDepartments = async (req, res) => {
   try {
     const departments = await Department.find().sort({ name: 1 });
-    res.status(200).json(departments);
+
+    // Calculate actual number of doctors for each department
+    const departmentsWithDoctorCount = await Promise.all(
+      departments.map(async (dept) => {
+        const doctorCount = await Doctor.countDocuments({ departmentId: dept.departmentId });
+        return {
+          ...dept.toObject(),
+          numberOfDoctors: doctorCount
+        };
+      })
+    );
+
+    res.status(200).json(departmentsWithDoctorCount);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -14,7 +27,19 @@ const getAllDepartments = async (req, res) => {
 const getActiveDepartments = async (req, res) => {
   try {
     const departments = await Department.find({ status: 'Active' }).sort({ name: 1 });
-    res.status(200).json(departments);
+
+    // Calculate actual number of doctors for each department
+    const departmentsWithDoctorCount = await Promise.all(
+      departments.map(async (dept) => {
+        const doctorCount = await Doctor.countDocuments({ departmentId: dept.departmentId });
+        return {
+          ...dept.toObject(),
+          numberOfDoctors: doctorCount
+        };
+      })
+    );
+
+    res.status(200).json(departmentsWithDoctorCount);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -27,7 +52,17 @@ const getDepartmentById = async (req, res) => {
     if (!department) {
       return res.status(404).json({ message: 'Department not found' });
     }
-    res.status(200).json(department);
+
+    // Calculate actual number of doctors for this department
+    const doctorCount = await Doctor.countDocuments({ departmentId: department.departmentId });
+
+    // Return department with actual doctor count
+    const deptWithCount = {
+      ...department.toObject(),
+      numberOfDoctors: doctorCount
+    };
+
+    res.status(200).json(deptWithCount);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

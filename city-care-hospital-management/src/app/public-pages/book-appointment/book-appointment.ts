@@ -16,16 +16,18 @@ import { DepartmentService } from '../../core/services/department-service';
 import { AppointmentService } from '../../core/services/appointment-service';
 import { AuthService } from '../../core/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmationDialog } from '../../shared/components/confirmation-dialog/confirmation-dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DateHelper } from '../../core/utils';
 
 @Component({
   selector: 'app-book-appointment',
   standalone: true,
-  imports: [CommonModule, Heading, Card, Button, FormsModule, ReactiveFormsModule, DynamicForm, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule],
+  imports: [CommonModule, Heading, Card, Button, FormsModule, ReactiveFormsModule, DynamicForm, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule, MatSnackBarModule],
   templateUrl: './book-appointment.html',
   styleUrl: './book-appointment.css',
 })
@@ -36,6 +38,7 @@ export class BookAppointment implements OnInit {
   fb = inject(FormBuilder)
   departmentService = inject(DepartmentService)
   appointmentService = inject(AppointmentService)
+  snackBar = inject(MatSnackBar)
   route = inject(ActivatedRoute)
   doctorService = inject(DoctorService)
   authService = inject(AuthService)
@@ -71,34 +74,30 @@ export class BookAppointment implements OnInit {
       if (dateControl) {
         dateControl.valueChanges.subscribe(date => {
           // Use preFilledDoctor if doctor field is disabled, otherwise get from form
-          const doctorName = this.preFilledDoctor || this.appointmentForm.getRawValue().doctorName;
+          const rawValue = this.appointmentForm.getRawValue();
+          const doctorName = this.preFilledDoctor || rawValue.doctorName;
+
+          // If doctorsList is empty, reload doctors from selected department first
+          const departmentName = this.preFilledDepartment || rawValue.department;
+          if (this.doctorsList.length === 0 && departmentName) {
+            this.loadDoctorsForDepartment(departmentName);
+          }
+
           // Lookup doctorId from stored doctors list
           const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === doctorName);
           const doctorId = selectedDoctor?.doctorId || selectedDoctor?._id || selectedDoctor?.id;
 
           // Convert date to ISO format (yyyy-mm-dd) for API
-          let formattedDate = date;
-          if (date instanceof Date) {
-            formattedDate = date.toISOString().split('T')[0];
-          } else if (typeof formattedDate === 'string' && formattedDate.includes('-')) {
-            const parts = formattedDate.split('-');
-            if (parts.length === 3 && parts[0].length === 2) {
-              // Convert from dd-mm-yyyy to yyyy-mm-dd
-              formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
-          }
+          const formattedDate = DateHelper.toISODate(date);
 
-          console.log('Frontend - doctorId sent:', doctorId, 'doctorName:', doctorName);
           if (doctorId && formattedDate) {
             this.appointmentService.getSlotByDate(doctorId, formattedDate).subscribe((slots: any[]) => {
-              console.log('Slots from backend:', slots);
               // Show all slots - booked ones will be disabled (no color change)
               const allSlots = slots.map(slot => ({
                 label: slot.time,
                 value: slot.time,
                 disabled: slot.isBooked
               }));
-              console.log('Processed slots:', allSlots);
               this.setSelectOptions('timeSlot', allSlots);
             });
           }
@@ -216,6 +215,12 @@ export class BookAppointment implements OnInit {
             this.appointmentForm.get('doctorName')?.disable();
             this.hideDoctorField();
           }
+
+          // If date was already selected, load slots now for the selected doctor
+          const selectedDate = this.appointmentForm.getRawValue().appointmentDate;
+          if (selectedDate && (this.preFilledDoctor || this.appointmentForm.getRawValue().doctorName)) {
+            this.loadSlotsForSelectedDoctorAndDate(selectedDate);
+          }
         }
       },
       error: () => {
@@ -226,12 +231,55 @@ export class BookAppointment implements OnInit {
     });
   }
 
+  private loadSlotsForSelectedDoctorAndDate(date: any): void {
+    const rawValue = this.appointmentForm.getRawValue();
+    const doctorName = this.preFilledDoctor || rawValue.doctorName;
+    const selectedDoctor = this.doctorsList.find((doc: any) => doc.doctorName === doctorName);
+    const doctorId = selectedDoctor?.doctorId || selectedDoctor?._id || selectedDoctor?.id;
+
+    if (!doctorId || !date) return;
+
+    // Convert date to ISO format
+    let formattedDate = date;
+    if (date instanceof Date) {
+      formattedDate = date.toISOString().split('T')[0];
+    } else if (typeof date === 'string' && date.includes('-')) {
+      const parts = date.split('-');
+      if (parts.length === 3 && parts[0].length === 2) {
+        formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+    }
+
+    this.appointmentService.getSlotByDate(doctorId, formattedDate).subscribe((slots: any[]) => {
+      const allSlots = slots.map(slot => ({
+        label: slot.time,
+        value: slot.time,
+        disabled: slot.isBooked
+      }));
+      this.setSelectOptions('timeSlot', allSlots);
+    });
+  }
+
   hideDoctorField() {
     // Remove doctorName field from visible form fields
     this.appintmentFields = this.appintmentFields.filter(f => f.key !== 'doctorName');
   }
 
   onSubmit(): void {
+    // Check if user is logged in
+    const currentUser = this.authService.currentUser();
+    if (!currentUser || !currentUser.email) {
+      // Show error toast and redirect to login
+      this.snackBar.open('Please login first to book an appointment', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar']
+      });
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.appointmentForm.invalid) {
       this.appointmentForm.markAllAsTouched();
       return;
@@ -260,7 +308,6 @@ export class BookAppointment implements OnInit {
     }
 
     // Get logged-in user's email (the person making the booking)
-    const currentUser = this.authService.currentUser();
     const bookedByEmail = currentUser?.email || null;
 
     const appointmentData = {
@@ -272,8 +319,6 @@ export class BookAppointment implements OnInit {
       age: Number(formData.age),
       bookedBy: bookedByEmail // Track who made the booking (for family appointments)
     };
-
-    console.log('Sending appointment data:', JSON.stringify(appointmentData, null, 2));
 
     this.appointmentService.bookAppointment(appointmentData).subscribe({
       next: (appointment) => {
@@ -394,9 +439,7 @@ export class BookAppointment implements OnInit {
       },
 
       error: (err: any) => {
-        console.error('Full error object:', err);
-        console.error('Error status:', err.status);
-        console.error('Error body:', err.error);
+        console.error('Error booking appointment:', err);
         const errorMsg = err.error?.message || err.error || err.message || 'Unknown error';
         alert(`Unable to book appointment. Error: ${errorMsg}`);
       }

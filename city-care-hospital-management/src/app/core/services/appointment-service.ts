@@ -87,6 +87,15 @@ export class AppointmentService implements OnDestroy {
     });
   }
 
+  // Helper method to get headers with admin authentication
+  private getAdminAuthHeaders(): HttpHeaders {
+    const token = this.authService.getAdminToken();
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
 
   bookAppointment(data: AppointmentInterface): Observable<any> {
     return this.http.post(`${this.apiUrl}/appointments`, data, { headers: this.getAuthHeaders() }).pipe(
@@ -102,7 +111,7 @@ export class AppointmentService implements OnDestroy {
 
   getAllAppointments(): Observable<AppointmentInterface[]> {
     return this.http
-      .get<AppointmentInterface[]>(`${this.apiUrl}/appointments`, { headers: this.getAuthHeaders() })
+      .get<AppointmentInterface[]>(`${this.apiUrl}/appointments`, { headers: this.getAdminAuthHeaders() })
       .pipe(
         map((appointments) => appointments.map((a) => ({
           ...a,
@@ -149,9 +158,9 @@ export class AppointmentService implements OnDestroy {
     );
   }
 
-  deleteById(id: string): void {
-    this.appointments = this.appointments.filter(appointment => 
-      appointment.appointmentCode !== id && appointment._id !== id
-    );
-  }
+  // deleteById(id: string): void {
+  //   this.appointments = this.appointments.filter(appointment => 
+  //     appointment.appointmentCode !== id && appointment._id !== id
+  //   );
+  // }
 }

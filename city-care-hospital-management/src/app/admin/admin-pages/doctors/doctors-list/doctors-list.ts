@@ -13,6 +13,7 @@ import { DOCTOR_FORM_FIELDS } from '../../../../core/config/doctor-form-fields.c
 import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
 import { Heading } from '../../../../shared/ui/heading/heading';
 import { DomSanitizer } from '@angular/platform-browser';
+import { StatusHelper, SearchFilterHelper } from '../../../../core/utils';
   
 @Component({
   selector: 'app-doctors-list',
@@ -69,9 +70,7 @@ export class DoctorsList implements OnInit {
   ngOnInit(): void {
     // Load departments for form options
     this.departmentService.getAllDepartmentsFromBackend().subscribe({
-      next: (departments) => {
-        console.log('Departments loaded:', departments);
-      },
+      next: (departments) => {},
       error: (error) => {
         console.error('Error loading departments:', error);
       }
@@ -203,7 +202,6 @@ export class DoctorsList implements OnInit {
         const doctorId = doctor.doctorId || doctor._id;
         this.doctorService.deleteDoctor(doctorId).subscribe({
           next: (response: any) => {
-            console.log('Doctor deleted successfully:', response);
             // Refresh doctors list
             this.doctorService.getAllDoctors().subscribe((doctors) => {
               this.doctorData = doctors;
@@ -231,17 +229,7 @@ export class DoctorsList implements OnInit {
   }
 
   filterDoctors(): void {
-    if (!this.searchTerm) {
-      this.filteredDoctorData = this.doctorData;
-    } else {
-      this.filteredDoctorData = this.doctorData.filter(doctor =>
-        doctor.doctorName?.toLowerCase().includes(this.searchTerm) ||
-        doctor.departmentName?.toLowerCase().includes(this.searchTerm) ||
-        doctor.doctorId?.toLowerCase().includes(this.searchTerm) ||
-        doctor.email?.toLowerCase().includes(this.searchTerm) ||
-        doctor.mobile?.toLowerCase().includes(this.searchTerm)
-      );
-    }
+    this.filteredDoctorData = SearchFilterHelper.filterDoctors(this.doctorData, this.searchTerm);
   }
 
   clearSearch(): void {
@@ -260,26 +248,32 @@ export class DoctorsList implements OnInit {
         if (departmentField) {
           departmentField.options = departments.map((dept: any) => ({
             label: dept.departmentName || dept,
-            value: dept.departmentName || dept
+            value: dept.departmentName || dept,
+            departmentId: dept.departmentId
           }));
         }
-        
+
         // Now open the dialog with populated departments
         const dialogRef = this.dialog.open(ConfirmationDialog, {
           width: '650px',
           data: {
             title: 'Add Doctor',
             fields: this.doctorFields,
-            buttons: this.buttons
+            buttons: this.buttons,
+            onDepartmentChange: (deptName: string) => {
+              const selectedDept = departments.find((d: any) => d.departmentName === deptName);
+              if (selectedDept) {
+                return { departmentId: selectedDept.departmentId };
+              }
+              return {};
+            }
           }
         });
 
         dialogRef.afterClosed().subscribe(result => {
           if (result) {
-            console.log('Doctor data:', result);
             this.doctorService.addDoctor(result).subscribe({
               next: (response: any) => {
-                console.log('Doctor added successfully:', response);
                 // Refresh the doctors list
                 this.doctorService.getAllDoctors().subscribe((doctors) => {
                   this.doctorData = doctors;
@@ -320,13 +314,15 @@ export class DoctorsList implements OnInit {
     });
     
     // Update department options dynamically
+    let departments: any[] = [];
     const departmentField = this.doctorFields.find(field => field.key === 'departmentName');
     if (departmentField) {
       this.departmentService.getAllDepartmentsFromBackend().subscribe({
-        next: (departments) => {
-          departmentField.options = departments.map((dept: any) => ({ 
-            label: dept.departmentName || dept, 
-            value: dept.departmentName || dept 
+        next: (depts) => {
+          departments = depts;
+          departmentField.options = depts.map((dept: any) => ({
+            label: dept.departmentName || dept,
+            value: dept.departmentName || dept
           }));
         },
         error: (error: any) => {
@@ -346,16 +342,21 @@ export class DoctorsList implements OnInit {
           type: 'submit',
           icon: 'fa-solid fa-save',
           customClass: 'flex justify-end'
-        }]
+        }],
+        onDepartmentChange: (deptName: string) => {
+          const selectedDept = departments.find((d: any) => d.departmentName === deptName);
+          if (selectedDept) {
+            return { departmentId: selectedDept.departmentId };
+          }
+          return {};
+        }
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Updated doctor data:', result);
         this.doctorService.updateDoctor(doctor.doctorId, result).subscribe({
           next: (response: any) => {
-            console.log('Doctor updated successfully:', response);
             // Refresh the doctors list
             this.doctorService.getAllDoctors().subscribe((doctors) => {
               this.doctorData = doctors;
@@ -372,15 +373,7 @@ export class DoctorsList implements OnInit {
   }
 
   private getStatusColor(status: string): string {
-    switch (status?.toLowerCase()) {
-      case 'active': return '#28a745';
-      case 'inactive': return '#dc3545';
-      case 'confirmed': return '#28a745';
-      case 'cancelled': return '#dc3545';
-      case 'completed': return '#17a2b8';
-      case 'pending': return '#ffc107';
-      default: return '#6c757d';
-    }
+    return StatusHelper.getStatusColor(status);
   }
 
 

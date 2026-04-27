@@ -21,7 +21,8 @@ export class Home implements OnInit {
 
   constructor(public router: Router) { }
   departmentService = inject(DepartmentService)
-  departments: DepartmentInterface[] = this.departmentService.departments
+  // departments: DepartmentInterface[] = this.departmentService.getAllDepartmentsFromBackend().subscribe(data => data);
+  departments: DepartmentInterface[] = [];
 
   mobileMenu = false;
   displayCount = 10;

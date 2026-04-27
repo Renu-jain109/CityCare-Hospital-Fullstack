@@ -37,23 +37,16 @@ export class AuthService {
   }
 
   login(credentials: { email: string, password: string }, isAdminLogin: boolean = false) {
-    console.log('Login attempt - isAdminLogin:', isAdminLogin, 'credentials:', credentials);
-    
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
-        console.log('Login response:', res);
-        
         if (isAdminLogin && res.role !== 'admin') {
           throw new Error('Not authorized as an admin');
         }
         
         if (isAdminLogin) {
-          console.log('Storing admin data:', res);
           localStorage.setItem('admin', JSON.stringify(res));
           this.currentAdmin.set(res);
-          console.log('Admin stored in localStorage:', localStorage.getItem('admin'));
         } else {
-          console.log('Storing user data:', res);
           localStorage.setItem('user', JSON.stringify(res));
           this.currentUser.set(res);
         }
@@ -100,9 +93,9 @@ export class AuthService {
     return null;
   }
 
-  getCurrentUser() {
-    return this.currentUser();
-  }
+  // getCurrentUser() {
+  //   return this.currentUser();
+  // }
 
   getCurrentAdmin() {
     return this.currentAdmin();

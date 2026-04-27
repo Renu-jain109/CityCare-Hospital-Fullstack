@@ -3,7 +3,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Heading } from "../../../shared/ui/heading/heading";
 import { SpecialitiesCard } from '../../../shared/sections/specialities-card/specialities-card';
-import { Button } from '../../../shared/ui/button/button';
 import { FilterBar, FilterOption, FilterValues } from '../../../shared/ui/filter-bar/filter-bar';
 import { DepartmentService } from '../../../core/services/department-service';
 import { DepartmentInterface } from '../../../core/interfaces/department-interface';
@@ -11,7 +10,7 @@ import { DepartmentInterface } from '../../../core/interfaces/department-interfa
 
 @Component({
   selector: 'app-department',
-  imports: [CommonModule, SpecialitiesCard, Heading, Button, FilterBar],
+  imports: [CommonModule, SpecialitiesCard, Heading, FilterBar],
   templateUrl: './department.html',
   styleUrl: './department.css',
 })
@@ -40,7 +39,6 @@ export class Department implements OnInit {
   ngOnInit() {
     // Load only Active departments for public UI
     this.departmentService.getActiveDepartments().subscribe((data) => {
-      console.log('Active departments data', data);
       this.departments = data;
       this.filteredDepartments = [...data];
     });

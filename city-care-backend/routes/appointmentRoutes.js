@@ -4,8 +4,8 @@ const appointmentController = require('../controllers/appointmentController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Get available slots for a doctor on a specific date
-router.get('/slots', authMiddleware.protect, appointmentController.getSlotsByDate);
+// Get available slots for a doctor on a specific date (public - no auth required)
+router.get('/slots', appointmentController.getSlotsByDate);
 
 // Create new appointment
 router.post('/', async (req, res) => {

@@ -12,6 +12,7 @@ import { DoctorService } from '../../../../core/services/doctor-service';
 import { DepartmentService } from '../../../../core/services/department-service';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+import { StatusHelper } from '../../../../core/utils';
 
 @Component({
   selector: 'app-appointment-list',
@@ -478,8 +479,7 @@ export class AppointmentList implements OnInit {
       }
     }).afterClosed().subscribe(result => {
       if (result) {
-        // Here you would implement actual PDF generation
-        console.log('Download invoice PDF for:', invoiceData);
+        // PDF generation to be implemented
       }
     });
   }
@@ -537,15 +537,6 @@ export class AppointmentList implements OnInit {
   }
 
   getStatusColor(status: string): string {
-    switch (status?.toLowerCase()) {
-      case 'active': return '#28a745';
-      case 'inactive': return '#dc3545';
-      case 'confirmed': return '#28a745';
-      case 'cancelled': return '#dc3545';
-      case 'completed': return '#17a2b8';
-      case 'pending': return '#ffc107';
-      case 'scheduled': return '#007bff';
-      default: return '#6c757d';
-    }
+    return StatusHelper.getStatusColor(status);
   }
 }

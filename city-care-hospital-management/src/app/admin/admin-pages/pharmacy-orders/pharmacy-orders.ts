@@ -5,6 +5,7 @@ import { Card } from '../../../shared/ui/card/card';
 import { OrderService } from '../../../core/services/order.service';
 import { PharmacyOrder } from '../../../core/interfaces/order-interface';
 import { FormsModule } from '@angular/forms';
+import { StatusHelper } from '../../../core/utils';
 
 @Component({
   selector: 'app-pharmacy-orders',
@@ -19,6 +20,10 @@ export class PharmacyOrders implements OnInit {
   orders: PharmacyOrder[] = [];
   isLoading = true;
 
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
   ngOnInit() {
     this.fetchAllOrders();
   }
@@ -28,6 +33,7 @@ export class PharmacyOrders implements OnInit {
     this.orderService.getAllOrders().subscribe({
       next: (data) => {
         this.orders = data;
+        
         this.isLoading = false;
       },
       error: (err) => {
@@ -54,14 +60,45 @@ export class PharmacyOrders implements OnInit {
     });
   }
 
-  getStatusClass(status: string) {
-    switch (status) {
-      case 'pending': return 'bg-yellow-50 text-yellow-700 border-yellow-100';
-      case 'approved': return 'bg-blue-50 text-blue-700 border-blue-100';
-      case 'out-for-delivery': return 'bg-purple-50 text-purple-700 border-purple-100';
-      case 'delivered': return 'bg-green-50 text-green-700 border-green-100';
-      case 'cancelled': return 'bg-red-50 text-red-700 border-red-100';
-      default: return 'bg-gray-50 text-gray-700 border-gray-100';
+  getStatusClass(status: string): string {
+    return StatusHelper.getStatusClasses(status);
+  }
+
+  // Get paginated orders for display
+  get paginatedOrders(): PharmacyOrder[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.orders.slice(startIndex, endIndex);
+  }
+
+  // Get total pages
+  get totalPages(): number {
+    return Math.ceil(this.orders.length / this.itemsPerPage);
+  }
+
+  // Get page numbers array
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  // Navigate to specific page
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  // Next page
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Previous page
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
     }
   }
 }

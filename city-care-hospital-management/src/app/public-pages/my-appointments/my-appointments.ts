@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 import { ConfirmationService, ConfirmationData } from '../../core/services/confirmation.service';
 import { HtmlDialogService, HtmlDialogData } from '../../core/services/html-dialog.service';
 import { Subscription } from 'rxjs';
+import { StatusHelper } from '../../core/utils';
 
 @Component({
   selector: 'app-my-appointments',
@@ -102,14 +103,12 @@ export class MyAppointments implements OnInit, OnDestroy {
     const currentUser = this.user();
     if (currentUser && currentUser.email) {
       this.currentUserEmail = currentUser.email;
-      console.log('ngOnInit - loading appointments for:', this.currentUserEmail);
       this.loadAppointmentsAndSetupRealtime(currentUser.email);
     }
   }
 
   ngOnDestroy() {
     if (this.appointmentsSubscription) {
-      console.log('Unsubscribing from appointments');
       this.appointmentsSubscription.unsubscribe();
       this.appointmentsSubscription = null;
     }
@@ -125,41 +124,26 @@ export class MyAppointments implements OnInit, OnDestroy {
     }
     
     // Step 2: Load initial data
-    console.log('Loading initial appointments for:', userEmail);
     this.appointmentService.getAppointmentsByPatient(userEmail).subscribe({
       next: (data) => {
-        console.log('Initial load - appointments:', data.length);
         this.appointments = data;
         this.filteredAppointments = data; // Initialize filtered list
         this.currentPage = 1; // Reset to first page on new data
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Initial load error:', err);
+        console.error('Error loading appointments:', err);
         this.isLoading = false;
       }
     });
-    
+
     // Step 3: Subscribe to real-time updates
-    console.log('Subscribing to real-time updates');
-    console.log('Current BehaviorSubject value:', this.appointmentService.appointmentsSubject.value.length);
-    
     this.appointmentsSubscription = this.appointmentService.appointments$.subscribe({
       next: (allAppointments) => {
-        console.log('=== REAL-TIME UPDATE ===');
-        console.log('Received appointments:', allAppointments.length);
-        console.log('BehaviorSubject direct value:', this.appointmentService.appointmentsSubject.value.length);
-        
-        if (allAppointments.length === 0) {
-          console.warn('WARNING: Received 0 appointments in real-time update!');
-          console.warn('This means admin updates are not reaching this user.');
-        }
-        
         // Show appointments where user is the patient OR the one who booked (for family bookings)
         const userAppointments = allAppointments.filter(a =>
           a.email === userEmail || a.bookedBy === userEmail
         );
-        console.log('Filtered for user:', userEmail, '- found:', userAppointments.length, '(as patient or booked-by)');
 
         // Always update the list, even if empty (to clear old data if needed)
         this.appointments = userAppointments;
@@ -169,7 +153,6 @@ export class MyAppointments implements OnInit, OnDestroy {
           this.currentPage = 1;
         }
         this.isLoading = false;
-        console.log('=== END REAL-TIME UPDATE ===');
       },
       error: (err) => {
         console.error('Real-time subscription error:', err);
@@ -186,7 +169,7 @@ export class MyAppointments implements OnInit, OnDestroy {
             this.isLoading = false;
         },
         error: (err) => {
-            console.error('Error loading appointments', err);
+            console.error('Error loading appointments:', err);
             this.isLoading = false;
         }
     });
@@ -207,10 +190,9 @@ export class MyAppointments implements OnInit, OnDestroy {
           next: () => {
             // Update local status
             appointment.status = 'cancelled';
-            console.log('Appointment cancelled successfully');
           },
           error: (err: any) => {
-            console.error('Error cancelling appointment', err);
+            console.error('Error cancelling appointment:', err);
           }
         });
       }
@@ -301,13 +283,7 @@ export class MyAppointments implements OnInit, OnDestroy {
   }
 
   private getStatusColor(status: string): string {
-    const colors: { [key: string]: string } = {
-      'confirmed': '#10b981',
-      'pending': '#f59e0b',
-      'completed': '#3b82f6',
-      'cancelled': '#ef4444'
-    };
-    return colors[status] || '#666';
+    return StatusHelper.getStatusColor(status);
   }
 
   downloadInvoice(appointment: AppointmentInterface) {
@@ -416,7 +392,6 @@ export class MyAppointments implements OnInit, OnDestroy {
     
     this.htmlDialogService.showDialog(dialogData).then(result => {
       if (result) {
-        console.log('Download invoice PDF for:', invoiceData);
         // Here you would implement actual PDF generation
         this.confirmationService.confirm({
           title: 'PDF Download',
