@@ -17,7 +17,6 @@ export const DEPARTMENT_FORM_FIELDS: DynamicFormInterface[] = [
   // Step 3: Medical Info (Optional)
   { key: 'treatments', label: 'Treatments', type: 'textarea', placeholder: 'Enter treatments separated by commas', required: false },
   { key: 'faqs', label: 'FAQs', type: 'textarea', placeholder: 'Question1?Answer1||Question2?Answer2', required: false },
-  { key: 'doctorIds', label: 'Linked Doctor IDs', type: 'textarea', placeholder: 'Enter doctor IDs separated by commas', required: false }
 ];
 
 // Validation function for department form

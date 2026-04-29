@@ -1,90 +1,179 @@
 <div class="relative overflow-visible bg-white shadow rounded-lg border ">
+
     <table class="w-full text-sm text-left">
+
         <thead class="text-sm text-body bg-gray-300 border-b">
+
             <tr>
+
                 @for(col of columns; track col.key){
+
                 <th class="px-6 py-3 text-md font-bold">
+
                     {{ col.label }}
+
                 </th>
+
                 }
 
+
+
                 @if(showActions){
+
                 <th class="px-6 py-3 text-md font-bold">
+
                     Action
+
                 </th>
+
                 }
+
             </tr>
+
         </thead>
 
+
+
         <tbody>
+
             @for( row of paginatedData; track getTrackBy(row)){
+
             <tr class="border-b border-default hover:bg-gray-100">
 
+
+
                 @for( col of columns; track col.key){
+
                 <td class="px-6 py-4">
+
                     @if(col.key === 'status'){
+
                         <span class="px-2 py-1 rounded-full text-xs font-semibold uppercase"
+
                               [ngClass]="{
+
                                 'bg-green-100 text-green-700': row[col.key] === 'confirmed' || row[col.key] === 'Active',
+
                                 'bg-yellow-100 text-yellow-700': row[col.key] === 'pending',
+
                                 'bg-blue-100 text-blue-700': row[col.key] === 'completed',
+
                                 'bg-red-100 text-red-700': row[col.key] === 'cancelled' || row[col.key] === 'rejected' || row[col.key] === 'Inactive'
+
                               }">
+
                             {{ row[col.key] }}
+
                         </span>
+
                     }@else{
+
                         {{ row[col.key] }}
+
                     }
+
                 </td>
+
                 }
+
+
 
                 @if(showActions){
+
                 <td class="px-6 py-4 relative">
+
                     @for(action of actions; track action.label){
+
                     @if(!action.show || action.show(row)){
+
                     <button (click)="toggleDropdown(row)" [innerHTML]="action.label">
+
                     </button>
 
+
+
                     @if(dropdownRow === row && action.menuItems){
+
                     <div class="absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-50 min-w-32 position-fixed transform-translate-x-5" 
+
                          (mouseleave)="onMouseLeaveDropdown()">
+
                         @for(item of action.menuItems; track item.action){
+
                         @if(!item.show || item.show(row)){
+
                         <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center"
+
                             (click)="handleAction(item.action, row); toggleDropdown(null)"
+
                             [innerHTML]="item.label">
+
                         </button>
+
                         }
+
                         }
+
                     </div>
+
                     }
+
                     }
+
                     }
+
                 </td>
+
                 }
+
             </tr>
+
             }
+
         </tbody>
+
     </table>
 
+
+
     @if(showPagination && totalPages > 1){
+
     <div class="flex justify-center items-center gap-2 mt-4 mb-4">
+
         <button class="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50" (click)="onPreviousPage()"
+
             [disabled]="currentPage === 1">
+
             Previous
+
         </button>
+
+
 
         @for(page of pages; track page){
+
         <button class="px-3 py-1 border rounded hover:bg-gray-100" [class.bg-blue-500]="currentPage === page"
+
             [class.text-white]="currentPage === page" (click)="onPageChange(page)">
+
             {{ page }}
+
         </button>
+
         }
 
+
+
         <button class="px-3 py-1 border rounded hover:bg-gray-100 disabled:opacity-50" (click)="onNextPage()"
+
             [disabled]="currentPage === totalPages">
+
             Next
+
         </button>
+
     </div>
+
     }
+
 </div>
