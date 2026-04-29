@@ -6,7 +6,7 @@
 
   <!-- Content -->
   <mat-dialog-content class="!p-0 !overflow-visible">
-    <div class="p-5 bg-gray-50">
+    <div class="p-5 bg-gray-50 max-h-[80vh] overflow-y-auto">
       @if(data.fields && doctorForm){
         <app-dynamic-form 
           [fields]="data.fields" 

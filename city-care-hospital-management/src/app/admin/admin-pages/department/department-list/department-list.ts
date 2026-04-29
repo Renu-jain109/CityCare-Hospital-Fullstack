@@ -309,8 +309,6 @@ export class DepartmentList implements OnInit {
           field.value = currentDepartment[field.key].join(', ');
         } else if (field.key === 'faqs' && Array.isArray(currentDepartment[field.key])) {
           field.value = currentDepartment[field.key].map((faq: any) => `${faq.q}?${faq.a}`).join('||');
-        } else if (field.key === 'doctorIds' && Array.isArray(currentDepartment[field.key])) {
-          field.value = currentDepartment[field.key].join(', ');
         } else {
           field.value = currentDepartment[field.key];
         }

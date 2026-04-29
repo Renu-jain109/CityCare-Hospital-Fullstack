@@ -205,22 +205,22 @@ const updateDepartment = async (req, res) => {
 const deleteDepartment = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Find department by departmentId first (string ID), not _id
     let department;
-    if (id.startsWith('dept')) {
+    if (id.toUpperCase().startsWith('DEPT')) {
       department = await Department.findOne({ departmentId: id });
     } else {
       department = await Department.findById(id);
     }
-    
+
     if (!department) {
       return res.status(404).json({ message: 'Department not found' });
     }
-    
+
     // Delete the department
     await Department.deleteOne({ _id: department._id });
-    
+
     res.status(200).json({
       message: 'Department deleted successfully',
       department: department
