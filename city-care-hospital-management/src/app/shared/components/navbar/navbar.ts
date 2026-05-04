@@ -22,6 +22,16 @@ export class Navbar {
   @Output() toggle = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();
 
+  isLoginModalOpen = false;
+
+  toggleLoginModal() {
+    this.isLoginModalOpen = !this.isLoginModalOpen;
+  }
+
+  closeLoginModal() {
+    this.isLoginModalOpen = false;
+  }
+
   trackByLabel(index: number, item: any) {
     return item.label;
   }

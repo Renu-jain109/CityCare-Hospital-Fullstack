@@ -148,9 +148,9 @@
 
         <ng-template #notLogged>
 
-          <a routerLink="/login"
+          <button (click)="toggleLoginModal()"
 
-            class="px-4 py-2 bg-secondary text-primary font-bold rounded-xl hover:bg-accent transition-all shadow-lg">Login</a>
+            class="px-4 py-2 bg-secondary text-primary font-bold rounded-xl hover:bg-accent transition-all shadow-lg">Login</button>
 
         </ng-template>
 
@@ -292,11 +292,11 @@
 
       <ng-template #mobileNotLogged>
 
-        <a routerLink="/login" (click)="close.emit()"
+        <button (click)="toggleLoginModal(); close.emit()"
 
-          class="bg-primary text-white block px-6 py-4 rounded-2xl text-center font-black text-lg shadow-xl mb-4">Login
+          class="bg-primary text-white block w-full px-6 py-4 rounded-2xl text-center font-black text-lg shadow-xl mb-4">Login
 
-          / Register</a>
+          / Register</button>
 
       </ng-template>
 
@@ -321,3 +321,58 @@
 <!-- Spacer so content doesn't hide behind fixed navbar -->
 
 <div class="h-16 lg:h-20"></div>
+
+<!-- Login Choice Modal -->
+<div *ngIf="isLoginModalOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+  <div (click)="closeLoginModal()" class="absolute inset-0"></div>
+  
+  <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform animate-scale-in">
+    <!-- Header -->
+    <div class="bg-primary p-6 text-center relative">
+      <button (click)="closeLoginModal()" class="absolute right-4 top-4 text-white/70 hover:text-white transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+      <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
+        <i class="fas fa-lock text-white text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white">Choose Login Type</h3>
+      <p class="text-white/70 text-sm mt-1">Select how you want to access your account</p>
+    </div>
+
+    <!-- Options -->
+    <div class="p-8 space-y-4">
+      <!-- Admin Login -->
+      <a routerLink="/admin/login" (click)="closeLoginModal()" 
+        class="flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-100 hover:border-primary hover:bg-blue-50 group transition-all duration-200">
+        <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:text-white text-primary transition-colors">
+          <i class="fas fa-user-shield text-xl"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-gray-900 group-hover:text-primary transition-colors">Admin Login</h4>
+          <p class="text-xs text-gray-500">Manage hospital staff and operations</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-300 group-hover:text-primary transition-colors"></i>
+      </a>
+
+      <!-- Patient Login -->
+      <a routerLink="/login" (click)="closeLoginModal()" 
+        class="flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-100 hover:border-secondary hover:bg-secondary/5 group transition-all duration-200">
+        <div class="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center group-hover:bg-secondary group-hover:text-white text-secondary transition-colors">
+          <i class="fas fa-user-md text-xl"></i>
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-gray-900 group-hover:text-secondary transition-colors">Patient Login</h4>
+          <p class="text-xs text-gray-500">Access reports and book appointments</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-300 group-hover:text-secondary transition-colors"></i>
+      </a>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="p-6 bg-gray-50 border-t border-gray-100 text-center">
+      <p class="text-sm text-gray-500 italic">
+        "Your Health, Our Responsibility"
+      </p>
+    </div>
+  </div>
+</div>
