@@ -45,12 +45,7 @@ MONGO_URI=mongodb://your-connection-string
 PORT=5000
 ```
 
-### 3. Seed Departments (Optional)
-```bash
-npm run seed-departments
-```
-
-### 4. Start Server
+### 3. Start Server
 ```bash
 npm start
 ```

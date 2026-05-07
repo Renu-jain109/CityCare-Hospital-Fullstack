@@ -81,7 +81,7 @@ export class DepartmentList implements OnInit {
   handleTableAction(event: { action: string, row: any }) {
     switch (event.action) {
       case 'view':
-      const htmlContent = `
+        const htmlContent = `
         <!-- Hospital Banner -->
         <div style="background: #005EB8; padding: 12px; border-radius: 10px; text-align: center; color: white; margin-bottom: 12px;">
           <div style="font-size: 20px; margin-bottom: 4px;">🏥</div>

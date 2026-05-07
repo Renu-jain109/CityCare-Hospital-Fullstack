@@ -72,33 +72,39 @@ const getDepartmentById = async (req, res) => {
 const addDepartment = async (req, res) => {
   try {
     const departmentData = req.body;
-    
+
     console.log('Adding department with data:', departmentData);
-    
+
     // Check if department with same name already exists
     const existingDepartment = await Department.findOne({ departmentName: departmentData.departmentName });
     if (existingDepartment) {
       return res.status(400).json({ message: 'Department with this name already exists' });
     }
-    
+
     // Process array fields properly
     if (departmentData.treatments && typeof departmentData.treatments === 'string') {
       departmentData.treatments = departmentData.treatments.split(',').map(t => t.trim()).filter(t => t);
     }
-    
+
     if (departmentData.faqs && typeof departmentData.faqs === 'string') {
       departmentData.faqs = departmentData.faqs.split('||').map(faq => {
         const parts = faq.split('?');
         if (parts.length >= 2) {
-          return {
-            q: parts[0].trim(),
-            a: parts.slice(1).join('?').trim()
-          };
+          let q = parts[0].trim();
+          let a = parts.slice(1).join('?').trim();
+
+          // Move all leading ? from answer to the end of the question
+          while (a.startsWith('?')) {
+            q += '?';
+            a = a.substring(1).trim();
+          }
+
+          return { q, a };
         }
         return null;
       }).filter(faq => faq !== null);
     }
-    
+
     // Handle doctorIds from form and map to doctorId for backend
     if (departmentData.doctorIds && typeof departmentData.doctorIds === 'string') {
       departmentData.doctorId = departmentData.doctorIds.split(',').map(id => id.trim()).filter(id => id);
@@ -106,16 +112,16 @@ const addDepartment = async (req, res) => {
     } else if (departmentData.doctorId && typeof departmentData.doctorId === 'string') {
       departmentData.doctorId = departmentData.doctorId.split(',').map(id => id.trim()).filter(id => id);
     }
-    
+
     // Generate departmentId
     const count = await Department.countDocuments();
     departmentData.departmentId = `DEPT-${count + 1}`;
-    
+
     console.log('Processed department data:', departmentData);
-    
+
     const department = new Department(departmentData);
     const savedDepartment = await department.save();
-    
+
     res.status(201).json({
       message: 'Department added successfully',
       department: savedDepartment
@@ -137,28 +143,34 @@ const updateDepartment = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    
+
     console.log('Updating department with ID:', id);
     console.log('Update data:', updateData);
-    
+
     // Process array fields properly
     if (updateData.treatments && typeof updateData.treatments === 'string') {
       updateData.treatments = updateData.treatments.split(',').map(t => t.trim()).filter(t => t);
     }
-    
+
     if (updateData.faqs && typeof updateData.faqs === 'string') {
       updateData.faqs = updateData.faqs.split('||').map(faq => {
         const parts = faq.split('?');
         if (parts.length >= 2) {
-          return {
-            q: parts[0].trim(),
-            a: parts.slice(1).join('?').trim()
-          };
+          let q = parts[0].trim();
+          let a = parts.slice(1).join('?').trim();
+
+          // Move all leading ? from answer to the end of the question
+          while (a.startsWith('?')) {
+            q += '?';
+            a = a.substring(1).trim();
+          }
+
+          return { q, a };
         }
         return null;
       }).filter(faq => faq !== null);
     }
-    
+
     // Handle both doctorIds (from form) and doctorId (backend model)
     if (updateData.doctorIds && typeof updateData.doctorIds === 'string') {
       updateData.doctorId = updateData.doctorIds.split(',').map(id => id.trim()).filter(id => id);
@@ -166,16 +178,16 @@ const updateDepartment = async (req, res) => {
     } else if (updateData.doctorId && typeof updateData.doctorId === 'string') {
       updateData.doctorId = updateData.doctorId.split(',').map(id => id.trim()).filter(id => id);
     }
-    
+
     console.log('Processed update data:', updateData);
-    
+
     // Always try to find by departmentId first (since that's what we're using)
     let department = await Department.findOneAndUpdate(
       { departmentId: id },
       updateData,
       { new: true, runValidators: true }
     );
-    
+
     // If not found by departmentId, try by _id
     if (!department && id.match(/^[0-9a-fA-F]{24}$/)) {
       department = await Department.findByIdAndUpdate(
@@ -184,12 +196,12 @@ const updateDepartment = async (req, res) => {
         { new: true, runValidators: true }
       );
     }
-    
+
     if (!department) {
       console.log('Department not found with ID:', id);
       return res.status(404).json({ message: 'Department not found' });
     }
-    
+
     console.log('Department updated successfully:', department);
     res.status(200).json({
       message: 'Department updated successfully',

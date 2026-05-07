@@ -46,21 +46,21 @@
         </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div *ngFor="let doctor of doctors"
-                 (click)="goToDoctorDetails(doctor.slug || doctor.doctorId)"
-                 class="p-4 border rounded-xl shadow-sm bg-white hover:shadow-md hover:border-primary transition-all cursor-pointer group">
+            <div *ngFor="let doctor of doctors" (click)="goToDoctorDetails(doctor.slug || doctor.doctorId)"
+                class="p-4 border rounded-xl shadow-sm bg-white hover:shadow-md hover:border-primary transition-all cursor-pointer group">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center flex-shrink-0">
-                        <i [class]="doctor.icon || 'fas fa-user-md'" class="text-3xl text-gray-500 group-hover:text-primary transition-colors"></i>
+                    <div
+                        class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center flex-shrink-0">
+                        <i [class]="doctor.icon || 'fas fa-user-md'"
+                            class="text-3xl text-gray-500 group-hover:text-primary transition-colors"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-bold text-gray-800 group-hover:text-primary transition-colors truncate">
-                            Dr. {{ doctor.doctorName }}
+                            {{ doctor.doctorName }}
                         </h3>
                         <p class="text-sm text-gray-500">{{ doctor.specialization }}</p>
                         <div class="flex items-center gap-2 mt-1">
-                            <span class="text-xs px-2 py-0.5 rounded-full"
-                                  [ngClass]="{
+                            <span class="text-xs px-2 py-0.5 rounded-full" [ngClass]="{
                                       'bg-green-100 text-green-700': doctor.status === 'Active',
                                       'bg-gray-100 text-gray-600': doctor.status !== 'Active'
                                   }">
@@ -110,10 +110,10 @@
 
     <!-- Appointment Button -->
     <!-- <div class="text-center mt-12"> -->
-            <app-button color="primary" label="Go to Home" icon="fas fa-arrow-right" color="primary"
-                customClass="rounded-xl inline-flex" (click)="goToHome()"></app-button>
-            <app-button routerLink="/" color="primary" label="Book Appointment" icon="fas fa-arrow-right" color="primary"
-                customClass="rounded-xl inline-flex" (click)="goToBookAppointment()"></app-button>
+    <app-button color="primary" label="Go to Home" icon="fas fa-arrow-right" color="primary"
+        customClass="rounded-xl inline-flex" (click)="goToHome()"></app-button>
+    <app-button routerLink="/" color="primary" label="Book Appointment" icon="fas fa-arrow-right" color="primary"
+        customClass="rounded-xl inline-flex" (click)="goToBookAppointment()"></app-button>
     <!-- </div> -->
 
 </div>
