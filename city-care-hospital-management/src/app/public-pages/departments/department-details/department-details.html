@@ -1,4 +1,4 @@
-@if(department){
+@if(department) {
 <div class="max-w-5xl mx-auto px-4 py-8">
 
     <!-- Banner -->
@@ -98,10 +98,11 @@
     </section>
 
 </div>
-
-<div *ngIf="!department" class="text-center py-10">
+} @else {
+<div class="text-center py-10">
     <p class="text-gray-500 text-lg">Department not found.</p>
 </div>
+}
 
 <!-- home page -->
 
@@ -117,5 +118,3 @@
     <!-- </div> -->
 
 </div>
-
-}

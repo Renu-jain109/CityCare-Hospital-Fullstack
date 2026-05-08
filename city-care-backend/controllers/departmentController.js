@@ -81,6 +81,13 @@ const addDepartment = async (req, res) => {
       return res.status(400).json({ message: 'Department with this name already exists' });
     }
 
+    // Generate or format slug
+    if (!departmentData.slug && departmentData.departmentName) {
+      departmentData.slug = departmentData.departmentName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    } else if (departmentData.slug) {
+      departmentData.slug = departmentData.slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
+
     // Process array fields properly
     if (departmentData.treatments && typeof departmentData.treatments === 'string') {
       departmentData.treatments = departmentData.treatments.split(',').map(t => t.trim()).filter(t => t);
@@ -97,6 +104,11 @@ const addDepartment = async (req, res) => {
           while (a.startsWith('?')) {
             q += '?';
             a = a.substring(1).trim();
+          }
+
+          // Ensure the question ends with a question mark
+          if (!q.endsWith('?')) {
+            q += '?';
           }
 
           return { q, a };
@@ -147,6 +159,13 @@ const updateDepartment = async (req, res) => {
     console.log('Updating department with ID:', id);
     console.log('Update data:', updateData);
 
+    // Generate or format slug
+    if (!updateData.slug && updateData.departmentName) {
+      updateData.slug = updateData.departmentName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    } else if (updateData.slug) {
+      updateData.slug = updateData.slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
+
     // Process array fields properly
     if (updateData.treatments && typeof updateData.treatments === 'string') {
       updateData.treatments = updateData.treatments.split(',').map(t => t.trim()).filter(t => t);
@@ -163,6 +182,11 @@ const updateDepartment = async (req, res) => {
           while (a.startsWith('?')) {
             q += '?';
             a = a.substring(1).trim();
+          }
+
+          // Ensure the question ends with a question mark
+          if (!q.endsWith('?')) {
+            q += '?';
           }
 
           return { q, a };
